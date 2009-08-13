@@ -30,7 +30,7 @@ namespace frith
 		variable & output;
 		std::string & error_message;
 
-		binary_argument(variable & output, std::string & error_message);
+		unary_argument(variable & output, std::string & error_message);
 	};
 
 	struct binary_argument
@@ -42,6 +42,11 @@ namespace frith
 		binary_argument(variable const & other, variable & output, std::string & error_message);
 	};
 
+	class variable;
+
+	typedef std::vector<variable> variable_vector;
+	typedef std::map<variable, variable> variable_map;
+
 	class variable
 	{
 	public:
@@ -49,11 +54,12 @@ namespace frith
 		variable(variable const & other);
 		~variable();
 
-		void new_boolean(bool boolean);
-		void new_signed_integer(long signed_integer);
-		void new_unsigned_integer(unsigned long unsigned_integer);
-		void new_floating_point_value(double floating_point_value);
-		void new_string(std::string const & input);
+		void nil();
+		void new_boolean(bool new_boolean);
+		void new_signed_integer(long new_signed_integer);
+		void new_unsigned_integer(unsigned long new_unsigned_integer);
+		void new_floating_point_value(double new_floating_point_value);
+		void new_string(std::string const & new_string);
 		void new_array();
 		void new_map();
 
@@ -94,8 +100,8 @@ namespace frith
 			unsigned long unsigned_integer;
 			double floating_point_value;
 			std::string * string;
-			std::vector<variable> * array;
-			std::map<variable, variable> * map;
+			variable_vector * array;
+			variable_map * map;
 		};
 
 		variable_type type;
