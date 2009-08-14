@@ -44,8 +44,16 @@ namespace frith
 
 	class variable;
 
-	typedef std::vector<variable> variable_vector;
-	typedef std::map<variable, variable> variable_map;
+	namespace types
+	{
+		typedef bool boolean;
+		typedef long signed_integer;
+		typedef unsigned long unsigned_integer;
+		typedef double floating_point_value;
+		typedef std::string string;
+		typedef std::vector<variable> vector;
+		typedef std::map<variable, variable> map;
+	}
 
 	class variable
 	{
@@ -57,11 +65,11 @@ namespace frith
 		variable_type get_type() const;
 
 		void nil();
-		void new_boolean(bool new_boolean);
-		void new_signed_integer(long new_signed_integer);
-		void new_unsigned_integer(unsigned long new_unsigned_integer);
-		void new_floating_point_value(double new_floating_point_value);
-		void new_string(std::string const & new_string);
+		void new_boolean(types::boolean new_boolean);
+		void new_signed_integer(types::signed_integer new_signed_integer);
+		void new_unsigned_integer(types::unsigned_integer new_unsigned_integer);
+		void new_floating_point_value(types::floating_point_value new_floating_point_value);
+		void new_string(types::string const & new_string);
 		void new_array();
 		void new_map();
 
@@ -97,18 +105,21 @@ namespace frith
 	private:
 		union
 		{
-			bool boolean;
-			long signed_integer;
-			unsigned long unsigned_integer;
-			double floating_point_value;
-			std::string * string;
-			variable_vector * array;
-			variable_map * map;
+			types::boolean boolean;
+			types::signed_integer signed_integer;
+			types::unsigned_integer unsigned_integer;
+			types::floating_point_value floating_point_value;
+			types::string * string;
+			types::variable_vector * array;
+			types::variable_map * map;
 		};
 
 		variable_type type;
+
+		bool is_floating_point_operation(binary_argument & argument);
+		bool get_floating_point_value(types::floating_point_value & output);
 	};
 
 	std::string get_type_string(variable_type type);
-	std::string get_binary_argument_type_error(std::string const & operation, variable const & left, variable const & right);
+	std::string get_binary_argument_type_error(std::string const & operation, variable_type left, variable_type right);
 }
