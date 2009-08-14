@@ -106,4 +106,6 @@ namespace frith
 
 		variable_type type;
 	};
+
+	std::string get_type_string(variable_type type);
 }

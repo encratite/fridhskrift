@@ -122,8 +122,15 @@ namespace frith
 
 	bool variable::addition(binary_argument & argument)
 	{
+		argument.output = argument.other;
 		switch(type)
 		{
+			case variable_type::signed_integer:
+				argument.output 
+			unsigned_integer,
+			floating_point_value,
+			string,
+			array,
 		}
 	}
 
@@ -207,5 +214,40 @@ namespace frith
 
 	bool variable::binary_not(unary_argument & argument)
 	{
+	}
+
+	std::string get_type_string(variable_type type)
+	{
+		switch(type)
+		{
+		case variable_type::undefined:
+			return "undefined";
+
+		case variable_type::nil:
+			return "nil";
+
+		case variable_type::boolean:
+			return "boolean";
+
+		case variable_type::signed_integer:
+			return "integer";
+
+		case variable_type::unsigned_integer:
+			return "unsigned-integer";
+
+		case variable_type::floating_point_value:
+			return "float";
+
+		case variable_type::string:
+			return "string";
+
+		case variable_type::array:
+			return "array";
+
+		case variable_type::map:
+			return "map";
+		}
+
+		return "unknown";
 	}
 }
