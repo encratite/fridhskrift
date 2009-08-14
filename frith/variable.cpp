@@ -3,6 +3,11 @@
 
 namespace frith
 {
+	namespace
+	{
+		std::string const zero_division_error_message = "Zero division error";
+	}
+
 	unary_argument::unary_argument(variable & output, std::string & error_message):
 		output(output),
 		error_message(error_message)
@@ -195,6 +200,21 @@ namespace frith
 		return true;
 	}
 
+#define ARITHMETIC_OPERATION(operator) \
+		if(is_numeric_type() && argument.other.is_numeric_type()) \
+		{ \
+			if(is_floating_point_operation(argument)) \
+				argument.output.new_floating_point_value(get_floating_point_value() operator argument.other.get_floating_point_value()); \
+			else \
+				unsigned_integer = unsigned_integer operator argument.other.unsigned_integer; \
+		} \
+		else \
+		{ \
+			argument.error_message = get_binary_argument_type_error(name_of_operation, type, argument.other.type); \
+			return false; \
+		} \
+		return true;
+
 	bool variable::addition(binary_argument & argument) const
 	{
 		std::string const name_of_operation = "Addition";
@@ -202,76 +222,52 @@ namespace frith
 		if(array_addition(argument))
 			return true;
 
-		if(is_floating_point_operation(argument))
+		bool string_error;
+		if(string_addition(argument, string_error))
+			return true;
+
+		if(string_error)
 		{
-			types::floating_point_value
-				left,
-				right;
-			if(get_floating_point_value(left) && argument.other.get_floating_point_value(right))
-				argument.output.new_floating_point_value(left + right);
-			else
-			{
-				argument.error_message = get_binary_argument_type_error(name_of_operation, type, argument.other.type);
-				return false;
-			}
-		}
-		else
-		{
-			argument.output = *this;
-
-			switch(type)
-			{
-				case variable_type::signed_integer:
-				case variable_type::unsigned_integer:
-					switch(argument.other.type)
-					{
-						case variable_type::signed_integer:
-						case variable_type::unsigned_integer:
-							argument.output.unsigned_integer += argument.other.unsigned_integer;
-							break;
-
-						default:
-							argument.error_message = get_binary_argument_type_error(name_of_operation, type, argument.other.type);
-							return false;
-					}
-					break;
-
-				case variable_type::floating_point_value:
-					argument.output.floating_point_value += argument.other.floating_point_value;
-					break;
-
-				case variable_type::string:
-					//oh ffs
-
-				case variable_type::array:
-					argument.output.array->push_back(argument.other);
-					break;
-
-				default:
-					argument.error_message = get_binary_argument_type_error(name_of_operation, type, argument.other.type);
-					return false;
-			}
+			argument.error_message = get_binary_argument_type_error(name_of_operation, type, argument.other.type);
+			return false;
 		}
 
-		return true;
+		ARITHMETIC_OPERATION(+)
 	}
 
 	bool variable::subtraction(binary_argument & argument) const
 	{
+		std::string const name_of_operation = "Subtraction";
+		ARITHMETIC_OPERATION(-)
 	}
 
 	bool variable::multiplication(binary_argument & argument) const
 	{
+		std::string const name_of_operation = "Multiplication";
+		ARITHMETIC_OPERATION(*)
 	}
 
 	bool variable::division(binary_argument & argument) const
 	{
+		std::string const name_of_operation = "Division";
+		if(argument.other.is_zero())
+		{
+			argument.error_message = zero_division_error_message;
+			return false;
+		}
+		ARITHMETIC_OPERATION(/)
 	}
 
 	bool variable::modulo(binary_argument & argument) const
 	{
+		std::string const name_of_operation = "Modulo";
+		if(argument.other.is_zero())
+		{
+			argument.error_message = zero_division_error_message;
+			return false;
+		}
+		ARITHMETIC_OPERATION(%)
 	}
-
 
 	bool variable::negative(unary_argument & argument) const
 	{
@@ -342,33 +338,39 @@ namespace frith
 		return type == variable_type::floating_point_value || argument.other.type == variable_type::floating_point_value;
 	}
 
-	bool variable::get_floating_point_value(types::floating_point_value & output) const
+	bool variabe::is_numeric_type(binary_argument & argument) const
+	{
+		return
+			type == variable_type::signed_integer ||
+			type == variable_type::unsigned_integer ||
+			type == variable_type::floating_point_value;
+	}
+
+	types::floating_point_value variable::get_floating_point_value() const
 	{
 		switch(type)
 		{
 		case variable_type::signed_integer:
-			output = signed_integer;
-			break;
+			return signed_integer;
 
 		case variable_type::unsigned_integer:
-			output = unsigned_integer;
-			break;
+			return unsigned_integer;
 
 		case variable_type::floating_point_value:
-			output = floating_point_value;
-			break;
-
-		default:
-			return false;
+			return floating_point_value;
 		}
 
-		return true;
+		throw ail::exception("Failed to retrieve floating point value");
 	}
 
 	bool variable::get_string_representation(std::string & output) const
 	{
 		switch(type)
 		{
+		case variable_type::boolean:
+			output = ail::bool_to_string(boolean);
+			break;
+
 		case variable_type::signed_integer:
 			output = ail::number_to_string<types::signed_integer>(signed_integer);
 			break;
@@ -386,6 +388,23 @@ namespace frith
 		}
 
 		return true;
+	}
+
+	bool variable::is_zero() const
+	{
+		switch(type)
+		{
+		case variable_type::signed_integer:
+			return signed_integer == 0;
+
+		case variable_type::unsigned_integer:
+			return unsigned_integer == 0;
+
+		case variable_type::floating_point_value:
+			return floating_point_value == 0.0;
+		}
+
+		throw exception("Unable to check if variable is zero");		
 	}
 
 	std::string get_type_string(variable_type type)
