@@ -116,8 +116,12 @@ namespace frith
 
 		variable_type type;
 
-		bool is_floating_point_operation(binary_argument & argument);
-		bool get_floating_point_value(types::floating_point_value & output);
+		bool is_floating_point_operation(binary_argument & argument) const;
+		bool get_floating_point_value(types::floating_point_value & output) const;
+		bool get_string_representation(std::string & output) const;
+
+		bool array_addition(binary_argument & argument) const;
+		bool string_addition(binary_argument & argument, bool & error) const;
 	};
 
 	std::string get_type_string(variable_type type);

@@ -1,3 +1,4 @@
+#include <ail/string.hpp>
 #include <frith/variable.hpp>
 
 namespace frith
@@ -125,9 +126,81 @@ namespace frith
 		map = new variable_map();
 	}
 
+	bool variable::array_addition(binary_argument & argument) const
+	{
+		bool left_is_array = type == variable_type::array;
+		bool right_is_array = argument.other.type == variable_type::array;
+
+		if(left_is_array || right_is_array)
+		{
+			argument.output.type = variable_type::array;
+			argument.output.array = new types::variable_vector;
+			types::variable_vector & vector = *argument.output.array;
+
+			if(left_is_array && right_is_array)
+			{
+				vector = *array;
+				vector.append(*argument.other.array);
+			}
+			else if(left_is_array && !right_is_array)
+			{
+				vector = *array;
+				vector.push_back(argument.other);
+			}
+			else if(!left_is_array && right_is_array)
+			{
+				vector = *argument.other.array;
+				vector.push_back(*this);
+			}
+		}
+		else
+			return false;
+
+		return true;
+	}
+
+	bool variable::perform_string_conversion(std::string & output, bool & error)
+	{
+		if(!get_string_representation(output_string))
+		{
+			error = true;
+			return false;
+		}
+		else
+			return true;
+	}
+
+	bool variable::string_addition(binary_argument & argument, bool & error) const
+	{
+		bool left_is_string = type == variable_type::string;
+		bool right_is_string = argument.other.type == variable_type::string;
+
+		error = false;
+
+		if(left_is_string || right_is_string)
+		{
+			argument.output.type = variable_type::string;
+			argument.output.string = new std::string;
+			std::string & output_string = *argument.output.string;
+			if(left_is_string && right_is_string)
+				output_string = *string + *argument.other.string;
+			else if(left_is_string && !right_is_string)
+				return other.argument.perform_string_conversion(output_string, error);
+			else if(!left_is_string && right_is_string)
+				return perform_string_conversion(output_string, error);
+		}
+		else
+			return false;
+
+		return true;
+	}
+
 	bool variable::addition(binary_argument & argument) const
 	{
 		std::string const name_of_operation = "Addition";
+
+		if(array_addition(argument))
+			return true;
 
 		if(is_floating_point_operation(argument))
 		{
@@ -204,7 +277,6 @@ namespace frith
 	{
 	}
 
-
 	bool variable::less_than(binary_argument & argument) const
 	{
 	}
@@ -265,12 +337,12 @@ namespace frith
 	{
 	}
 
-	bool variabe::is_floating_point_operation(binary_argument & argument)
+	bool variabe::is_floating_point_operation(binary_argument & argument) const
 	{
 		return type == variable_type::floating_point_value || argument.other.type == variable_type::floating_point_value;
 	}
 
-	bool variable::get_floating_point_value(types::floating_point_value & output)
+	bool variable::get_floating_point_value(types::floating_point_value & output) const
 	{
 		switch(type)
 		{
@@ -284,6 +356,29 @@ namespace frith
 
 		case variable_type::floating_point_value:
 			output = floating_point_value;
+			break;
+
+		default:
+			return false;
+		}
+
+		return true;
+	}
+
+	bool variable::get_string_representation(std::string & output) const
+	{
+		switch(type)
+		{
+		case variable_type::signed_integer:
+			output = ail::number_to_string<types::signed_integer>(signed_integer);
+			break;
+
+		case variable_type::unsigned_integer:
+			output = ail::number_to_string<types::unsigned_integer>(unsigned_integer);
+			break;
+
+		case variable_type::floating_point_value:
+			output = ail::number_to_string<types::floating_point_value>(floating_point_value);
 			break;
 
 		default:
