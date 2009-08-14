@@ -73,6 +73,11 @@ namespace frith
 		}
 	}
 
+	variable_type variable::get_type() const
+	{
+		return type;
+	}
+
 	void variable::nil()
 	{
 		type = variable_type::nil;
@@ -120,99 +125,114 @@ namespace frith
 		map = new variable_map();
 	}
 
-	bool variable::addition(binary_argument & argument)
+	bool variable::addition(binary_argument & argument) const
 	{
-		argument.output = argument.other;
+		argument.output = *this;
 		switch(type)
 		{
 			case variable_type::signed_integer:
-				argument.output 
-			unsigned_integer,
-			floating_point_value,
-			string,
-			array,
+				argument.output.signed_integer += argument.other.signed_integer;
+				break;
+
+			case variable_type::unsigned_integer:
+				argument.output.unsigned_integer += argument.other.unsigned_integer;
+				break;
+
+			case variable_type::floating_point_value:
+				argument.output.floating_point_value += argument.other.floating_point_value;
+				break;
+
+			case variable_type::array:
+				argument.output.array->push_back(argument.other);
+				break;
+
+			default:
+				argument.error_message = "Addition";
+				return false;
 		}
+
+		return true;
 	}
 
-	bool variable::subtraction(binary_argument & argument)
+	bool variable::subtraction(binary_argument & argument) const
 	{
 	}
 
-	bool variable::multiplication(binary_argument & argument)
+	bool variable::multiplication(binary_argument & argument) const
 	{
 	}
 
-	bool variable::division(binary_argument & argument)
+	bool variable::division(binary_argument & argument) const
 	{
 	}
 
-	bool variable::modulo(binary_argument & argument)
-	{
-	}
-
-
-	bool variable::negative(unary_argument & argument)
+	bool variable::modulo(binary_argument & argument) const
 	{
 	}
 
 
-	bool variable::less_than(binary_argument & argument)
+	bool variable::negative(unary_argument & argument) const
 	{
 	}
 
-	bool variable::less_than_or_equal(binary_argument & argument)
+
+	bool variable::less_than(binary_argument & argument) const
 	{
 	}
 
-	bool variable::greater_than(binary_argument & argument)
+	bool variable::less_than_or_equal(binary_argument & argument) const
 	{
 	}
 
-	bool variable::greater_than_or_equal(binary_argument & argument)
+	bool variable::greater_than(binary_argument & argument) const
 	{
 	}
 
-	bool variable::unequal(binary_argument & argument)
+	bool variable::greater_than_or_equal(binary_argument & argument) const
 	{
 	}
 
-	bool variable::equal(binary_argument & argument)
+	bool variable::unequal(binary_argument & argument) const
 	{
 	}
 
-	bool variable::logical_not(unary_argument & argument)
+	bool variable::equal(binary_argument & argument) const
 	{
 	}
 
-	bool variable::logical_and(binary_argument & argument)
+	bool variable::logical_not(unary_argument & argument) const
 	{
 	}
 
-	bool variable::logical_or(binary_argument & argument)
+	bool variable::logical_and(binary_argument & argument) const
 	{
 	}
 
-	bool variable::shift_left(binary_argument & argument)
+	bool variable::logical_or(binary_argument & argument) const
 	{
 	}
 
-	bool variable::shift_right(binary_argument & argument)
+	bool variable::shift_left(binary_argument & argument) const
 	{
 	}
 
-	bool variable::binary_and(binary_argument & argument)
+	bool variable::shift_right(binary_argument & argument) const
 	{
 	}
 
-	bool variable::binary_or(binary_argument & argument)
+	bool variable::binary_and(binary_argument & argument) const
 	{
 	}
 
-	bool variable::binary_xor(binary_argument & argument)
+	bool variable::binary_or(binary_argument & argument) const
 	{
 	}
 
-	bool variable::binary_not(unary_argument & argument)
+	bool variable::binary_xor(binary_argument & argument) const
+	{
+	}
+
+	bool variable::binary_not(unary_argument & argument) const
 	{
 	}
 
@@ -249,5 +269,10 @@ namespace frith
 		}
 
 		return "unknown";
+	}
+
+	std::string get_binary_argument_type_error(std::string const & operation, variable const & left, variable const & right)
+	{
+		return operation + ": Invalid argument types \"" + get_type_string(left.get_type()) + "\", \"" + get_type_string(right.get_type());
 	}
 }

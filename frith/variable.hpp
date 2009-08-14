@@ -54,6 +54,8 @@ namespace frith
 		variable(variable const & other);
 		~variable();
 
+		variable_type get_type() const;
+
 		void nil();
 		void new_boolean(bool new_boolean);
 		void new_signed_integer(long new_signed_integer);
@@ -63,34 +65,34 @@ namespace frith
 		void new_array();
 		void new_map();
 
-		bool addition(binary_argument & argument);
-		bool subtraction(binary_argument & argument);
-		bool multiplication(binary_argument & argument);
-		bool division(binary_argument & argument);
-		bool modulo(binary_argument & argument);
+		bool addition(binary_argument & argument) const;
+		bool subtraction(binary_argument & argument) const;
+		bool multiplication(binary_argument & argument) const;
+		bool division(binary_argument & argument) const;
+		bool modulo(binary_argument & argument) const;
 
-		bool negative(unary_argument & argument);
+		bool negative(unary_argument & argument) const;
 
-		bool less_than(binary_argument & argument);
-		bool less_than_or_equal(binary_argument & argument);
-		bool greater_than(binary_argument & argument);
-		bool greater_than_or_equal(binary_argument & argument);
-		bool unequal(binary_argument & argument);
-		bool equal(binary_argument & argument);
+		bool less_than(binary_argument & argument) const;
+		bool less_than_or_equal(binary_argument & argument) const;
+		bool greater_than(binary_argument & argument) const;
+		bool greater_than_or_equal(binary_argument & argument) const;
+		bool unequal(binary_argument & argument) const;
+		bool equal(binary_argument & argument) const;
 
-		bool logical_not(unary_argument & argument);
+		bool logical_not(unary_argument & argument) const;
 
-		bool logical_and(binary_argument & argument);
-		bool logical_or(binary_argument & argument);
+		bool logical_and(binary_argument & argument) const;
+		bool logical_or(binary_argument & argument) const;
 
-		bool shift_left(binary_argument & argument);
-		bool shift_right(binary_argument & argument);
+		bool shift_left(binary_argument & argument) const;
+		bool shift_right(binary_argument & argument) const;
 
-		bool binary_and(binary_argument & argument);
-		bool binary_or(binary_argument & argument);
-		bool binary_xor(binary_argument & argument);
+		bool binary_and(binary_argument & argument) const;
+		bool binary_or(binary_argument & argument) const;
+		bool binary_xor(binary_argument & argument) const;
 
-		bool binary_not(unary_argument & argument);
+		bool binary_not(unary_argument & argument) const;
 
 	private:
 		union
@@ -108,4 +110,5 @@ namespace frith
 	};
 
 	std::string get_type_string(variable_type type);
+	std::string get_binary_argument_type_error(std::string const & operation, variable const & left, variable const & right);
 }
