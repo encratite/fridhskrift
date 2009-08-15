@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <ail/types.hpp>
 
 namespace frith
 {
@@ -50,8 +51,8 @@ namespace frith
 	namespace types
 	{
 		typedef bool boolean;
-		typedef long signed_integer;
-		typedef unsigned long unsigned_integer;
+		typedef word signed_integer;
+		typedef uword word_type unsigned_integer;
 		typedef double floating_point_value;
 		typedef std::string string;
 		typedef std::vector<variable> vector;
@@ -111,6 +112,7 @@ namespace frith
 
 		bool operator==(variable const & other) const;
 		bool operator!=(variable const & other) const;
+		bool operator<(variable const & other) const;
 
 	private:
 		union
@@ -142,6 +144,8 @@ namespace frith
 
 		bool array_equality(variable const & other) const;
 		bool map_equality(variable const & other) const;
+
+		uword hash() const;
 	};
 
 	std::string get_type_string(variable_type type);

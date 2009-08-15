@@ -643,6 +643,74 @@ namespace frith
 		return !operator==(other);
 	}
 
+	bool variable::operator<(variable const & other) const
+	{
+		if(is_numeric_type() && other.is_numeric_type())
+		{
+			if
+			(
+				type == variable_type_identifier::floating_point_value ||
+				other.type == variable_type_identifier::floating_point_value
+			)
+				return get_floating_point_value() < other.get_floating_point_value();
+			else if
+			(
+				type == variable_type_identifier::unsigned_integer &&
+				other.type == variable_type_identifier::unsigned_integer
+			)
+				return unsigned_integer < other.unsigned_integer;
+			else
+				return signed_integer < other.signed_integer;
+		}
+		else if(type != other.type)
+			return static_cast<word>(type) < static_cast<word>(other.type);
+		else
+		{
+			if(type == variable_type_identifier::string)
+				return *string < *other.string;
+			else
+			{
+
+			}
+		}
+	}
+
+	uword variable::hash() const
+	{
+		switch(type)
+		{
+		case variable_type_identifier::undefined:
+			throw ail::exception("Attempted to calculate the hash of an undefined variable");
+
+		case variable_type_identifier::nil:
+			return 0;
+
+		case variable_type_identifier::boolean:
+			return boolean ? 1 : 0;
+
+		case variable_type_identifier::signed_integer:
+			return hash_integer(signed_integer);
+
+		case variable_type_identifier::unsigned_integer:
+			return "unsigned-integer";
+
+		case variable_type_identifier::floating_point_value:
+			return "float";
+
+		case variable_type_identifier::string:
+			return "string";
+
+		case variable_type_identifier::array:
+			return "array";
+
+		case variable_type_identifier::map:
+			return "map";
+
+		case variable_type_identifier::function:
+			return "function";
+		}
+	}
+
 	std::string get_type_string(variable_type type)
 	{
 		switch(type)
@@ -673,6 +741,9 @@ namespace frith
 
 		case variable_type_identifier::map:
 			return "map";
+
+		case variable_type_identifier::function:
+			return "function";
 		}
 
 		return "unknown";
