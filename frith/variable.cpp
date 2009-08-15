@@ -271,6 +271,28 @@ namespace frith
 
 	bool variable::negative(unary_argument & argument) const
 	{
+		argument.output.type = type;
+		switch(type)
+		{
+		case variable_type::signed_integer:
+			argument.output.signed_integer = - signed_integer;
+			break;
+
+		case variable_type::unsigned_integer:
+			argument.output.type = variable_type::signed_integer;
+			argument.output.signed_integer = - unsigned_integer;
+			break;
+
+		case variable_type::floating_point_value:
+			argument.output.floating_point_value = - floating_point_value;
+			break;
+
+		default:
+			argument.error_message = "Cannot use unary minus on type " + get_type_string(type);
+			return false;
+		}
+
+		return true;
 	}
 
 	bool variable::less_than(binary_argument & argument) const
