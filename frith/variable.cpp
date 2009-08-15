@@ -205,8 +205,10 @@ namespace frith
 		{ \
 			if(is_floating_point_operation(argument)) \
 				argument.output.new_floating_point_value(get_floating_point_value() operator argument.other.get_floating_point_value()); \
+			else if(type == variable_type::unsigned_integer && argument.other.type == variable_type::unsigned_integer) \
+				argument.output.new_unsigned_integer(unsigned_integer operator argument.other.unsigned_integer); \
 			else \
-				unsigned_integer = unsigned_integer operator argument.other.unsigned_integer; \
+				argument.output.new_signed_integer(signed_integer operator argument.other.signed_integer); \
 		} \
 		else \
 		{ \
@@ -350,14 +352,42 @@ namespace frith
 
 	bool variable::logical_not(unary_argument & argument) const
 	{
+		bool value;
+		if(get_boolean_value(value))
+		{
+			argument.output.new_boolean(!value);
+			return true;
+		}
+		else
+		{
+			argument.error_message = get_unary_argument_type_error("Logical not", type);
+			return false;
+		}
 	}
+
+#define LOGICAL_OPERATOR(name, operator) \
+		bool \
+			left_value, \
+			right_value; \
+		if(get_boolean_value(left_value) && argument.other.get_boolean_value(right_value)) \
+		{ \
+			argument.output.new_boolean(left_value operator right_value); \
+			return true; \
+		} \
+		else \
+		{ \
+			argument.error_message = get_unary_argument_type_error(name, type); \
+			return false; \
+		}
 
 	bool variable::logical_and(binary_argument & argument) const
 	{
+		LOGICAL_OPERATROR("Logical and", &&)
 	}
 
 	bool variable::logical_or(binary_argument & argument) const
 	{
+		LOGICAL_OPERATROR("Logical or", ||)
 	}
 
 	bool variable::shift_left(binary_argument & argument) const
@@ -432,6 +462,29 @@ namespace frith
 
 		case variable_type::floating_point_value:
 			output = ail::number_to_string<types::floating_point_value>(floating_point_value);
+			break;
+
+		default:
+			return false;
+		}
+
+		return true;
+	}
+
+	bool variable::get_boolean_value(bool & output) const
+	{
+		switch(type)
+		{
+		case variable_type::boolean:
+			output = boolean;
+			break;
+
+		case variable_type::signed_integer:
+			output = signed_integer != 0;
+			break;
+
+		case variable_type::unsigned_integer:
+			output = unsigned_integer != 0;
 			break;
 
 		default:
@@ -577,6 +630,11 @@ namespace frith
 		}
 
 		return "unknown";
+	}
+
+	std::string get_unary_argument_type_error(std::string const & operation, variable_type type)
+	{
+		return operation + ": Invalid argument type \"" + get_type_string(left) + "\"";
 	}
 
 	std::string get_binary_argument_type_error(std::string const & operation, variable_type left, variable_type right)
