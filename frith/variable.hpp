@@ -52,7 +52,7 @@ namespace frith
 	{
 		typedef bool boolean;
 		typedef word signed_integer;
-		typedef uword word_type unsigned_integer;
+		typedef uword unsigned_integer;
 		typedef double floating_point_value;
 		typedef std::string string;
 		typedef std::vector<variable> vector;
@@ -125,6 +125,7 @@ namespace frith
 			types::vector * array;
 			types::map * map;
 			function_type * function;
+			void * hash_pointer;
 		};
 
 		variable_type type;
@@ -145,7 +146,9 @@ namespace frith
 		bool array_equality(variable const & other) const;
 		bool map_equality(variable const & other) const;
 
-		uword hash() const;
+		uword array_hash(uword previous_hash) const;
+		uword map_hash(uword previous_hash) const;
+		uword hash(uword previous_hash = 0) const;
 	};
 
 	std::string get_type_string(variable_type type);

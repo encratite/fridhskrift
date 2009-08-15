@@ -1,5 +1,6 @@
 #include <ail/string.hpp>
 #include <frith/variable.hpp>
+#include <fnv.hpp>
 
 namespace frith
 {
@@ -670,12 +671,31 @@ namespace frith
 				return *string < *other.string;
 			else
 			{
-
+				
 			}
 		}
 	}
 
-	uword variable::hash() const
+	uword variable::array_hash(uword previous_hash) const
+	{
+		uword hash = previous_hash;
+		for(types::vector::iterator i = array->begin(), end = array->end(); i != end; i++)
+			hash = i->hash(hash);
+		return hash;
+	}
+
+	uword variable::map_hash(uword previous_hash) const
+	{
+		uword hash = previous_hash;
+		for(types::map::iterator i = map->begin(), end = map->end(); i != end; i++)
+		{
+			hash = i->first.hash(hash);
+			hash = i->second.hash(hash);
+		}
+		return hash;
+	}
+
+	uword variable::hash(uword previous_hash) const
 	{
 		switch(type)
 		{
@@ -683,31 +703,34 @@ namespace frith
 			throw ail::exception("Attempted to calculate the hash of an undefined variable");
 
 		case variable_type_identifier::nil:
-			return 0;
+		{
+			std::string const value = "nil";
+			return fnv1a_hash(value.c_str(), value.size(), previous_hash);
+		}
 
 		case variable_type_identifier::boolean:
-			return boolean ? 1 : 0;
+			return fnv1a_hash(hash_pointer, sizeof(types::signed_integer), previous_hash);
 
 		case variable_type_identifier::signed_integer:
-			return hash_integer(signed_integer);
+			return fnv1a_hash(hash_pointer, sizeof(types::signed_integer), previous_hash);
 
 		case variable_type_identifier::unsigned_integer:
-			return "unsigned-integer";
+			return fnv1a_hash(hash_pointer, sizeof(types::unsigned_integer), previous_hash);
 
 		case variable_type_identifier::floating_point_value:
-			return "float";
+			return fnv1a_hash(hash_pointer, sizeof(types::floating_point_value), previous_hash);
 
 		case variable_type_identifier::string:
-			return "string";
+			return fnv1a_hash(string->c_str(), string->size(), previous_hash);
 
 		case variable_type_identifier::array:
-			return "array";
+			return array_hash(previous_hash);
 
 		case variable_type_identifier::map:
-			return "map";
+			return map_hash(previous_hash);
 
 		case variable_type_identifier::function:
-			return "function";
+			throw ail::exception("Hashing for functions has not been implemented yet");
 		}
 	}
 
