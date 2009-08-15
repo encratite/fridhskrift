@@ -126,6 +126,7 @@ namespace frith
 		variable_type type;
 
 		bool is_floating_point_operation(binary_argument & argument) const;
+		bool is_integer_type(binary_argument & argument) const;
 		bool is_numeric_type(binary_argument & argument) const;
 		bool is_zero() const;
 
