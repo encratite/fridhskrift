@@ -14,7 +14,7 @@ namespace frith
 	{
 	}
 
-	binary_argument::binary_argument(variable const & other, variable & output, std::string & error_message)
+	binary_argument::binary_argument(variable const & other, variable & output, std::string & error_message):
 		other(other),
 		output(output),
 		error_message(error_message)
@@ -22,7 +22,7 @@ namespace frith
 	}
 
 	variable::variable():
-		type(variable_type::undefined)
+		type(variable_type_identifier::undefined)
 	{
 	}
 
@@ -31,32 +31,32 @@ namespace frith
 	{
 		switch(type)
 		{
-		case variable_type::boolean:
+		case variable_type_identifier::boolean:
 			boolean = other.boolean;
 			break;
 
-		case variable_type::signed_integer:
+		case variable_type_identifier::signed_integer:
 			signed_integer = other.signed_integer;
 			break;
 
-		case variable_type::unsigned_integer:
+		case variable_type_identifier::unsigned_integer:
 			unsigned_integer = other.unsigned_integer;
 			break;
 
-		case variable_type::floating_point_value:
+		case variable_type_identifier::floating_point_value:
 			floating_point_value = other.floating_point_value;
 			break;
 
-		case variable_type::string:
-			string = new string(*other.string);
+		case variable_type_identifier::string:
+			string = new std::string(*other.string);
 			break;
 
-		case variable_type::array:
-			array = new variable_vector(*other.array);
+		case variable_type_identifier::array:
+			array = new types::vector(*other.array);
 			break;
 
-		case variable_type::map:
-			map = new variable_map(*other.map);
+		case variable_type_identifier::map:
+			map = new types::map(*other.map);
 			break;
 		}
 	}
@@ -65,15 +65,15 @@ namespace frith
 	{
 		switch(type)
 		{
-		case variable_type::string:
+		case variable_type_identifier::string:
 			delete string;
 			break;
 
-		case variable_type::array:
+		case variable_type_identifier::array:
 			delete array;
 			break;
 
-		case variable_type::map:
+		case variable_type_identifier::map:
 			delete map;
 			break;
 		}
@@ -86,66 +86,67 @@ namespace frith
 
 	void variable::nil()
 	{
-		type = variable_type::nil;
+		type = variable_type_identifier::nil;
 	}
 
 	void variable::new_boolean(types::boolean new_boolean)
 	{
-		type = variable_type::boolean;
+		type = variable_type_identifier::boolean;
 		boolean = new_boolean;
 	}
 
 	void variable::new_signed_integer(types::signed_integer new_signed_integer)
 	{
-		type = variable_type::signed_integer;
+		type = variable_type_identifier::signed_integer;
 		signed_integer = new_signed_integer;
 	}
 
 	void variable::new_unsigned_integer(types::unsigned_integer new_unsigned_integer)
 	{
-		type = variable_type::unsigned_integer;
+		type = variable_type_identifier::unsigned_integer;
 		unsigned_integer = new_unsigned_integer;
 	}
 
 	void variable::new_floating_point_value(types::floating_point_value new_floating_point_value)
 	{
-		type = variable_type::floating_point_value;
+		type = variable_type_identifier::floating_point_value;
 		floating_point_value = new_floating_point_value;
 	}
 
 	void variable::new_string(types::string const & new_string)
 	{
-		type = variable_type::string;
+		type = variable_type_identifier::string;
 		string = new std::string(new_string);
 	}
 
 	void variable::new_array()
 	{
-		type = variable_type::array;
-		array = new variable_vector();
+		type = variable_type_identifier::array;
+		array = new types::vector();
 	}
 
 	void variable::new_map()
 	{
-		type = variable_type::map;
-		map = new variable_map();
+		type = variable_type_identifier::map;
+		map = new types::map();
 	}
 
 	bool variable::array_addition(binary_argument & argument) const
 	{
-		bool left_is_array = type == variable_type::array;
-		bool right_is_array = argument.other.type == variable_type::array;
+		bool left_is_array = type == variable_type_identifier::array;
+		bool right_is_array = argument.other.type == variable_type_identifier::array;
 
 		if(left_is_array || right_is_array)
 		{
-			argument.output.type = variable_type::array;
-			argument.output.array = new types::variable_vector;
-			types::variable_vector & vector = *argument.output.array;
+			argument.output.type = variable_type_identifier::array;
+			argument.output.array = new types::vector;
+			types::vector & vector = *argument.output.array;
 
 			if(left_is_array && right_is_array)
 			{
 				vector = *array;
-				vector.append(*argument.other.array);
+				types::vector & right_vector = *argument.other.array;
+				vector.insert(vector.end(), right_vector.begin(), right_vector.end());
 			}
 			else if(left_is_array && !right_is_array)
 			{
@@ -164,9 +165,9 @@ namespace frith
 		return true;
 	}
 
-	bool variable::perform_string_conversion(std::string & output, bool & error)
+	bool variable::perform_string_conversion(std::string & output, bool & error) const
 	{
-		if(!get_string_representation(output_string))
+		if(!get_string_representation(output))
 		{
 			error = true;
 			return false;
@@ -177,20 +178,20 @@ namespace frith
 
 	bool variable::string_addition(binary_argument & argument, bool & error) const
 	{
-		bool left_is_string = type == variable_type::string;
-		bool right_is_string = argument.other.type == variable_type::string;
+		bool left_is_string = type == variable_type_identifier::string;
+		bool right_is_string = argument.other.type == variable_type_identifier::string;
 
 		error = false;
 
 		if(left_is_string || right_is_string)
 		{
-			argument.output.type = variable_type::string;
+			argument.output.type = variable_type_identifier::string;
 			argument.output.string = new std::string;
 			std::string & output_string = *argument.output.string;
 			if(left_is_string && right_is_string)
 				output_string = *string + *argument.other.string;
 			else if(left_is_string && !right_is_string)
-				return other.argument.perform_string_conversion(output_string, error);
+				return argument.other.perform_string_conversion(output_string, error);
 			else if(!left_is_string && right_is_string)
 				return perform_string_conversion(output_string, error);
 		}
@@ -205,7 +206,7 @@ namespace frith
 		{ \
 			if(is_floating_point_operation(argument)) \
 				argument.output.new_floating_point_value(get_floating_point_value() operator argument.other.get_floating_point_value()); \
-			else if(type == variable_type::unsigned_integer && argument.other.type == variable_type::unsigned_integer) \
+			else if(type == variable_type_identifier::unsigned_integer && argument.other.type == variable_type_identifier::unsigned_integer) \
 				argument.output.new_unsigned_integer(unsigned_integer operator argument.other.unsigned_integer); \
 			else \
 				argument.output.new_signed_integer(signed_integer operator argument.other.signed_integer); \
@@ -268,7 +269,18 @@ namespace frith
 			argument.error_message = zero_division_error_message;
 			return false;
 		}
-		ARITHMETIC_OPERATION(%)
+		else if(is_integer_type() && argument.other.is_integer_type())
+		{
+			if(type == variable_type_identifier::unsigned_integer && argument.other.type == variable_type_identifier::unsigned_integer)
+				argument.output.new_unsigned_integer(unsigned_integer % argument.other.unsigned_integer);
+			else
+				argument.output.new_signed_integer(signed_integer % argument.other.signed_integer);
+		}
+		else
+		{
+			argument.error_message = get_binary_argument_type_error(name_of_operation, type, argument.other.type);
+			return false;
+		}
 	}
 
 	bool variable::negative(unary_argument & argument) const
@@ -276,16 +288,16 @@ namespace frith
 		argument.output.type = type;
 		switch(type)
 		{
-		case variable_type::signed_integer:
+		case variable_type_identifier::signed_integer:
 			argument.output.signed_integer = - signed_integer;
 			break;
 
-		case variable_type::unsigned_integer:
-			argument.output.type = variable_type::signed_integer;
-			argument.output.signed_integer = - unsigned_integer;
+		case variable_type_identifier::unsigned_integer:
+			argument.output.type = variable_type_identifier::signed_integer;
+			argument.output.signed_integer = - static_cast<types::signed_integer>(unsigned_integer);
 			break;
 
-		case variable_type::floating_point_value:
+		case variable_type_identifier::floating_point_value:
 			argument.output.floating_point_value = - floating_point_value;
 			break;
 
@@ -302,7 +314,7 @@ namespace frith
 		{ \
 			if(is_floating_point_operation(argument)) \
 				argument.output.new_boolean(get_floating_point_value() operator argument.other.get_floating_point_value()); \
-			else if(type == variable_type::unsigned_integer && argument.other.type == variable_type::signed_integer) \
+			else if(type == variable_type_identifier::unsigned_integer && argument.other.type == variable_type_identifier::signed_integer) \
 				argument.output.new_boolean(unsigned_integer operator argument.other.unsigned_integer); \
 			else \
 				argument.output.new_boolean(signed_integer operator argument.other.signed_integer); \
@@ -441,37 +453,37 @@ namespace frith
 		}
 	}
 
-	bool variabe::is_floating_point_operation(binary_argument & argument) const
+	bool variable::is_floating_point_operation(binary_argument & argument) const
 	{
-		return type == variable_type::floating_point_value || argument.other.type == variable_type::floating_point_value;
+		return type == variable_type_identifier::floating_point_value || argument.other.type == variable_type_identifier::floating_point_value;
 	}
 
-	bool variable::is_integer_type(binary_argument & argument) const
+	bool variable::is_integer_type() const
 	{
 		return
-			type == variable_type::signed_integer ||
-			type == variable_type::unsigned_integer;
+			type == variable_type_identifier::signed_integer ||
+			type == variable_type_identifier::unsigned_integer;
 	}
 
-	bool variabel::is_numeric_type(binary_argument & argument) const
+	bool variable::is_numeric_type() const
 	{
 		return
-			type == variable_type::signed_integer ||
-			type == variable_type::unsigned_integer ||
-			type == variable_type::floating_point_value;
+			type == variable_type_identifier::signed_integer ||
+			type == variable_type_identifier::unsigned_integer ||
+			type == variable_type_identifier::floating_point_value;
 	}
 
 	types::floating_point_value variable::get_floating_point_value() const
 	{
 		switch(type)
 		{
-		case variable_type::signed_integer:
+		case variable_type_identifier::signed_integer:
 			return signed_integer;
 
-		case variable_type::unsigned_integer:
+		case variable_type_identifier::unsigned_integer:
 			return unsigned_integer;
 
-		case variable_type::floating_point_value:
+		case variable_type_identifier::floating_point_value:
 			return floating_point_value;
 		}
 
@@ -482,19 +494,19 @@ namespace frith
 	{
 		switch(type)
 		{
-		case variable_type::boolean:
+		case variable_type_identifier::boolean:
 			output = ail::bool_to_string(boolean);
 			break;
 
-		case variable_type::signed_integer:
+		case variable_type_identifier::signed_integer:
 			output = ail::number_to_string<types::signed_integer>(signed_integer);
 			break;
 
-		case variable_type::unsigned_integer:
+		case variable_type_identifier::unsigned_integer:
 			output = ail::number_to_string<types::unsigned_integer>(unsigned_integer);
 			break;
 
-		case variable_type::floating_point_value:
+		case variable_type_identifier::floating_point_value:
 			output = ail::number_to_string<types::floating_point_value>(floating_point_value);
 			break;
 
@@ -509,15 +521,15 @@ namespace frith
 	{
 		switch(type)
 		{
-		case variable_type::boolean:
+		case variable_type_identifier::boolean:
 			output = boolean;
 			break;
 
-		case variable_type::signed_integer:
+		case variable_type_identifier::signed_integer:
 			output = signed_integer != 0;
 			break;
 
-		case variable_type::unsigned_integer:
+		case variable_type_identifier::unsigned_integer:
 			output = unsigned_integer != 0;
 			break;
 
@@ -532,17 +544,17 @@ namespace frith
 	{
 		switch(type)
 		{
-		case variable_type::signed_integer:
+		case variable_type_identifier::signed_integer:
 			return signed_integer == 0;
 
-		case variable_type::unsigned_integer:
+		case variable_type_identifier::unsigned_integer:
 			return unsigned_integer == 0;
 
-		case variable_type::floating_point_value:
+		case variable_type_identifier::floating_point_value:
 			return floating_point_value == 0.0;
 		}
 
-		throw exception("Unable to check if variable is zero");		
+		throw ail::exception("Unable to check if variable is zero");		
 	}
 
 	bool variable::array_equality(variable const & other) const
@@ -552,7 +564,7 @@ namespace frith
 			& other_vector = *other.array;
 
 		std::size_t size = vector.size();
-		if(size ! vector.size())
+		if(size != vector.size())
 			return false;
 
 		for(std::size_t i = 0; i < size; i++)
@@ -590,8 +602,8 @@ namespace frith
 	{
 		if(is_numeric_type() && other.is_numeric_type())
 		{
-			if(type == variable_type::floating_point_value || other.type == variable_type::floating_point_value)
-				return floating_point_representation() == other.floating_point_representation();
+			if(type == variable_type_identifier::floating_point_value || other.type == variable_type_identifier::floating_point_value)
+				return get_floating_point_value() == other.get_floating_point_value();
 			else
 				return unsigned_integer == other.unsigned_integer;
 		}
@@ -599,27 +611,27 @@ namespace frith
 		{
 			switch(type)
 			{
-			case variable_type::nil:
+			case variable_type_identifier::nil:
 				return type == other.type;
 
-			case variable_type::boolean:
+			case variable_type_identifier::boolean:
 				return type == other.type && boolean == other.boolean;
 
-			case variable_type::string:
-				return type == other.type && *string == other->string;
+			case variable_type_identifier::string:
+				return type == other.type && *string == *other.string;
 
-			case variable_type::array:
+			case variable_type_identifier::array:
 				return array_equality(other);
 
-			case variable_type::map:
+			case variable_type_identifier::map:
 				return map_equality(other);
 
-			case variable_type::function:
+			case variable_type_identifier::function:
 				throw ail::exception("Comparison of functions has not been implemented yet");
 
-			case variable_type::signed_integer:
-			case variable_type::unsigned_integer:
-			case variable_type::floating_point_value:
+			case variable_type_identifier::signed_integer:
+			case variable_type_identifier::unsigned_integer:
+			case variable_type_identifier::floating_point_value:
 			default:
 				return false;
 			}
@@ -635,31 +647,31 @@ namespace frith
 	{
 		switch(type)
 		{
-		case variable_type::undefined:
+		case variable_type_identifier::undefined:
 			return "undefined";
 
-		case variable_type::nil:
+		case variable_type_identifier::nil:
 			return "nil";
 
-		case variable_type::boolean:
+		case variable_type_identifier::boolean:
 			return "boolean";
 
-		case variable_type::signed_integer:
+		case variable_type_identifier::signed_integer:
 			return "integer";
 
-		case variable_type::unsigned_integer:
+		case variable_type_identifier::unsigned_integer:
 			return "unsigned-integer";
 
-		case variable_type::floating_point_value:
+		case variable_type_identifier::floating_point_value:
 			return "float";
 
-		case variable_type::string:
+		case variable_type_identifier::string:
 			return "string";
 
-		case variable_type::array:
+		case variable_type_identifier::array:
 			return "array";
 
-		case variable_type::map:
+		case variable_type_identifier::map:
 			return "map";
 		}
 
@@ -668,7 +680,7 @@ namespace frith
 
 	std::string get_unary_argument_type_error(std::string const & operation, variable_type type)
 	{
-		return operation + ": Invalid argument type \"" + get_type_string(left) + "\"";
+		return operation + ": Invalid argument type \"" + get_type_string(type) + "\"";
 	}
 
 	std::string get_binary_argument_type_error(std::string const & operation, variable_type left, variable_type right)

@@ -6,7 +6,7 @@
 
 namespace frith
 {
-	namespace variable_type
+	namespace variable_type_identifier
 	{
 		enum variable_type
 		{
@@ -24,7 +24,9 @@ namespace frith
 	
 	}
 
-	typedef variable_type::variable_type variable_type;
+	class variable;
+
+	typedef variable_type_identifier::variable_type variable_type;
 
 	struct unary_argument
 	{
@@ -118,23 +120,24 @@ namespace frith
 			types::unsigned_integer unsigned_integer;
 			types::floating_point_value floating_point_value;
 			types::string * string;
-			types::variable_vector * array;
-			types::variable_map * map;
+			types::vector * array;
+			types::map * map;
 			function_type * function;
 		};
 
 		variable_type type;
 
 		bool is_floating_point_operation(binary_argument & argument) const;
-		bool is_integer_type(binary_argument & argument) const;
-		bool is_numeric_type(binary_argument & argument) const;
+		bool is_integer_type() const;
+		bool is_numeric_type() const;
 		bool is_zero() const;
 
-		bool get_floating_point_value(types::floating_point_value & output) const;
+		types::floating_point_value get_floating_point_value() const;
 		bool get_string_representation(std::string & output) const;
 		bool get_boolean_value(bool & output) const;
 
 		bool array_addition(binary_argument & argument) const;
+		bool perform_string_conversion(std::string & output, bool & error) const;
 		bool string_addition(binary_argument & argument, bool & error) const;
 
 		bool array_equality(variable const & other) const;
