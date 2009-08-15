@@ -18,7 +18,8 @@ namespace frith
 			floating_point_value,
 			string,
 			array,
-			map
+			map,
+			function
 		};
 	
 	}
@@ -54,6 +55,10 @@ namespace frith
 		typedef std::vector<variable> vector;
 		typedef std::map<variable, variable> map;
 	}
+
+	class function_type
+	{
+	};
 
 	class variable
 	{
@@ -102,6 +107,9 @@ namespace frith
 
 		bool binary_not(unary_argument & argument) const;
 
+		bool operator==(variable const & other) const;
+		bool operator!=(variable const & other) const;
+
 	private:
 		union
 		{
@@ -112,6 +120,7 @@ namespace frith
 			types::string * string;
 			types::variable_vector * array;
 			types::variable_map * map;
+			function_type * function;
 		};
 
 		variable_type type;
@@ -124,6 +133,9 @@ namespace frith
 
 		bool array_addition(binary_argument & argument) const;
 		bool string_addition(binary_argument & argument, bool & error) const;
+
+		bool array_equality(variable const & other) const;
+		bool map_equality(variable const & other) const;
 	};
 
 	std::string get_type_string(variable_type type);

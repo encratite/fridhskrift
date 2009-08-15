@@ -295,28 +295,57 @@ namespace frith
 		return true;
 	}
 
+#define NUMERIC_COMPARISON(operator) \
+		if(is_numeric_type() && argument.other.is_numeric_type()) \
+		{ \
+			if(is_floating_point_operation(argument)) \
+				argument.output.new_boolean(get_floating_point_value() operator argument.other.get_floating_point_value()); \
+			else if(type == variable_type::unsigned_integer && argument.other.type == variable_type::signed_integer) \
+				argument.output.new_boolean(unsigned_integer operator argument.other.unsigned_integer); \
+			else \
+				argument.output.new_boolean(signed_integer operator argument.other.signed_integer); \
+		} \
+		else \
+		{ \
+			argument.error_message = get_binary_argument_type_error(name_of_operation, type, argument.other.type); \
+			return false; \
+		} \
+		return true;
+
 	bool variable::less_than(binary_argument & argument) const
 	{
+		std::string const name_of_operation = "Less than";
+		NUMERIC_COMPARISON(<=)
 	}
 
 	bool variable::less_than_or_equal(binary_argument & argument) const
 	{
+		std::string const name_of_operation = "Less than or equal";
+		NUMERIC_COMPARISON(<=)
 	}
 
 	bool variable::greater_than(binary_argument & argument) const
 	{
+		std::string const name_of_operation = "Greater than";
+		NUMERIC_COMPARISON(<=)
 	}
 
 	bool variable::greater_than_or_equal(binary_argument & argument) const
 	{
+		std::string const name_of_operation = "Greater than or equal";
+		NUMERIC_COMPARISON(<=)
 	}
 
 	bool variable::unequal(binary_argument & argument) const
 	{
+		argument.output.new_boolean(operator!=(argument.other));
+		return true;
 	}
 
 	bool variable::equal(binary_argument & argument) const
 	{
+		argument.output.new_boolean(operator==(argument.other));
+		return true;
 	}
 
 	bool variable::logical_not(unary_argument & argument) const
@@ -427,6 +456,92 @@ namespace frith
 		}
 
 		throw exception("Unable to check if variable is zero");		
+	}
+
+	bool variable::array_equality(variable const & other) const
+	{
+		types::vector
+			& vector = *array,
+			& other_vector = *other.array;
+
+		std::size_t size = vector.size();
+		if(size ! vector.size())
+			return false;
+
+		for(std::size_t i = 0; i < size; i++)
+		{
+			if(vector[i] != other_vector[i])
+				return false;
+		}
+
+		return true;
+	}
+
+	bool variable::map_equality(variable const & other) const
+	{
+		types::map
+			& this_map = *map,
+			& other_map = *other.map;
+
+		if(this_map.size() != other_map.size())
+			return false;
+
+		for(types::map::const_iterator i = this_map.begin(), end = this_map.end(); i != end; i++)
+		{
+			types::map::const_iterator iterator = other_map.find(i->first);
+			if(iterator == other_map.end())
+				return false;
+
+			if(i->second != iterator->second)
+				return false;
+		}
+
+		return true;
+	}
+
+	bool variable::operator==(variable const & other) const
+	{
+		if(is_numeric_type() && other.is_numeric_type())
+		{
+			if(type == variable_type::floating_point_value || other.type == variable_type::floating_point_value)
+				return floating_point_representation() == other.floating_point_representation();
+			else
+				return unsigned_integer == other.unsigned_integer;
+		}
+		else
+		{
+			switch(type)
+			{
+			case variable_type::nil:
+				return type == other.type;
+
+			case variable_type::boolean:
+				return type == other.type && boolean == other.boolean;
+
+			case variable_type::string:
+				return type == other.type && *string == other->string;
+
+			case variable_type::array:
+				return array_equality(other);
+
+			case variable_type::map:
+				return map_equality(other);
+
+			case variable_type::function:
+				throw ail::exception("Comparison of functions has not been implemented yet");
+
+			case variable_type::signed_integer:
+			case variable_type::unsigned_integer:
+			case variable_type::floating_point_value:
+			default:
+				return false;
+			}
+		}
+	}
+
+	bool variable::operator!=(variable const & other) const
+	{
+		return !operator==(other);
 	}
 
 	std::string get_type_string(variable_type type)
