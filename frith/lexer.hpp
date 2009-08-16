@@ -69,6 +69,7 @@ namespace frith
 		explicit lexeme(types::unsigned_integer unsigned_integer);
 		explicit lexeme(types::floating_point_value floating_point_value);
 		explicit lexeme(lexeme_type type, std::string const & string);
+		std::string to_string() const;
 	};
 
 	struct line_of_code
@@ -90,4 +91,5 @@ namespace frith
 	};
 
 	bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines, std::string & error);
+	std::string visualise_lexemes(std::vector<line_of_code> & lines);
 }

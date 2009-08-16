@@ -3,6 +3,7 @@
 #include <frith/lexer.hpp>
 #include <ail/array.hpp>
 #include <ail/string.hpp>
+#include <boost/foreach.hpp>
 
 namespace frith
 {
@@ -38,6 +39,105 @@ namespace frith
 		type(type),
 		string(new std::string(string))
 	{
+	}
+
+	std::string lexeme::to_string() const
+	{
+		switch(type)
+		{
+			case lexeme_type_name:
+				return "name: " + *string;
+
+			case lexeme_type_signed_integer:
+				return "integer: " + ail::number_to_string(signed_integer);
+
+			case lexeme_type_unsigned_integer:
+				return "unsigned-integer: " + ail::number_to_string(unsigned_integer);
+
+			case lexeme_type_floating_point_value:
+				return "float: " + ail::number_to_string(floating_point_value);
+
+			case lexeme_type_string:
+				return "string: " + *string;
+
+			case lexeme_type_addition:
+				return "+";
+
+			case lexeme_type_subtraction:
+				return "-";
+
+			case lexeme_type_multiplication:
+				return "*";
+
+			case lexeme_type_division:
+				return "/";
+
+			case lexeme_type_modulo:
+				return "%";
+
+			case lexeme_type_less_than:
+				return "<";
+
+			case lexeme_type_less_than_or_equal:
+				return "<=";
+
+			case lexeme_type_greater_than:
+				return ">";
+
+			case lexeme_type_greater_than_or_equal:
+				return ">=";
+
+			case lexeme_type_unequal:
+				return "!=";
+
+			case lexeme_type_equal:
+				return "=";
+
+			case lexeme_type_logical_not:
+				return "!";
+
+			case lexeme_type_logical_and:
+				return "&";
+
+			case lexeme_type_logical_or:
+				return "|";
+
+			case lexeme_type_shift_left:
+				return "<<";
+
+			case lexeme_type_shift_right:
+				return ">>";
+
+			case lexeme_type_binary_and:
+				return "&&";
+
+			case lexeme_type_binary_or:
+				return "||";
+
+			case lexeme_type_binary_xor:
+				return "^";
+
+			case lexeme_type_binary_not:
+				return "~";
+
+			case lexeme_type_bracket_left:
+				return "left bracket";
+
+			case lexeme_type_bracket_right:
+				return "right bracket";
+
+			case lexeme_type_array_left:
+				return "start of an array";
+
+			case lexeme_type_array_right:
+				return "end of an array";
+
+			case lexeme_type_backslash:
+				return "iteration symbol";
+
+			default:
+				return "unknown";
+		}
 	}
 
 	line_of_code::line_of_code():
@@ -197,6 +297,7 @@ namespace frith
 					return false;
 
 				case '\'':
+					output.lexemes.push_back(lexeme(lexeme_type_string, string));
 					i++;
 					return true;
 
@@ -205,7 +306,8 @@ namespace frith
 					break;
 			}
 		}
-		output.lexemes.push_back(lexeme(lexeme_type_string, string));
+		error_message = lexer_error("String lacks terminator", line);
+		return false;
 	}
 
 	std::string number_parsing_error(std::string const & message, bool & error_occured, uword line)
@@ -342,8 +444,11 @@ namespace frith
 					continue;
 
 				case '\n':
-					current_line.line = line;
-					lines.push_back(current_line);
+					if(!current_line.lexemes.empty())
+					{
+						current_line.line = line;
+						lines.push_back(current_line);
+					}
 					current_line = line_of_code();
 					line++;
 					i++;
@@ -367,6 +472,40 @@ namespace frith
 
 			parse_name(input, i, end, current_line);
 		}
+
+		if(!current_line.lexemes.empty())
+		{
+			current_line.line = line;
+			lines.push_back(current_line);
+		}
+
+		return true;
 	}
 
+	std::string visualise_lexemes(std::vector<line_of_code> & lines)
+	{
+		uword line = 1;
+
+		std::string output;
+
+		BOOST_FOREACH(line_of_code & current_line, lines)
+		{
+			output += ail::number_to_string(line) + ": ";
+			for(uword indentation = 0; indentation < current_line.indentation_level; indentation++)
+				output += "  ";
+			bool first = true;
+			BOOST_FOREACH(lexeme & current_lexeme, current_line.lexemes)
+			{
+				if(first)
+					first = false;
+				else
+					output += " ";
+				output += "[" + current_lexeme.to_string() + "]";
+			}
+			line++;
+			output += "\n";
+		}
+
+		return output;
+	}
 }
