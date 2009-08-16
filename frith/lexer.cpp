@@ -91,6 +91,8 @@ namespace
 
 		operator_lexeme(lexeme_type_array_left, "{"),
 		operator_lexeme(lexeme_type_array_right, "}"),
+
+		operator_lexeme(lexeme_type_backslash, "\\"),
 	};
 }
 

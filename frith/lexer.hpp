@@ -48,6 +48,8 @@ namespace frith
 
 		lexeme_type_array_left,
 		lexeme_type_array_right,
+
+		lexeme_type_backslash
 	};
 
 	struct lexeme
