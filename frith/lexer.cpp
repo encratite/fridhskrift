@@ -1,3 +1,4 @@
+#include <iostream>
 #include <algorithm>
 #include <map>
 #include <frith/lexer.hpp>
@@ -14,6 +15,12 @@ namespace frith
 
 	lexeme::lexeme(lexeme_type type):
 		type(type)
+	{
+	}
+
+	lexeme::lexeme(types::boolean boolean):
+		type(lexeme_type_boolean),
+		boolean(boolean)
 	{
 	}
 
@@ -47,6 +54,9 @@ namespace frith
 		{
 			case lexeme_type_name:
 				return "name: " + *string;
+
+			case lexeme_type_boolean:
+				return "boolean: " + ail::bool_to_string(boolean);
 
 			case lexeme_type_signed_integer:
 				return "integer: " + ail::number_to_string(signed_integer);
@@ -121,19 +131,19 @@ namespace frith
 				return "~";
 
 			case lexeme_type_bracket_left:
-				return "left bracket";
+				return "bracket: left";
 
 			case lexeme_type_bracket_right:
-				return "right bracket";
+				return "bracket: right";
 
 			case lexeme_type_array_left:
-				return "start of an array";
+				return "array: left";
 
 			case lexeme_type_array_right:
-				return "end of an array";
+				return "array: right";
 
 			case lexeme_type_backslash:
-				return "iteration symbol";
+				return "backslash";
 
 			default:
 				return "unknown";
@@ -219,8 +229,19 @@ namespace frith
 			if(remaining_characters < operator_length)
 				return false;
 
-			if(input.substr(i, operator_length) == current_lexeme.string)
+			std::string substring = input.substr(offset, operator_length);
+
+			//std::cout << "Comparing \"" << substring << "\" to \"" << current_lexeme.string << "\"" << std::endl;
+
+			if(substring == current_lexeme.string)
 			{
+				bool has_next_character = remaining_characters >= operator_length + 1;
+				if(has_next_character)
+				{
+					char next_character = input[offset + operator_length];
+					if(!ail::is_whitespace(next_character))
+						return false;
+				}
 				output.lexemes.push_back(lexeme(current_lexeme.lexeme));
 				offset += operator_length;
 				return true;
@@ -405,12 +426,26 @@ namespace frith
 			return false;
 	}
 
+	bool is_name_char(char input)
+	{
+		return !ail::is_whitespace(input);
+	}
+
 	void parse_name(std::string const & input, std::size_t & i, std::size_t end, line_of_code & output)
 	{
 		std::size_t start = i;
-		for(i++; i < end && ail::is_whitespace(input[i]); i++);
+		for(i++; i < end && is_name_char(input[i]); i++);
 		std::string name = input.substr(start, i - start);
-		output.lexemes.push_back(lexeme(lexeme_type_name, name));
+
+		lexeme current_lexeme;
+		if(name == "true")
+			current_lexeme = lexeme(true);
+		else if(name == "false")
+			current_lexeme = lexeme(false);
+		else
+			current_lexeme = lexeme(lexeme_type_name, name);
+
+		output.lexemes.push_back(current_lexeme);
 	}
 
 	bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines, std::string & error)
@@ -439,6 +474,7 @@ namespace frith
 					for(i++, current_line.indentation_level = 1; i < end && input[i] == tab; i++, current_line.indentation_level++);
 					continue;
 
+				case ' ':
 				case '\r':
 					i++;
 					continue;

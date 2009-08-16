@@ -5,7 +5,7 @@
 
 int main()
 {
-	std::string code = "variable 1\nvariable 'string'\nvariable 2.5\nvariable variable2\n= a b";
+	std::string code = "variable | 1 false\nvariable 'string'\nvariable [ 2.5 ]\n\tvariable {variable2}\n= a b";
 	std::vector<frith::line_of_code> lines;
 	std::string error;
 	if(!frith::parse_lexemes(code, lines, error))

@@ -11,6 +11,7 @@ namespace frith
 	{
 		lexeme_type_name,
 
+		lexeme_type_boolean,
 		lexeme_type_signed_integer,
 		lexeme_type_unsigned_integer,
 		lexeme_type_floating_point_value,
@@ -57,6 +58,7 @@ namespace frith
 		lexeme_type type;
 		union
 		{
+			bool boolean;
 			types::signed_integer signed_integer;
 			types::unsigned_integer unsigned_integer;
 			types::floating_point_value floating_point_value;
@@ -65,6 +67,7 @@ namespace frith
 
 		lexeme();
 		lexeme(lexeme_type type);
+		explicit lexeme(types::boolean boolean);
 		explicit lexeme(types::signed_integer signed_integer);
 		explicit lexeme(types::unsigned_integer unsigned_integer);
 		explicit lexeme(types::floating_point_value floating_point_value);
