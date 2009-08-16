@@ -104,7 +104,7 @@ void initialise_tables()
 	std::sort(operators, operators + ail::countof(operators));
 }
 
-bool parse_operator(std::string const & input, std::size_t & offset, lexeme & output)
+bool parse_operator(std::string const & input, std::size_t & offset, line_of_code & output)
 {
 	for(std::size_t i = 0, end = ail::countof(operators); i < end; i++)
 	{
@@ -116,7 +116,7 @@ bool parse_operator(std::string const & input, std::size_t & offset, lexeme & ou
 
 		if(input.substr(i, operator_length) == current_lexeme.string)
 		{
-			output = lexeme(current_lexeme.lexeme);
+			output.lexemes.push_back(lexeme(current_lexeme.lexeme));
 			offset += operator_length;
 			return true;
 		}
@@ -129,8 +129,9 @@ std::string lexer_error(std::string const & message, uword line)
 	return "Line " + ail::number_to_string<uword>(line) + ": " + message;
 }
 
-bool parse_string(std::string const & input, std::size_t & i, std::size_t end, uword line, std::string & output, std::string & error_message)
+bool parse_string(std::string const & input, std::size_t & i, std::size_t end, uword line, line_of_code & output, std::string & error_message)
 {
+	std::string string;
 	i++;
 	std::size_t start = i;
 	for(; i < end; i++)
@@ -153,11 +154,11 @@ bool parse_string(std::string const & input, std::size_t & i, std::size_t end, u
 				switch(next_byte)
 				{
 					case 'r':
-						output.push_back('\r');
+						string.push_back('\r');
 						continue;
 
 					case 'n':
-						output.push_back('\n');
+						string.push_back('\n');
 						continue;
 				}
 
@@ -176,7 +177,7 @@ bool parse_string(std::string const & input, std::size_t & i, std::size_t end, u
 					std::string hex_string = input.substr(i, 2);
 					i++;
 					char new_byte = ail::string_to_number<char>(hex_string, std::ios_base::hex);
-					output.push_back(new_byte);
+					string.push_back(new_byte);
 				}
 				else
 				{
@@ -195,10 +196,11 @@ bool parse_string(std::string const & input, std::size_t & i, std::size_t end, u
 				return true;
 
 			default:
-				output.push_back(byte);
+				string.push_back(byte);
 				break;
 		}
 	}
+	output.lexemes.push_back(lexeme(lexeme_type_string, string));
 }
 
 std::string number_parsing_error(std::string const & message, bool & error_occured, uword line)
@@ -207,7 +209,7 @@ std::string number_parsing_error(std::string const & message, bool & error_occur
 	return lexer_error(message, line);
 }
 
-bool parse_number(std::string const & input, std::size_t & i, std::size_t end, uword line, lexeme & current_lexeme, bool & error_occured, std::string & error_message)
+bool parse_number(std::string const & input, std::size_t & i, std::size_t end, uword line, line_of_code & output, bool & error_occured, std::string & error_message)
 {
 	std::size_t start = i;
 	char byte = input[i];
@@ -283,15 +285,25 @@ bool parse_number(std::string const & input, std::size_t & i, std::size_t end, u
 		}
 
 		std::string number_string = input.substr(start, i - start);
+		lexeme current_lexeme;
 		if(got_dot)
 			current_lexeme = lexeme(ail::string_to_number<types::floating_point_value>(number_to_string));
 		else
 			current_lexeme = lexeme(ail::string_to_number<types::signed_integer>(number_to_string))
+		output.lexemes.push_back(current_lexeme);
 
 		return true;
 	}
 	else
 		return false;
+}
+
+void parse_name(std::string const & input, std::size_t & i, std::size_t end, line_of_code & output)
+{
+	std::size_t start = i;
+	for(i++; i < end && ail::is_whitespace(input[i]); i++);
+	std::string name = input.substr(start, i - start);
+	output.lexemes.push_back(lexeme(lexeme_type_name, name));
 }
 
 bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines, std::string & error)
@@ -303,12 +315,8 @@ bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines,
 
 	for(std::size_t i = 0, end = input.size(); i < end;)
 	{
-		lexeme current_lexeme;
-		if(parse_operator(input, i, current_lexeme))
-		{
-			current_line.lexemes.push_back(current_lexeme);
+		if(parse_operator(input, i, current_line))
 			continue;
-		}
 
 		char const tab = '\t';
 
@@ -324,12 +332,17 @@ bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines,
 				for(i++, current_line.indentation_level = 1; i < end && input[i] == tab; i++, current_line.indentation_level++);
 				continue;
 
+			case '\r':
+				i++;
+				continue;
+
 			case '\n':
 				current_line.line = line;
 				lines.push_back(current_line);
 				current_line = line_of_code();
 				line++;
-				break;
+				i++;
+				continue;
 
 			case '\'':
 			{
@@ -342,12 +355,12 @@ bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines,
 
 		bool error_occured;
 		std::string error_message;
-		if(parse_number(input, i, end, line, current_lexeme, error_occured, error_message))
+		if(parse_number(input, i, end, line, current_line, error_occured, error_message))
 			continue;
 
 		if(error_occured)
 			return false;
 
-		i++;
+		parse_name(input, i, end, current_line);
 	}
 }
