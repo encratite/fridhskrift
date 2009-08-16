@@ -201,6 +201,99 @@ bool parse_string(std::string const & input, std::size_t & i, std::size_t end, u
 	}
 }
 
+std::string number_parsing_error(std::string const & message, bool & error_occured, uword line)
+{
+	error_occured = true;
+	return lexer_error(message, line);
+}
+
+bool parse_number(std::string const & input, std::size_t & i, std::size_t end, uword line, lexeme & current_lexeme, bool & error_occured, std::string & error_message)
+{
+	std::size_t start = i;
+	char byte = input[i];
+	error_occured = false;
+
+	if(ail::is_digit(byte))
+	{
+		if(byte == '0')
+		{
+			i++;
+			std::size remaining_bytes = end - i;
+			if(remaining_bytes > 1)
+			{
+				char next_byte = input[i + 1];
+				if(next_byte == 'x')
+				{
+					i++;
+					remaining_bytes = end - i;
+					if(remaining_bytes == 0)
+					{
+						error_message = number_parsing_error("Incomplete hex number at the end of the input", error_occured, line);
+						return false;
+					}
+
+					std::size_t hex_start = i;
+
+					for(; i < end && ail::is_hex_digit(input[i]); i++);
+					
+					std::size_t hex_length = i - hex_start;
+					if(hex_length == 0)
+					{
+						error_occured = true;
+						error_message = lexer_error("Incomplete hex number", line);
+						return false;
+					}
+
+					std::string hex_string = input.substr(hex_start, i - end);
+					types::unsigned_integer value = ail::string_to_number<types::unsigned_integer>(hex_string, std::ios_base::hex);
+					current_lexeme = lexeme(value);
+					return true;
+				}
+			}
+		}
+
+		char const dot = '.';
+
+		bool got_dot = false;
+		std::size_t start = i;
+		char last_byte = byte;
+		for(i++; i < end; i++)
+		{
+			byte = input[i];
+			if(byte == dot)
+			{
+				if(got_dot)
+				{
+					error_message = number_parsing_error("Encountered a floating point value containing multiple dots", error_occured, line);
+					return false;
+				}
+				else
+					got_dot = true;
+			}
+			else if(!ail::is_digit(byte))
+				break;
+
+			last_byte = byte;
+		}
+
+		if(last_byte == dot)
+		{
+			error_message = number_parsing_error("Encountered a floating point value ending with a dot", error_occured, line);
+			return false;
+		}
+
+		std::string number_string = input.substr(start, i - start);
+		if(got_dot)
+			current_lexeme = lexeme(ail::string_to_number<types::floating_point_value>(number_to_string));
+		else
+			current_lexeme = lexeme(ail::string_to_number<types::signed_integer>(number_to_string))
+
+		return true;
+	}
+	else
+		return false;
+}
+
 bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines, std::string & error)
 {
 	initialise_tables();
@@ -210,10 +303,10 @@ bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines,
 
 	for(std::size_t i = 0, end = input.size(); i < end;)
 	{
-		lexeme current_operator;
-		if(parse_operator(input, i, current_operator))
+		lexeme current_lexeme;
+		if(parse_operator(input, i, current_lexeme))
 		{
-			current_line.lexemes.push_back(current_operator);
+			current_line.lexemes.push_back(current_lexeme);
 			continue;
 		}
 
@@ -247,7 +340,13 @@ bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines,
 			}
 		}
 
+		bool error_occured;
+		std::string error_message;
+		if(parse_number(input, i, end, line, current_lexeme, error_occured, error_message))
+			continue;
 
+		if(error_occured)
+			return false;
 
 		i++;
 	}
