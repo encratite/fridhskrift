@@ -74,6 +74,8 @@ namespace frith
 		uword line;
 		uword indentation_level;
 		std::vector<lexeme> lexemes;
+
+		line_of_code();
 	};
 
 	struct operator_lexeme

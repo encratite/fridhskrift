@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <map>
 #include <lexer.hpp>
 #include <ail/array.hpp>
 #include <ail/string.hpp>
@@ -30,6 +31,11 @@ explicit lexeme::lexeme(types::floating_point_value floating_point_value)
 {
 }
 
+line_of_code::line_of_code():
+	indentation_level(0)
+{
+}
+
 explicit lexeme::lexeme(lexeme_type type, std::string const & string)
 	type(type),
 	string(new std::string(string))
@@ -49,7 +55,7 @@ bool operator_lexeme::operator<(operator_lexeme const & other) const
 
 namespace
 {
-	bool operators_table_initialised = false;
+	bool tables_initialised = false;
 
 	operator_lexeme operators[] =
 	{
@@ -88,17 +94,17 @@ namespace
 	};
 }
 
-void initialise_operators_table()
+void initialise_tables()
 {
-	if(operators_table_initialised)
+	if(tables_initialised)
 		return;
 
-	operators_table_initialised = true;
+	tables_initialised = true;
 
 	std::sort(operators, operators + ail::countof(operators));
 }
 
-bool parse_operator(std::string const & input, std::size_t offset, lexeme & output)
+bool parse_operator(std::string const & input, std::size_t & offset, lexeme & output)
 {
 	for(std::size_t i = 0, end = ail::countof(operators); i < end; i++)
 	{
@@ -111,18 +117,138 @@ bool parse_operator(std::string const & input, std::size_t offset, lexeme & outp
 		if(input.substr(i, operator_length) == current_lexeme.string)
 		{
 			output = lexeme(current_lexeme.lexeme);
+			offset += operator_length;
 			return true;
 		}
 	}
 	return false;
 }
 
-bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines, std::string & error)
+std::string lexer_error(std::string const & message, uword line)
 {
-	initialise_operators_table();
+	return "Line " + ail::number_to_string<uword>(line) + ": " + message;
+}
 
-	for(std::size_t i = 0, end = input.size(); i < end; i++)
+bool parse_string(std::string const & input, std::size_t & i, std::size_t end, uword line, std::string & output, std::string & error_message)
+{
+	i++;
+	std::size_t start = i;
+	for(; i < end; i++)
 	{
 		char byte = input[i];
+		switch(byte)
+		{
+			case '\\':
+			{
+				if(end - i < 2)
+				{
+					error_message = lexer_error("Backslash at the end of the input", line);
+					return false;
+				}
+
+				i++;
+
+				char next_byte = input[i];
+				
+				switch(next_byte)
+				{
+					case 'r':
+						output.push_back('\r');
+						continue;
+
+					case 'n':
+						output.push_back('\n');
+						continue;
+				}
+
+				if(ail::is_hex_digit(next_byte))
+				{
+					if(end - i < 2)
+					{
+						error_message = lexer_error("Incomplete hex number escape sequence at the end of the input", line);
+						return false;
+					}
+					if(!ail::is_hex_digit(input[i + 1]))
+					{
+						error_message = lexer_error("Invalid hex number escape sequence", line);
+						return false;
+					}
+					std::string hex_string = input.substr(i, 2);
+					i++;
+					char new_byte = ail::string_to_number<char>(hex_string, std::ios_base::hex);
+					output.push_back(new_byte);
+				}
+				else
+				{
+					error_message = lexer_error("Invalid escape sequence: " + ail::hex_string_8(static_cast<uchar>(next_byte)), line);
+					return false;
+				}
+				break;
+			}
+
+			case '\n':
+				error_message = lexer_error("Detected a newline in a string", line);
+				return false;
+
+			case '\'':
+				i++;
+				return true;
+
+			default:
+				output.push_back(byte);
+				break;
+		}
+	}
+}
+
+bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines, std::string & error)
+{
+	initialise_tables();
+
+	line_of_code current_line;
+	uword line = 1;
+
+	for(std::size_t i = 0, end = input.size(); i < end;)
+	{
+		lexeme current_operator;
+		if(parse_operator(input, i, current_operator))
+		{
+			current_line.lexemes.push_back(current_operator);
+			continue;
+		}
+
+		char const tab = '\t';
+
+		char byte = input[i];
+		switch(byte)
+		{
+			case tab:
+				if(current_line.indentation_level > 0)
+				{
+					error = lexer_error("Tabs are only permitted at the beginning of a line", current_line);
+					return false;
+				}
+				for(i++, current_line.indentation_level = 1; i < end && input[i] == tab; i++, current_line.indentation_level++);
+				continue;
+
+			case '\n':
+				current_line.line = line;
+				lines.push_back(current_line);
+				current_line = line_of_code();
+				line++;
+				break;
+
+			case '\'':
+			{
+				std::string string;
+				if(!parse_string(input, i, end, line, string, error))
+					return false;
+				continue;
+			}
+		}
+
+
+
+		i++;
 	}
 }
