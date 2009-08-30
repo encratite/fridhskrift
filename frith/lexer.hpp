@@ -22,6 +22,10 @@ namespace frith
 		lexeme_type_multiplication,
 		lexeme_type_division,
 		lexeme_type_modulo,
+		lexeme_type_exponentiation,
+
+		lexeme_type_increment,
+		lexeme_type_decrement,
 
 		lexeme_type_less_than,
 		lexeme_type_less_than_or_equal,
@@ -44,13 +48,20 @@ namespace frith
 
 		lexeme_type_binary_not,
 
-		lexeme_type_bracket_left,
-		lexeme_type_bracket_right,
+		lexeme_type_bracket_start,
+		lexeme_type_bracket_end,
 
-		lexeme_type_array_left,
-		lexeme_type_array_right,
+		lexeme_type_array_start,
+		lexeme_type_array_end,
 
-		lexeme_type_backslash
+		lexeme_type_scope_start,
+		lexeme_type_scope_end,
+
+		lexeme_type_iteration,
+		lexeme_type_function_declaration,
+		lexeme_type_anonymous_function_declaration,
+		lexeme_type_class_declaration,
+		lexeme_type_dot,
 	};
 
 	struct lexeme

@@ -85,6 +85,15 @@ namespace frith
 			case lexeme_type_modulo:
 				return "%";
 
+			case lexeme_type_increment:
+				return "++";
+
+			case lexeme_type_decrement:
+				return "--";
+
+			case lexeme_type_exponentiation:
+				return "**";
+
 			case lexeme_type_less_than:
 				return "<";
 
@@ -130,20 +139,38 @@ namespace frith
 			case lexeme_type_binary_not:
 				return "~";
 
-			case lexeme_type_bracket_left:
-				return "bracket: left";
+			case lexeme_type_bracket_start:
+				return "bracket: start";
 
-			case lexeme_type_bracket_right:
-				return "bracket: right";
+			case lexeme_type_bracket_end:
+				return "bracket: end";
 
-			case lexeme_type_array_left:
-				return "array: left";
+			case lexeme_type_array_start:
+				return "array: start";
 
-			case lexeme_type_array_right:
-				return "array: right";
+			case lexeme_type_array_end:
+				return "array: end";
 
-			case lexeme_type_backslash:
-				return "backslash";
+			case lexeme_type_scope_start:
+				return "array: start";
+
+			case lexeme_type_array_end:
+				return "array: end";
+
+			case lexeme_type_iteration:
+				return "iteration";
+
+			case lexeme_type_function_declaration:
+				return "function";
+
+			case lexeme_type_anonymous_function_declaration:
+				return "anonymous function";
+
+			case lexeme_type_class_declaration:
+				return "class";
+
+			case lexeme_type_itlexeme_type_dot:
+				return ".";
 
 			default:
 				return "unknown";
@@ -177,6 +204,10 @@ namespace frith
 			operator_lexeme(lexeme_type_multiplication, "*"),
 			operator_lexeme(lexeme_type_division, "/"),
 			operator_lexeme(lexeme_type_modulo, "%"),
+			operator_lexeme(lexeme_type_exponentiation, "**"),
+
+			operator_lexeme(lexeme_type_increment, "++"),
+			operator_lexeme(lexeme_type_decrement, "--"),
 
 			operator_lexeme(lexeme_type_less_than, "<"),
 			operator_lexeme(lexeme_type_less_than_or_equal, "<="),
@@ -199,13 +230,20 @@ namespace frith
 
 			operator_lexeme(lexeme_type_binary_not, "~"),
 
-			operator_lexeme(lexeme_type_bracket_left, "["),
-			operator_lexeme(lexeme_type_bracket_right, "]"),
+			operator_lexeme(lexeme_type_bracket_start, "["),
+			operator_lexeme(lexeme_type_bracket_end, "]"),
 
-			operator_lexeme(lexeme_type_array_left, "{"),
-			operator_lexeme(lexeme_type_array_right, "}"),
+			operator_lexeme(lexeme_type_array_start, "{"),
+			operator_lexeme(lexeme_type_array_end, "}"),
 
-			operator_lexeme(lexeme_type_backslash, "\\"),
+			operator_lexeme(lexeme_type_scope_start, "("),
+			operator_lexeme(lexeme_type_scope_end, ")"),
+
+			operator_lexeme(lexeme_type_iteration, "\\"),
+			operator_lexeme(lexeme_type_function_declaration, "@"),
+			operator_lexeme(lexeme_type_anonymous_function_declaration, "@@"),
+			operator_lexeme(lexeme_type_class_declaration, "$"),
+			operator_lexeme(lexeme_type_dot, "."),
 		};
 	}
 
