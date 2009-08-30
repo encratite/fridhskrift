@@ -152,10 +152,10 @@ namespace frith
 				return "array: end";
 
 			case lexeme_type_scope_start:
-				return "array: start";
+				return "scope: start";
 
-			case lexeme_type_array_end:
-				return "array: end";
+			case lexeme_type_scope_end:
+				return "scope: end";
 
 			case lexeme_type_iteration:
 				return "iteration";
@@ -169,7 +169,7 @@ namespace frith
 			case lexeme_type_class_declaration:
 				return "class";
 
-			case lexeme_type_itlexeme_type_dot:
+			case lexeme_type_dot:
 				return ".";
 
 			default:
@@ -293,9 +293,10 @@ namespace frith
 		return "Line " + ail::number_to_string<uword>(line) + ": " + message;
 	}
 
-	bool parse_string(std::string const & input, std::size_t & i, std::size_t end, uword line, line_of_code & output, std::string & error_message)
+	bool parse_string(std::string const & input, std::size_t & i, std::size_t end, uword line, line_of_code & output, std::string & error_message, std::string error_prefix = "")
 	{
 		std::string string;
+		char string_character = input[i];
 		i++;
 		std::size_t start = i;
 		for(; i < end; i++)
@@ -307,7 +308,7 @@ namespace frith
 				{
 					if(end - i < 2)
 					{
-						error_message = lexer_error("Backslash at the end of the input", line);
+						error_message = lexer_error(error_prefix + "Backslash at the end of the input", line);
 						return false;
 					}
 
@@ -330,12 +331,12 @@ namespace frith
 					{
 						if(end - i < 2)
 						{
-							error_message = lexer_error("Incomplete hex number escape sequence at the end of the input", line);
+							error_message = lexer_error(error_prefix + "Incomplete hex number escape sequence at the end of the input", line);
 							return false;
 						}
 						if(!ail::is_hex_digit(input[i + 1]))
 						{
-							error_message = lexer_error("Invalid hex number escape sequence", line);
+							error_message = lexer_error(error_prefix + "Invalid hex number escape sequence", line);
 							return false;
 						}
 						std::string hex_string = input.substr(i, 2);
@@ -345,27 +346,33 @@ namespace frith
 					}
 					else
 					{
-						error_message = lexer_error("Invalid escape sequence: " + ail::hex_string_8(static_cast<uchar>(next_byte)), line);
+						error_message = lexer_error(error_prefix + "Invalid escape sequence: " + ail::hex_string_8(static_cast<uchar>(next_byte)), line);
 						return false;
 					}
 					break;
 				}
 
 				case '\n':
-					error_message = lexer_error("Detected a newline in a string", line);
+					error_message = lexer_error(error_prefix + "Detected a newline in a string", line);
 					return false;
 
 				case '\'':
-					output.lexemes.push_back(lexeme(lexeme_type_string, string));
-					i++;
-					return true;
+				case '"':
+					if(byte == string_character)
+					{
+						output.lexemes.push_back(lexeme(lexeme_type_string, string));
+						i++;
+						return true;
+					}
+					string.push_back(byte);
+					break;
 
 				default:
 					string.push_back(byte);
 					break;
 			}
 		}
-		error_message = lexer_error("String lacks terminator", line);
+		error_message = lexer_error(error_prefix + "String lacks terminator", line);
 		return false;
 	}
 
@@ -486,6 +493,93 @@ namespace frith
 		output.lexemes.push_back(current_lexeme);
 	}
 
+	bool string_match(std::string const & input, std::size_t i, std::size_t end, std::string const & target)
+	{
+		if(end - i < target.size())
+			return false;
+
+		return input.substr(i, target.size()) == target;
+	}
+
+	bool parse_comment(std::string const & input, std::size_t & i, std::size_t end, uword & line, std::string & error_message)
+	{
+		std::string const
+			multi_line_comment = ";;",
+			nested_comment_start = ";.",
+			nested_command_end = ".;",
+
+			multiline_comment_prefix = "In multi-line comment: ",
+			nested_comment_prefix = "In nested comment: ";
+
+		if(string_match(input, i, end, multi_line_comment))
+		{
+			bool got_end = false;
+			for(i += multi_line_comment.size(); !got_end && i < end; i++)
+			{
+				char byte = input[i];
+				switch(byte)
+				{
+					case '\'':
+					case '"':
+					{
+						line_of_code unused;
+						if(!parse_string(input, i, end, line, unused, error_message, multiline_comment_prefix))
+							return false;
+						break;
+					}
+
+					case '\n':
+						line++;
+						break;
+
+					case ';':
+						if(string_match(input, i, end, multi_line_comment))
+							got_end = true;
+						break;
+				}
+			}
+			if(!got_end)
+			{
+				error_message = lexer_error("Unable to find the end of a multi-line comment", line);
+				return false;
+			}
+		}
+		else if(string_match(input, i, end, nested_comment_start))
+		{
+			uword comment_depth = 1;
+			for(i += recursive_comment_start.size(); comment_depth > 0 && i < end; i++)
+			{
+				if(string_match(input, i, end, nested_comment_start))
+				{
+					comment_depth++;
+					i += nested_comment_start.size();
+				}
+				else if(string_match(input, i, end, nested_comment_start))
+				{
+					comment_depth--;
+					i += nested_comment_end.size();
+				}
+			}
+			if(comment_depth != 0)
+			{
+				error_message = lexer_error("Unable to find the end of a nested comment", line);
+				return false;
+			}
+		}
+		else
+		{
+			std::size_t offset = input.find('\n', i);
+			if(offset == std::string::npos)
+			{
+				error_message = lexer_error("Unable to find the end of a multi-line comment", line);
+				return false;
+			}
+			line++;
+			i = offset + 1;
+		}
+		return true;
+	}
+
 	bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines, std::string & error)
 	{
 		initialise_tables();
@@ -529,6 +623,7 @@ namespace frith
 					continue;
 
 				case '\'':
+				case '"':
 				{
 					std::string string;
 					if(!parse_string(input, i, end, line, current_line, error))
