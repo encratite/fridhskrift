@@ -73,7 +73,7 @@ namespace frith
 				return "float: " + ail::number_to_string(floating_point_value);
 
 			case lexeme_type_string:
-				return "string: " + *string;
+				return "string: " + ail::replace_string(*string, "\n", "\\n");
 
 			case lexeme_type_addition:
 				return "+";
@@ -283,26 +283,13 @@ namespace frith
 
 			std::string substring = input.substr(i, operator_length);
 
-			//std::cout << "Comparing \"" << substring << "\" to \"" << current_lexeme.string << "\"" << std::endl;
-
 			if(substring == current_lexeme.string)
 			{
-				/*
-				bool has_next_character = remaining_characters >= operator_length + 1;
-				if(has_next_character)
-				{
-					char next_character = input[i + operator_length];
-					if(!ail::is_whitespace(next_character))
-						return false;
-				}
-				*/
 				output.lexemes.push_back(lexeme(current_lexeme.lexeme));
-				//std::cout << "Got an operator at " << i << ": " << substring << std::endl;
 				i += operator_length;
 				return true;
 			}
 		}
-		//std::cout << "No operator hit for input at " << i << ": " << input[i] << std::endl;
 		return false;
 	}
 
@@ -317,15 +304,15 @@ namespace frith
 	{
 		std::string string;
 		char string_character = input[i];
-		std::cout << "Started at " << i << std::endl;
+		/*
 		BOOST_FOREACH(lexeme & current_lexeme, output.lexemes)
 			std::cout << "Lexeme: " << current_lexeme.to_string() << std::endl;
+		*/
 		i++;
 		std::size_t start = i;
 		for(; i < end; i++)
 		{
 			char byte = input[i];
-			std::cout << "Comparing: " << byte << " to " << string_character << std::endl;
 			switch(byte)
 			{
 				case '\\':
@@ -377,7 +364,6 @@ namespace frith
 				}
 
 				case '\n':
-					std::cout << i << std::endl;
 					error_message = lexer_error(error_prefix + "Detected a newline in a string");
 					return false;
 
@@ -385,7 +371,6 @@ namespace frith
 				case '"':
 					if(byte == string_character)
 					{
-						std::cout << "String: \"" << string << "\"" << std::endl;
 						output.lexemes.push_back(lexeme(lexeme_type_string, string));
 						i++;
 						return true;
@@ -483,7 +468,6 @@ namespace frith
 			}
 
 			std::string number_string = input.substr(start, i - start);
-			std::cout << "Got a number: \"" << number_string << "\"" << std::endl;
 			lexeme current_lexeme;
 			if(got_dot)
 				current_lexeme = lexeme(ail::string_to_number<types::floating_point_value>(number_string));
@@ -499,7 +483,6 @@ namespace frith
 
 	bool lexer::is_name_char(char input)
 	{
-		//return !ail::is_whitespace(input);
 		return ail::is_alpha(input) || ail::is_digit(input) || input == '_';
 	}
 
@@ -508,8 +491,6 @@ namespace frith
 		std::size_t start = i;
 		for(i++; i < end && is_name_char(input[i]); i++);
 		std::string name = input.substr(start, i - start);
-
-		//std::cout << "Name at " << start << " - " << i << ": \"" << name << "\"" << std::endl;
 
 		lexeme current_lexeme;
 		if(name == "true")
@@ -624,7 +605,7 @@ namespace frith
 			lines.push_back(current_line);
 		}
 		std::string line_string = input.substr(line_offset, i - line_offset);
-		std::cout << "Line " << line << ": " << line_string << std::endl;
+		//std::cout << "Line " << line << ": " << line_string << std::endl;
 		current_line = line_of_code();
 		line++;
 		i++;
@@ -712,7 +693,11 @@ namespace frith
 
 		BOOST_FOREACH(line_of_code & current_line, lines)
 		{
-			output += ail::number_to_string(line) + ": ";
+			std::string number_string = ail::number_to_string(line);
+			for(word i = 0, end = 5 - number_string.size(); i < end; i++)
+				output += " ";
+			output += number_string;
+			output += ": ";
 			for(uword indentation = 0; indentation < current_line.indentation_level; indentation++)
 				output += "    ";
 			bool first = true;
