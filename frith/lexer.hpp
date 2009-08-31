@@ -104,6 +104,30 @@ namespace frith
 		bool operator<(operator_lexeme const & other) const;
 	};
 
-	bool parse_lexemes(std::string const & input, std::vector<line_of_code> & lines, std::string & error);
+	class lexer
+	{
+	public:
+		lexer(std::string const & input, std::vector<line_of_code> & lines, std::string & error);
+
+		bool parse();
+
+	private:
+		std::string const & input;
+		std::vector<line_of_code> & lines;
+		std::string & error;
+
+		bool parse_operator(std::size_t & offset, line_of_code & output);
+		bool parse_string(line_of_code & output, std::string & error_message, std::string error_prefix = "");
+		bool parse_number(line_of_code & output, bool & error_occured, std::string & error_message);
+		void parse_name(line_of_code & output);
+		bool parse_comment(std::string & error_message);
+
+		std::string lexer_error(std::string const & message);
+		std::string number_parsing_error(std::string const & message, bool & error_occured);
+
+		bool is_name_char(char input);
+		bool string_match(std::string const & target);
+	};
+
 	std::string visualise_lexemes(std::vector<line_of_code> & lines);
 }

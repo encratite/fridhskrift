@@ -282,6 +282,7 @@ namespace frith
 			argument.error_message = get_binary_argument_type_error(name_of_operation, type, argument.other.type);
 			return false;
 		}
+		return true;
 	}
 
 	bool variable::negative(unary_argument & argument) const
@@ -670,9 +671,7 @@ namespace frith
 			if(type == variable_type_identifier::string)
 				return *string < *other.string;
 			else
-			{
-				
-			}
+				return hash() < other.hash();
 		}
 	}
 
@@ -732,6 +731,8 @@ namespace frith
 		case variable_type_identifier::function:
 			throw ail::exception("Hashing for functions has not been implemented yet");
 		}
+
+		throw ail::exception("Tried to hash an object of an unknown type");
 	}
 
 	std::string get_type_string(variable_type type)

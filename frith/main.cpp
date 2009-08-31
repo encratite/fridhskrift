@@ -2,19 +2,34 @@
 #include <string>
 #include <vector>
 #include <frith/lexer.hpp>
+#include <ail/file.hpp>
 
-int main()
+int main(int argc, char ** argv)
 {
-	std::string code = "variable | 1 false\nvariable 'string'\nvariable [ 2.5 ]\n\tvariable {variable2}\n= a b";
-	std::vector<frith::line_of_code> lines;
-	std::string error;
-	if(!frith::parse_lexemes(code, lines, error))
+	if(argc != 3)
 	{
-		std::cout << "Error: " << error << std::endl;
+		std::cout << argv[0] << " <input> <output>" << std::endl;
 		return 1;
 	}
 
-	std::cout << frith::visualise_lexemes(lines) << std::endl;
+	std::string code;
+	if(!ail::read_file(argv[1], code))
+	{
+		std::cout << "Unable to read input" << std::endl;
+		return 1;
+	}
+
+	std::vector<frith::line_of_code> lines;
+	std::string error;
+	frith::lexer lexer(code, lines, error);
+	if(!lexer.parse())
+	{
+		std::cout << "Error: " << error << std::endl;
+		std::cin.get();
+		return 1;
+	}
+
+	ail::write_file(argv[2], frith::visualise_lexemes(lines));
 
 	return 0;
 }
