@@ -317,11 +317,15 @@ namespace frith
 	{
 		std::string string;
 		char string_character = input[i];
+		std::cout << "Started at " << i << std::endl;
+		BOOST_FOREACH(lexeme & current_lexeme, output.lexemes)
+			std::cout << "Lexeme: " << current_lexeme.to_string() << std::endl;
 		i++;
 		std::size_t start = i;
 		for(; i < end; i++)
 		{
 			char byte = input[i];
+			std::cout << "Comparing: " << byte << " to " << string_character << std::endl;
 			switch(byte)
 			{
 				case '\\':
@@ -373,6 +377,7 @@ namespace frith
 				}
 
 				case '\n':
+					std::cout << i << std::endl;
 					error_message = lexer_error(error_prefix + "Detected a newline in a string");
 					return false;
 
@@ -380,6 +385,7 @@ namespace frith
 				case '"':
 					if(byte == string_character)
 					{
+						std::cout << "String: \"" << string << "\"" << std::endl;
 						output.lexemes.push_back(lexeme(lexeme_type_string, string));
 						i++;
 						return true;
@@ -493,7 +499,8 @@ namespace frith
 
 	bool lexer::is_name_char(char input)
 	{
-		return !ail::is_whitespace(input);
+		//return !ail::is_whitespace(input);
+		return ail::is_alpha(input) || ail::is_digit(input) || input == '_';
 	}
 
 	void lexer::parse_name(line_of_code & output)
@@ -707,7 +714,7 @@ namespace frith
 		{
 			output += ail::number_to_string(line) + ": ";
 			for(uword indentation = 0; indentation < current_line.indentation_level; indentation++)
-				output += "  ";
+				output += "    ";
 			bool first = true;
 			BOOST_FOREACH(lexeme & current_lexeme, current_line.lexemes)
 			{
