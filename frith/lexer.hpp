@@ -119,7 +119,9 @@ namespace frith
 		uword line;
 		std::size_t
 			i,
-			end;
+			end,
+			line_offset;
+		line_of_code current_line;
 
 		bool parse_operator(line_of_code & output);
 		bool parse_string(line_of_code & output, std::string & error_message, std::string error_prefix = "");
@@ -132,6 +134,7 @@ namespace frith
 
 		bool is_name_char(char input);
 		bool string_match(std::string const & target);
+		void process_newline();
 	};
 
 	std::string visualise_lexemes(std::vector<line_of_code> & lines);

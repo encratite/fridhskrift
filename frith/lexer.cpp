@@ -5,9 +5,14 @@
 #include <ail/array.hpp>
 #include <ail/string.hpp>
 #include <boost/foreach.hpp>
+#include <boost/thread/mutex.hpp>
 
 namespace frith
 {
+	namespace
+	{
+		boost::mutex table_mutex;
+	}
 
 	lexeme::lexeme()
 	{
@@ -249,6 +254,8 @@ namespace frith
 
 	void initialise_tables()
 	{
+		boost::mutex::scoped_lock scoped_lock(table_mutex);
+
 		if(tables_initialised)
 			return;
 
@@ -280,6 +287,7 @@ namespace frith
 
 			if(substring == current_lexeme.string)
 			{
+				/*
 				bool has_next_character = remaining_characters >= operator_length + 1;
 				if(has_next_character)
 				{
@@ -287,11 +295,14 @@ namespace frith
 					if(!ail::is_whitespace(next_character))
 						return false;
 				}
+				*/
 				output.lexemes.push_back(lexeme(current_lexeme.lexeme));
+				//std::cout << "Got an operator at " << i << ": " << substring << std::endl;
 				i += operator_length;
 				return true;
 			}
 		}
+		//std::cout << "No operator hit for input at " << i << ": " << input[i] << std::endl;
 		return false;
 	}
 
@@ -491,6 +502,8 @@ namespace frith
 		for(i++; i < end && is_name_char(input[i]); i++);
 		std::string name = input.substr(start, i - start);
 
+		//std::cout << "Name at " << start << " - " << i << ": \"" << name << "\"" << std::endl;
+
 		lexeme current_lexeme;
 		if(name == "true")
 			current_lexeme = lexeme(true);
@@ -540,8 +553,8 @@ namespace frith
 					}
 
 					case '\n':
-						line++;
-						break;
+						process_newline();
+						continue;
 
 					case ';':
 						if(string_match(multi_line_comment))
@@ -566,7 +579,10 @@ namespace frith
 			{
 				char byte = input[i];
 				if(byte == '\n')
-					line++;
+				{
+					process_newline();
+					continue;
+				}
 				else if(string_match(nested_comment_start))
 				{
 					comment_depth++;
@@ -596,20 +612,34 @@ namespace frith
 				error_message = lexer_error("Unable to find the end of a multi-line comment", start_of_comment);
 				return false;
 			}
-			line++;
-			i = offset + 1;
+			i = offset;
+			process_newline();
 		}
 		return true;
+	}
+
+	void lexer::process_newline()
+	{
+		if(!current_line.lexemes.empty())
+		{
+			current_line.line = line;
+			lines.push_back(current_line);
+		}
+		std::string line_string = input.substr(line_offset, i - line_offset);
+		std::cout << "Line " << line << ": " << line_string << std::endl;
+		current_line = line_of_code();
+		line++;
+		i++;
+		line_offset = i;
 	}
 
 	bool lexer::parse(std::vector<line_of_code> & lines)
 	{
 		initialise_tables();
 
-		line_of_code current_line;
 		line = 1;
 
-		std::size_t line_offset = 0;
+		line_offset = 0;
 
 		for(i = 0, end = input.size(); i < end;)
 		{
@@ -638,17 +668,7 @@ namespace frith
 
 				case '\n':
 				{
-					if(!current_line.lexemes.empty())
-					{
-						current_line.line = line;
-						lines.push_back(current_line);
-					}
-					std::string line_string = input.substr(line_offset, i - line_offset);
-					std::cout << "Line " << line << ": " << line_string << std::endl;
-					current_line = line_of_code();
-					line++;
-					i++;
-					line_offset = i;
+					process_newline();
 					continue;
 				}
 
