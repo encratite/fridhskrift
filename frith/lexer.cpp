@@ -165,6 +165,9 @@ namespace frith
 			case lexeme_type_iteration:
 				return "iteration";
 
+			case lexeme_type_iterator:
+				return "iterator";
+
 			case lexeme_type_function_declaration:
 				return "function";
 
@@ -245,6 +248,7 @@ namespace frith
 			operator_lexeme(lexeme_type_scope_end, ")"),
 
 			operator_lexeme(lexeme_type_iteration, "\\"),
+			operator_lexeme(lexeme_type_iterator, "#"),
 			operator_lexeme(lexeme_type_function_declaration, "@"),
 			operator_lexeme(lexeme_type_anonymous_function_declaration, "@@"),
 			operator_lexeme(lexeme_type_class_declaration, "$"),
@@ -687,13 +691,11 @@ namespace frith
 
 	std::string visualise_lexemes(std::vector<line_of_code> & lines)
 	{
-		uword line = 1;
-
 		std::string output;
 
 		BOOST_FOREACH(line_of_code & current_line, lines)
 		{
-			std::string number_string = ail::number_to_string(line);
+			std::string number_string = ail::number_to_string(current_line.line);
 			for(word i = 0, end = 5 - number_string.size(); i < end; i++)
 				output += " ";
 			output += number_string;
@@ -709,7 +711,6 @@ namespace frith
 					output += " ";
 				output += "[" + current_lexeme.to_string() + "]";
 			}
-			line++;
 			output += "\n";
 		}
 

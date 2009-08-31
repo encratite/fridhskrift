@@ -58,6 +58,7 @@ namespace frith
 		lexeme_type_scope_end,
 
 		lexeme_type_iteration,
+		lexeme_type_iterator,
 		lexeme_type_function_declaration,
 		lexeme_type_anonymous_function_declaration,
 		lexeme_type_class_declaration,
