@@ -264,17 +264,17 @@ namespace frith
 	{
 	}
 
-	bool lexer::parse_operator(std::size_t & offset, line_of_code & output)
+	bool lexer::parse_operator(line_of_code & output)
 	{
-		for(std::size_t i = 0, end = ail::countof(operators); i < end; i++)
+		for(std::size_t iterator = 0, end = ail::countof(operators); iterator < end; iterator++)
 		{
-			operator_lexeme & current_lexeme = operators[i];
-			std::size_t remaining_characters = end - i;
+			operator_lexeme & current_lexeme = operators[iterator];
+			std::size_t remaining_characters = end - iterator;
 			std::size_t operator_length = current_lexeme.string.size();
 			if(remaining_characters < operator_length)
 				return false;
 
-			std::string substring = input.substr(offset, operator_length);
+			std::string substring = input.substr(i, operator_length);
 
 			//std::cout << "Comparing \"" << substring << "\" to \"" << current_lexeme.string << "\"" << std::endl;
 
@@ -283,21 +283,23 @@ namespace frith
 				bool has_next_character = remaining_characters >= operator_length + 1;
 				if(has_next_character)
 				{
-					char next_character = input[offset + operator_length];
+					char next_character = input[i + operator_length];
 					if(!ail::is_whitespace(next_character))
 						return false;
 				}
 				output.lexemes.push_back(lexeme(current_lexeme.lexeme));
-				offset += operator_length;
+				i += operator_length;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	std::string lexer::lexer_error(std::string const & message)
+	std::string lexer::lexer_error(std::string const & message, uword error_line)
 	{
-		return "Line " + ail::number_to_string<uword>(line) + ": " + message;
+		if(error_line == 0)
+			error_line = line;
+		return "Line " + ail::number_to_string<uword>(error_line) + ": " + message;
 	}
 
 	bool lexer::parse_string(line_of_code & output, std::string & error_message, std::string error_prefix)
@@ -315,7 +317,7 @@ namespace frith
 				{
 					if(end - i < 2)
 					{
-						error_message = lexer_error(error_prefix + "Backslash at the end of the input", line);
+						error_message = lexer_error(error_prefix + "Backslash at the end of the input");
 						return false;
 					}
 
@@ -338,12 +340,12 @@ namespace frith
 					{
 						if(end - i < 2)
 						{
-							error_message = lexer_error(error_prefix + "Incomplete hex number escape sequence at the end of the input", line);
+							error_message = lexer_error(error_prefix + "Incomplete hex number escape sequence at the end of the input");
 							return false;
 						}
 						if(!ail::is_hex_digit(input[i + 1]))
 						{
-							error_message = lexer_error(error_prefix + "Invalid hex number escape sequence", line);
+							error_message = lexer_error(error_prefix + "Invalid hex number escape sequence");
 							return false;
 						}
 						std::string hex_string = input.substr(i, 2);
@@ -353,14 +355,14 @@ namespace frith
 					}
 					else
 					{
-						error_message = lexer_error(error_prefix + "Invalid escape sequence: " + ail::hex_string_8(static_cast<uchar>(next_byte)), line);
+						error_message = lexer_error(error_prefix + "Invalid escape sequence: " + ail::hex_string_8(static_cast<uchar>(next_byte)));
 						return false;
 					}
 					break;
 				}
 
 				case '\n':
-					error_message = lexer_error(error_prefix + "Detected a newline in a string", line);
+					error_message = lexer_error(error_prefix + "Detected a newline in a string");
 					return false;
 
 				case '\'':
@@ -379,17 +381,17 @@ namespace frith
 					break;
 			}
 		}
-		error_message = lexer_error(error_prefix + "String lacks terminator", line);
+		error_message = lexer_error(error_prefix + "String lacks terminator");
 		return false;
 	}
 
 	std::string lexer::number_parsing_error(std::string const & message, bool & error_occured)
 	{
 		error_occured = true;
-		return lexer_error(message, line);
+		return lexer_error(message);
 	}
 
-	bool lexer::parse_number(line_of_code & output, bool & error_occured, std::string & error_message)
+	bool lexer::parse_number(line_of_code & output, bool & error_occured)
 	{
 		std::size_t start = i;
 		char byte = input[i];
@@ -410,7 +412,7 @@ namespace frith
 						remaining_bytes = end - i;
 						if(remaining_bytes == 0)
 						{
-							error_message = number_parsing_error("Incomplete hex number at the end of the input", error_occured, line);
+							error = number_parsing_error("Incomplete hex number at the end of the input", error_occured);
 							return false;
 						}
 
@@ -422,7 +424,7 @@ namespace frith
 						if(hex_length == 0)
 						{
 							error_occured = true;
-							error_message = lexer_error("Incomplete hex number", line);
+							error = lexer_error("Incomplete hex number");
 							return false;
 						}
 
@@ -446,7 +448,7 @@ namespace frith
 				{
 					if(got_dot)
 					{
-						error_message = number_parsing_error("Encountered a floating point value containing multiple dots", error_occured, line);
+						error = number_parsing_error("Encountered a floating point value containing multiple dots", error_occured);
 						return false;
 					}
 					else
@@ -460,7 +462,7 @@ namespace frith
 
 			if(last_byte == dot)
 			{
-				error_message = number_parsing_error("Encountered a floating point value ending with a dot", error_occured, line);
+				error = number_parsing_error("Encountered a floating point value ending with a dot", error_occured);
 				return false;
 			}
 
@@ -520,7 +522,7 @@ namespace frith
 
 		uword start_of_comment = line;
 
-		if(string_match(input, i, end, multi_line_comment))
+		if(string_match(multi_line_comment))
 		{
 			bool got_end = false;
 			for(i += multi_line_comment.size(); !got_end && i < end;)
@@ -532,7 +534,7 @@ namespace frith
 					case '"':
 					{
 						line_of_code unused;
-						if(!parse_string(input, i, end, line, unused, error_message, multiline_comment_prefix))
+						if(!parse_string(unused, error_message, multiline_comment_prefix))
 							return false;
 						continue;
 					}
@@ -542,7 +544,7 @@ namespace frith
 						break;
 
 					case ';':
-						if(string_match(input, i, end, multi_line_comment))
+						if(string_match(multi_line_comment))
 						{
 							got_end = true;
 							i++;
@@ -557,7 +559,7 @@ namespace frith
 				return false;
 			}
 		}
-		else if(string_match(input, i, end, nested_comment_start))
+		else if(string_match(nested_comment_start))
 		{
 			uword comment_depth = 1;
 			for(i += nested_comment_start.size(); comment_depth > 0 && i < end;)
@@ -565,13 +567,13 @@ namespace frith
 				char byte = input[i];
 				if(byte == '\n')
 					line++;
-				else if(string_match(input, i, end, nested_comment_start))
+				else if(string_match(nested_comment_start))
 				{
 					comment_depth++;
 					i += nested_comment_start.size();
 					continue;
 				}
-				else if(string_match(input, i, end, nested_comment_end))
+				else if(string_match(nested_comment_end))
 				{
 					comment_depth--;
 					i += nested_comment_end.size();
@@ -600,18 +602,18 @@ namespace frith
 		return true;
 	}
 
-	bool parse(std::string const & input, std::vector<line_of_code> & lines, std::string & error)
+	bool lexer::parse(std::vector<line_of_code> & lines)
 	{
 		initialise_tables();
 
 		line_of_code current_line;
-		uword line = 1;
+		line = 1;
 
 		std::size_t line_offset = 0;
 
-		for(std::size_t i = 0, end = input.size(); i < end;)
+		for(i = 0, end = input.size(); i < end;)
 		{
-			if(parse_operator(input, i, current_line))
+			if(parse_operator(current_line))
 				continue;
 
 			char const tab = '\t';
@@ -623,7 +625,7 @@ namespace frith
 					if(current_line.indentation_level > 0)
 					{
 						std::cout << input.substr(line_offset, i - line_offset) << std::endl;
-						error = lexer_error("Tabs are only permitted at the beginning of a line (offset " + ail::number_to_string(i - line_offset + 1) + ")", line);
+						error = lexer_error("Tabs are only permitted at the beginning of a line (offset " + ail::number_to_string(i - line_offset + 1) + ")");
 						return false;
 					}
 					for(i++, current_line.indentation_level = 1; i < end && input[i] == tab; i++, current_line.indentation_level++);
@@ -654,25 +656,25 @@ namespace frith
 				case '"':
 				{
 					std::string string;
-					if(!parse_string(input, i, end, line, current_line, error))
+					if(!parse_string(current_line, error))
 						return false;
 					continue;
 				}
 
 				case ';':
-					if(!parse_comment(input, i, end, line, error))
+					if(!parse_comment(error))
 						return false;
 					continue;
 			}
 
 			bool error_occured;
-			if(parse_number(input, i, end, line, current_line, error_occured, error))
+			if(parse_number(current_line, error_occured))
 				continue;
 
 			if(error_occured)
 				return false;
 
-			parse_name(input, i, end, current_line);
+			parse_name(current_line);
 		}
 
 		if(!current_line.lexemes.empty())

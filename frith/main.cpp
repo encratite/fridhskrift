@@ -22,7 +22,7 @@ int main(int argc, char ** argv)
 	std::vector<frith::line_of_code> lines;
 	std::string error;
 	frith::lexer lexer(code, lines, error);
-	if(!lexer.parse())
+	if(!lexer.parse(lines))
 	{
 		std::cout << "Error: " << error << std::endl;
 		std::cin.get();

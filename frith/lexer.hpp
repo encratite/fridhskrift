@@ -109,20 +109,25 @@ namespace frith
 	public:
 		lexer(std::string const & input, std::vector<line_of_code> & lines, std::string & error);
 
-		bool parse();
+		bool parse(std::vector<line_of_code> & lines);
 
 	private:
 		std::string const & input;
 		std::vector<line_of_code> & lines;
 		std::string & error;
 
-		bool parse_operator(std::size_t & offset, line_of_code & output);
+		uword line;
+		std::size_t
+			i,
+			end;
+
+		bool parse_operator(line_of_code & output);
 		bool parse_string(line_of_code & output, std::string & error_message, std::string error_prefix = "");
-		bool parse_number(line_of_code & output, bool & error_occured, std::string & error_message);
+		bool parse_number(line_of_code & output, bool & error_occured);
 		void parse_name(line_of_code & output);
 		bool parse_comment(std::string & error_message);
 
-		std::string lexer_error(std::string const & message);
+		std::string lexer_error(std::string const & message, uword error_line = 0);
 		std::string number_parsing_error(std::string const & message, bool & error_occured);
 
 		bool is_name_char(char input);
