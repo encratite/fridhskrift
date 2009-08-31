@@ -410,9 +410,9 @@ namespace frith
 
 		if(ail::is_digit(byte))
 		{
+			i++;
 			if(byte == '0')
 			{
-				i++;
 				std::size_t remaining_bytes = end - i;
 				if(remaining_bytes > 1)
 				{
@@ -450,9 +450,8 @@ namespace frith
 			char const dot = '.';
 
 			bool got_dot = false;
-			std::size_t start = i;
 			char last_byte = byte;
-			for(i++; i < end; i++)
+			for(; i < end; i++)
 			{
 				byte = input[i];
 				if(byte == dot)
@@ -478,6 +477,7 @@ namespace frith
 			}
 
 			std::string number_string = input.substr(start, i - start);
+			std::cout << "Got a number: \"" << number_string << "\"" << std::endl;
 			lexeme current_lexeme;
 			if(got_dot)
 				current_lexeme = lexeme(ail::string_to_number<types::floating_point_value>(number_string));
@@ -543,15 +543,6 @@ namespace frith
 				char byte = input[i];
 				switch(byte)
 				{
-					case '\'':
-					case '"':
-					{
-						line_of_code unused;
-						if(!parse_string(unused, error_message, multiline_comment_prefix))
-							return false;
-						continue;
-					}
-
 					case '\n':
 						process_newline();
 						continue;
