@@ -23,6 +23,11 @@ namespace frith
 		return hash;
 	}
 
+	uword string_hash(std::string const & value, uword previous_hash)
+	{
+		return fnv1a_hash(value.c_str(), value.size(), previous_hash);
+	}
+
 	uword variable::hash(uword previous_hash) const
 	{
 		switch(type)
@@ -31,10 +36,10 @@ namespace frith
 			throw ail::exception("Attempted to calculate the hash of an undefined variable");
 
 		case variable_type_identifier::nil:
-		{
-			std::string const value = "nil";
-			return fnv1a_hash(value.c_str(), value.size(), previous_hash);
-		}
+			return string_hash("nil", previous_hash);
+
+		case variable_type_identifier::none:
+			return string_hash("none", previous_hash);
 
 		case variable_type_identifier::boolean:
 			return fnv1a_hash(hash_pointer, sizeof(types::signed_integer), previous_hash);

@@ -203,6 +203,9 @@ namespace frith
 		case variable_type_identifier::nil:
 			return "nil";
 
+		case variable_type_identifier::none:
+			return "none";
+
 		case variable_type_identifier::boolean:
 			return "boolean";
 

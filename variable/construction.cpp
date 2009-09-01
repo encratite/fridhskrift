@@ -7,6 +7,11 @@ namespace frith
 		type = variable_type_identifier::nil;
 	}
 
+	void variable::none()
+	{
+		type = variable_type_identifier::none;
+	}
+
 	void variable::new_boolean(types::boolean new_boolean)
 	{
 		type = variable_type_identifier::boolean;

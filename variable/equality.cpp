@@ -58,6 +58,8 @@ namespace frith
 			switch(type)
 			{
 			case variable_type_identifier::nil:
+			case variable_type_identifier::none:
+				return type == other.type;
 				return type == other.type;
 
 			case variable_type_identifier::boolean:

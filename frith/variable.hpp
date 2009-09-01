@@ -13,6 +13,7 @@ namespace frith
 		{
 			undefined,
 			nil,
+			none,
 			boolean,
 			signed_integer,
 			unsigned_integer,
@@ -73,6 +74,7 @@ namespace frith
 		variable_type get_type() const;
 
 		void nil();
+		void none();
 		void new_boolean(types::boolean new_boolean);
 		void new_signed_integer(types::signed_integer new_signed_integer);
 		void new_unsigned_integer(types::unsigned_integer new_unsigned_integer);
