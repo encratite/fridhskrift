@@ -174,8 +174,8 @@ namespace frith
 			case lexeme_type_anonymous_function_declaration:
 				return "anonymous function";
 
-			case lexeme_type_class_declaration:
-				return "class";
+			case lexeme_type_class_operator:
+				return "class operator";
 
 			case lexeme_type_dot:
 				return ".";
@@ -251,7 +251,7 @@ namespace frith
 			operator_lexeme(lexeme_type_iterator, "#"),
 			operator_lexeme(lexeme_type_function_declaration, "@"),
 			operator_lexeme(lexeme_type_anonymous_function_declaration, "@@"),
-			operator_lexeme(lexeme_type_class_declaration, "$"),
+			operator_lexeme(lexeme_type_class_operator, "$"),
 			operator_lexeme(lexeme_type_dot, "."),
 		};
 	}

@@ -61,7 +61,7 @@ namespace frith
 		lexeme_type_iterator,
 		lexeme_type_function_declaration,
 		lexeme_type_anonymous_function_declaration,
-		lexeme_type_class_declaration,
+		lexeme_type_class_operator,
 		lexeme_type_dot,
 	};
 
