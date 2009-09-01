@@ -77,6 +77,9 @@ namespace frith
 			case variable_type_identifier::function:
 				throw ail::exception("Comparison of functions has not been implemented yet");
 
+			case variable_type_identifier::object:
+				throw ail::exception("Comparison of objects has not been implemented yet");
+
 			case variable_type_identifier::signed_integer:
 			case variable_type_identifier::unsigned_integer:
 			case variable_type_identifier::floating_point_value:

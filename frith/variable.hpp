@@ -21,7 +21,8 @@ namespace frith
 			string,
 			array,
 			map,
-			function
+			function,
+			object
 		};
 	
 	}

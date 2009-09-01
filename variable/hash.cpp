@@ -64,6 +64,9 @@ namespace frith
 
 		case variable_type_identifier::function:
 			throw ail::exception("Hashing for functions has not been implemented yet");
+
+		case variable_type_identifier::object:
+			throw ail::exception("Hashing for objects has not been implemented yet");
 		}
 
 		throw ail::exception("Tried to hash an object of an unknown type");

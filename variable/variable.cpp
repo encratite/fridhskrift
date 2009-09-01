@@ -229,6 +229,9 @@ namespace frith
 
 		case variable_type_identifier::function:
 			return "function";
+
+		case variable_type_identifier::object:
+			return "object";
 		}
 
 		return "unknown";
