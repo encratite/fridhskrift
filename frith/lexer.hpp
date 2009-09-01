@@ -4,6 +4,7 @@
 #include <vector>
 #include <ail/types.hpp>
 #include <frith/variable.hpp>
+#include <boost/thread/mutex.hpp>
 
 namespace frith
 {
@@ -139,4 +140,9 @@ namespace frith
 	};
 
 	std::string visualise_lexemes(std::vector<line_of_code> & lines);
+	
+	void initialise_tables();
+
+	extern boost::mutex table_mutex;
+	extern std::vector<operator_lexeme> operator_lexeme_data;
 }
