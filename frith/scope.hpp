@@ -4,7 +4,6 @@
 #include <string>
 #include <frith/variable.hpp>
 #include <frith/function.hpp>
-#include <frith/class.hpp>
 
 namespace frith
 {
@@ -18,7 +17,8 @@ namespace frith
 		};
 	}
 
-	class scope;
+	struct scope;
+	struct class_type;
 
 	struct scope_entity
 	{
@@ -33,8 +33,11 @@ namespace frith
 
 	typedef std::map<std::string, scope_entity> scope_entities;
 
-	class scope
+	struct scope
 	{
 		scope_entities entities;
+		scope * parent;
 	};
 }
+
+#include <frith/class.hpp>

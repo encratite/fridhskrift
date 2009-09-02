@@ -3,6 +3,7 @@
 #include <vector>
 #include <frith/lexer.hpp>
 #include <ail/file.hpp>
+#include <frith/interpreter.hpp>
 
 int main(int argc, char ** argv)
 {

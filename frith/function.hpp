@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 namespace frith
 {
 	enum executable_unit_type
@@ -13,5 +16,11 @@ namespace frith
 	struct executable_unit
 	{
 		line_of_code line;
+	};
+
+	struct function
+	{
+		std::vector<std::string> arguments;
+		std::vector<executable_unit> units;
 	};
 }
