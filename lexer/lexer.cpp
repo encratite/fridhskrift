@@ -109,7 +109,7 @@ namespace frith
 		line_offset = i;
 	}
 
-	bool lexer::parse(std::vector<line_of_code> & lines)
+	bool lexer::parse()
 	{
 		initialise_tables();
 

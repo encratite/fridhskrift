@@ -111,7 +111,7 @@ namespace frith
 	public:
 		lexer(std::string const & input, std::vector<line_of_code> & lines, std::string & error);
 
-		bool parse(std::vector<line_of_code> & lines);
+		bool parse();
 
 	private:
 		std::string const & input;

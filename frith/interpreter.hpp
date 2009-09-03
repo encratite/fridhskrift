@@ -10,8 +10,7 @@ namespace frith
 	{
 	public:
 		interpreter();
-		bool execute(std::string const & data, std::string & error_message);
-		bool execute_file(std::string const & path, std::string & error_message);
+		bool load_module(std::string const & path, std::string const & name, std::string & error_message);
 
 	private:
 		bool running;
@@ -19,6 +18,18 @@ namespace frith
 		module main_module;
 		std::vector<module> modules;
 
-		bool translate_data(std::string const & data, std::string & error_message);
+		std::size_t
+			line_offset,
+			line_end;
+
+		std::size_t
+			lexeme_offset,
+			lexeme_end;
+
+		std::vector<line_of_code> lines;
+
+		bool translate_data(std::string const & data, std::string const & module_name, std::string & error_message);
+
+		void error(std::string const & message, std::string & output);
 	};
 }
