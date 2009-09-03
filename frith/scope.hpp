@@ -13,7 +13,8 @@ namespace frith
 		{
 			variable,
 			function,
-			class_scope
+			class_scope,
+			module
 		};
 	}
 
@@ -28,6 +29,7 @@ namespace frith
 			variable * variable_pointer;
 			function * function_pointer;
 			class_type * class_pointer;
+			module * module_pointer;
 		};
 	};
 
@@ -37,7 +39,10 @@ namespace frith
 	{
 		scope_entities entities;
 		scope * parent;
+
+		scope();
 	};
 }
 
 #include <frith/class.hpp>
+#include <frith/module.hpp>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+#include <vector>
 #include <frith/scope.hpp>
 
 namespace frith
@@ -8,9 +10,15 @@ namespace frith
 	{
 	public:
 		interpreter();
-		bool execute(std::string const & data);
-		bool execute_file(std::string const & path);
+		bool execute(std::string const & data, std::string & error_message);
+		bool execute_file(std::string const & path, std::string & error_message);
 
 	private:
+		bool running;
+
+		module main_module;
+		std::vector<module> modules;
+
+		bool translate_data(std::string const & data, std::string & error_message);
 	};
 }
