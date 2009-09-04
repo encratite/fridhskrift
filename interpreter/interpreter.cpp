@@ -22,6 +22,23 @@ namespace frith
 		return translate_data(content, error_message);
 	}
 
+	bool interpreter::parse_class_operator(std::string & error_message)
+	{
+		line_of_code & current_line = lines[line_offset];
+		if(current_line.lexemes.size() == 2)
+		{
+			if(current_line.lexemes[1].type != lexeme_type_name)
+			{
+				error_message = error("Class operator error: The second lexeme must be a name");
+				return false;
+			}
+		}
+		else
+		{
+			//parse statement
+		}
+	}
+
 	bool interpreter::translate_data(std::string const & data, std::string const & module_name, std::string & error_message)
 	{
 		lines = std::vector<line_of_code>();
@@ -30,14 +47,21 @@ namespace frith
 			return false;
 
 		uword indentation_level = 0;
+		bool expected_indentation = false;
 
-		for(line_offset = 0, line_end = lines.size(); line_offset < line_end; line_offset)
+		for(line_offset = 0, line_end = lines.size(); line_offset < line_end;)
 		{
 			line_of_code & current_line = lines[line_offset];
 			word difference = current_line.indentation_level - indentation_level;
 			if(difference > 1)
 			{
 				error("Invalid jump in the indentation level (difference is " + ail::number_to_string(difference) + ")", error_message);
+				return false;
+			}
+			else if(expected_indentation && difference != 1)
+			{
+				error("Expected an indentation of 1", error_message);
+				return false;
 			}
 
 			std::vector<lexeme> & current_lexemes = current_line.lexemes;
@@ -57,6 +81,8 @@ namespace frith
 
 				lexeme_offset++;
 			}
+
+			line_offset++;
 		}
 
 		return true;

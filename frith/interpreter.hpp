@@ -28,6 +28,8 @@ namespace frith
 
 		std::vector<line_of_code> lines;
 
+		bool parse_class_operator(std::string & error_message);
+
 		bool translate_data(std::string const & data, std::string const & module_name, std::string & error_message);
 
 		void error(std::string const & message, std::string & output);
