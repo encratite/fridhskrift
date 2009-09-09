@@ -7,6 +7,6 @@ namespace frith
 	{
 		std::string name;
 		scope * class_scope;
-		std::vector<function> functions;
+		//std::vector<function> functions;
 	};
 }

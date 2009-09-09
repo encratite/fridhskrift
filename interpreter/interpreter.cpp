@@ -19,7 +19,12 @@ namespace frith
 			return false;
 		}
 
-		return translate_data(content, error_message);
+		module module_output;
+		bool success = translate_data(module_output, content, error_message);
+		if(!success)
+			return false;
+
+		return true;
 	}
 
 	bool interpreter::parse_class_operator(std::string & error_message)
@@ -39,12 +44,14 @@ namespace frith
 		}
 	}
 
-	bool interpreter::translate_data(std::string const & data, std::string const & module_name, std::string & error_message)
+	bool interpreter::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message)
 	{
 		lines = std::vector<line_of_code>();
 		lexer current_lexer(data, lines, error_message);
 		if(!current_lexer.parse())
 			return false;
+
+		current_scope = 0;
 
 		uword indentation_level = 0;
 		bool expected_indentation = false;

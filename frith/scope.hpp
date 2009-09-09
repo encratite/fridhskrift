@@ -41,6 +41,8 @@ namespace frith
 		scope * parent;
 
 		scope();
+
+		bool find_entity(std::string const & name, scope * & entity_scope_output, scope_entity * & entity_output) const;
 	};
 }
 
