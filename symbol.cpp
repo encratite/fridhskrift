@@ -1,15 +1,15 @@
-#include <frith/scope.hpp>
+#include <frith/symbol_tree_node.hpp>
 
 namespace frith
 {
-	scope::scope():
+	symbol_tree_node::symbol_tree_node():
 		parent(0)
 	{
 	}
 
-	bool scope::find_entity(std::string const & name, scope * & entity_scope_output, scope_entity * & entity_output) const
+	bool symbol_tree_node::find_entity(std::string const & name, symbol_tree_node * & entity_scope_output, symbol_tree_entity * & entity_output)
 	{
-		scope_entities::const_iterator iterator = entities.find(name);
+		scope_entities::iterator iterator = entities.find(name);
 		if(iterator == entities.end())
 		{
 			if(parent == 0)

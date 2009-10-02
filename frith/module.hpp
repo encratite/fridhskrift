@@ -5,6 +5,6 @@ namespace frith
 	struct module
 	{
 		std::string path;
-		scope module_scope;
+		symbol_tree_node module_scope;
 	};
 }

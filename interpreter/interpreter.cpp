@@ -37,6 +37,8 @@ namespace frith
 				error_message = error("Class operator error: The second lexeme must be a name");
 				return false;
 			}
+
+
 		}
 		else
 		{

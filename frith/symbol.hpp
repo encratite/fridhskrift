@@ -7,7 +7,7 @@
 
 namespace frith
 {
-	namespace scope_entry
+	namespace symbol
 	{
 		enum type
 		{
@@ -18,12 +18,12 @@ namespace frith
 		};
 	}
 
-	struct scope;
+	struct symbol_tree_node;
 	struct class_type;
 
-	struct scope_entity
+	struct symbol_tree_entity
 	{
-		scope_entry::type type;
+		symbol::type type;
 		union
 		{
 			variable * variable_pointer;
@@ -33,16 +33,16 @@ namespace frith
 		};
 	};
 
-	typedef std::map<std::string, scope_entity> scope_entities;
+	typedef std::map<std::string, symbol_tree_entity> scope_entities;
 
-	struct scope
+	struct symbol_tree_node
 	{
 		scope_entities entities;
-		scope * parent;
+		symbol_tree_node * parent;
 
-		scope();
+		symbol_tree_node();
 
-		bool find_entity(std::string const & name, scope * & entity_scope_output, scope_entity * & entity_output) const;
+		bool find_entity(std::string const & name, symbol_tree_node * & entity_scope_output, symbol_tree_entity * & entity_output);
 	};
 }
 

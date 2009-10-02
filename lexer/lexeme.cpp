@@ -146,10 +146,10 @@ namespace frith
 				return "array: end";
 
 			case lexeme_type_scope_start:
-				return "scope: start";
+				return "symbol_tree_node: start";
 
 			case lexeme_type_scope_end:
-				return "scope: end";
+				return "symbol_tree_node: end";
 
 			case lexeme_type_iteration:
 				return "iteration";
@@ -168,6 +168,9 @@ namespace frith
 
 			case lexeme_type_dot:
 				return ".";
+
+			case lexeme_type_scope_operator:
+				return ":";
 
 			default:
 				return "unknown";

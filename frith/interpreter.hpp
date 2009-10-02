@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <frith/scope.hpp>
+#include <frith/symbol.hpp>
 
 namespace frith
 {
@@ -28,7 +28,7 @@ namespace frith
 
 		std::vector<line_of_code> lines;
 
-		scope * current_scope;
+		symbol_tree_node * current_scope;
 
 		bool parse_class_operator(std::string & error_message);
 

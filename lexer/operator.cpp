@@ -55,6 +55,7 @@ namespace frith
 		operator_lexeme(lexeme_type_anonymous_function_declaration, "@@"),
 		operator_lexeme(lexeme_type_class_operator, "$"),
 		operator_lexeme(lexeme_type_dot, "."),
+		operator_lexeme(lexeme_type_scope_operator, ":"),
 	};
 
 	std::vector<operator_lexeme> operator_lexeme_data;

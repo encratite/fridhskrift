@@ -64,6 +64,7 @@ namespace frith
 		lexeme_type_anonymous_function_declaration,
 		lexeme_type_class_operator,
 		lexeme_type_dot,
+		lexeme_type_scope_operator,
 	};
 
 	struct lexeme
