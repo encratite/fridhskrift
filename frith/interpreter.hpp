@@ -28,9 +28,9 @@ namespace frith
 
 		std::vector<line_of_code> lines;
 
-		symbol_tree_node * current_scope;
+		symbol_tree_node * current_node;
 
-		bool parse_class_operator(std::string & error_message);
+		bool parse_class(std::string & error_message);
 
 		bool translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message);
 

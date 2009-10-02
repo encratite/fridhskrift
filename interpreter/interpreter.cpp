@@ -27,22 +27,32 @@ namespace frith
 		return true;
 	}
 
-	bool interpreter::parse_class_operator(std::string & error_message)
+	bool interpreter::parse_class(std::string & error_message)
 	{
-		line_of_code & current_line = lines[line_offset];
-		if(current_line.lexemes.size() == 2)
+		bool class_error(std::string const & message)
 		{
-			if(current_line.lexemes[1].type != lexeme_type_name)
-			{
-				error_message = error("Class operator error: The second lexeme must be a name");
-				return false;
-			}
-
-
+			error_message = error(error_prefix + message, error_message);
+			return false;
 		}
-		else
+
+		std::string const error_prefix = "Class operator error: ";
+		line_of_code & current_line = lines[line_offset];
+		if(current_line.lexemes.size() != 2)
 		{
-			//parse statement
+			error_message = error(error_prefix + "Invalid token count for a class operator", error_message);
+			return false;
+		}
+		lexeme & name_lexeme = current_line.lexemes[1];
+		if(name_lexeme.type != lexeme_type_name)
+		{
+			error_message = error(error_prefix + "The second lexeme must be a name", error_message);
+			return false;
+		}
+		std::string const & class_name = *name_lexeme.string;
+		frith::symbol_tree_node * node;
+		frith::symbol_tree_entity * entity;
+		if(current_node->find_entity(class_name, node, entity))
+		{
 		}
 	}
 
@@ -53,7 +63,7 @@ namespace frith
 		if(!current_lexer.parse())
 			return false;
 
-		current_scope = 0;
+		current_node = 0;
 
 		uword indentation_level = 0;
 		bool expected_indentation = false;
