@@ -13,7 +13,7 @@ namespace frith
 		{
 			variable,
 			function,
-			class_scope,
+			class_symbol,
 			module
 		};
 	}
@@ -31,6 +31,9 @@ namespace frith
 			class_type * class_pointer;
 			module * module_pointer;
 		};
+
+		symbol_tree_entity();
+		symbol_tree_entity(symbol::type type);
 	};
 
 	typedef std::map<std::string, symbol_tree_entity> scope_entities;

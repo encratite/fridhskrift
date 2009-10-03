@@ -37,13 +37,22 @@ namespace frith
 
 		frith::symbol_tree_node * node;
 		frith::symbol_tree_entity * entity;
-		if(current_node->exists(name, node, entity))
+
+		symbol_tree_node & class_parent_node = *current_node;
+
+		if(class_parent_node.exists(name, node, entity))
 		{
 			error_message = error("Name \"" + name + "\" has already been used by another function or class in the current scope");
 			return match_result::error;
 		}
 
+		symbol_tree_node & class_node = class_parent_node.entities[name];
+		class_node = symbol_tree_node(symbol::class_symbol);
 
+		while(true)
+		{
+			process_line_result::type result = process_line
+		}
 	}
 
 	match_result::type interpreter::read_function(function & current_function)
@@ -54,12 +63,12 @@ namespace frith
 	{
 	}
 
-	process_line_result::type interpreter::process_line(function & active_function)
+	process_line_result::type interpreter::process_line(function * active_function)
 	{
 		line_of_code & current_line = lines[line_offset];
 		if(current_line.indentation_level > indentation)
 		{
-			error = error("Unexpected increase in the indentation level");
+			error_message = error("Unexpected increase in the indentation level");
 			return process_line_result::error;
 		}
 
@@ -68,13 +77,22 @@ namespace frith
 			return process_line_result::error;
 		else if(result == match_result::no_match)
 		{
-			result = read_function(current_function);
-			if(result == match_result::error)
-				return process_line_result::error;
+			if(active_function)
+			{
+				function & current_function = *active_function;
+				result = read_function(current_function);
+				if(result == match_result::error)
+					return process_line_result::error;
+				else if(result == match_result::no_match)
+				{
+					if(!read_statement(current_function))
+						return process_line_result::error;
+				}
+			}
 			else
 			{
-				if(!read_statement(active_function))
-					return process_line_result::error;
+				error_message = error("Regular statements and assignments need to be placed within functions");
+				return process_line_result::error;
 			}
 		}
 

@@ -2,6 +2,29 @@
 
 namespace frith
 {
+	symbol_tree_entity::symbol_tree_entity()
+	{
+	}
+
+	symbol_tree_entity::symbol_tree_entity(symbol::type type):
+		type(type)
+	{
+		switch(type)
+		{
+			case variable::variable:
+				variable_pointer = new variable;
+				break;
+
+			case variable::function:
+				function_pointer = new function;
+				break;
+
+			case variable::class_symbol:
+				class_pointer = new class_type;
+				break;
+		}
+	}
+
 	symbol_tree_node::symbol_tree_node():
 		parent(0)
 	{
