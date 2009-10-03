@@ -42,6 +42,7 @@ namespace frith
 
 		symbol_tree_node();
 
+		bool exists(std::string const & name);
 		bool find_entity(std::string const & name, symbol_tree_node * & entity_scope_output, symbol_tree_entity * & entity_output);
 	};
 }

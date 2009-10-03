@@ -7,6 +7,12 @@ namespace frith
 	{
 	}
 
+	bool symbol_tree_node::exists(std::string const & name)
+	{
+		scope_entities::iterator iterator = entities.find(name);
+		return iterator != entities.end();
+	}
+
 	bool symbol_tree_node::find_entity(std::string const & name, symbol_tree_node * & entity_scope_output, symbol_tree_entity * & entity_output)
 	{
 		scope_entities::iterator iterator = entities.find(name);

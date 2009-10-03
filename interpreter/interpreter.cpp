@@ -27,37 +27,23 @@ namespace frith
 		return true;
 	}
 
-	bool interpreter::parse_class(std::string & error_message)
-	{
-		bool class_error(std::string const & message)
-		{
-			error_message = error(error_prefix + message, error_message);
-			return false;
-		}
-
-		std::string const error_prefix = "Class operator error: ";
-		line_of_code & current_line = lines[line_offset];
-		if(current_line.lexemes.size() != 2)
-		{
-			error_message = error(error_prefix + "Invalid token count for a class operator", error_message);
-			return false;
-		}
-		lexeme & name_lexeme = current_line.lexemes[1];
-		if(name_lexeme.type != lexeme_type_name)
-		{
-			error_message = error(error_prefix + "The second lexeme must be a name", error_message);
-			return false;
-		}
-		std::string const & class_name = *name_lexeme.string;
-		frith::symbol_tree_node * node;
-		frith::symbol_tree_entity * entity;
-		if(current_node->find_entity(class_name, node, entity))
-		{
-		}
-	}
-
 	match_result::type interpreter::read_class()
 	{
+		std::vector<lexeme> lexemes = lines[line_offset].lexemes;
+		if(!(lexemes.size() == 2 && lexemes[0].type == lexeme_type::lexeme_type_class_operator && lexemes[1].type == lexeme_type::lexeme_type_name))
+			return match_result::no_match;
+
+		std::string const & name = *lexemes[1].string;
+
+		frith::symbol_tree_node * node;
+		frith::symbol_tree_entity * entity;
+		if(current_node->exists(name, node, entity))
+		{
+			error_message = error("Name \"" + name + "\" has already been used by another function or class in the current scope");
+			return match_result::error;
+		}
+
+
 	}
 
 	match_result::type interpreter::read_function(function & current_function)
@@ -118,7 +104,7 @@ namespace frith
 		if(!current_lexer.parse())
 			return false;
 
-		current_node = 0;
+		current_node = &target_module.symbols;
 		indentation_level = 0;
 		in_a_class = false;
 
