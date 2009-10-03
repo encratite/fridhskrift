@@ -56,16 +56,19 @@ namespace frith
 		return new_node;
 	}
 
-	match_result::type interpreter::process_body(bool is_class)
+	match_result::type interpreter::process_body(function * current_function)
 	{
 		indentation++;
+
+		bool is_class = (current_function == 0);
 
 		if(is_class)
 			nested_class_level++;
 
 		while(true)
 		{
-			process_line_result::type result = process_line();
+			process_line_result::type result;
+			result = process_line(current_function);
 			if(result == match_result::error)
 				return process_line_result::error;
 			else if(result == process_line_result::end_of_block)
