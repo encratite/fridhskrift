@@ -51,8 +51,33 @@ namespace frith
 		std::string const & name = get_declaration_name();
 		symbol_tree_node & new_node = current_node->children[name];
 		new_node = symbol_tree_node(symbol_type);
+		new_node.parent = current_node;
 		current_node = &new_node;
 		return new_node;
+	}
+
+	match_result::type interpreter::process_body(bool is_class)
+	{
+		indentation++;
+
+		if(is_class)
+			nested_class_level++;
+
+		while(true)
+		{
+			process_line_result::type result = process_line();
+			if(result == match_result::error)
+				return process_line_result::error;
+			else if(result == process_line_result::end_of_block)
+			{
+				if(indentation > 0)
+					indentation--;
+				if(is_class)
+					nested_class_level--;
+				current_node = current_node->parent;
+				return match_result::match;
+			}
+		}
 	}
 
 	match_result::type interpreter::read_class()
@@ -66,21 +91,7 @@ namespace frith
 
 		add_name(symbol::class_symbol);
 
-		indentation++;
-		nested_class_level++;
-
-		while(true)
-		{
-			process_line_result::type result = process_line();
-			if(result == match_result::error)
-				return process_line_result::error;
-			else if(result == process_line_result::end_of_block)
-			{
-				nested_class_level--;
-				current_node = current_node->parent;
-				return match_result::match;
-			}
-		}
+		return process_body(true);
 	}
 
 	match_result::type interpreter::read_function()
@@ -101,23 +112,11 @@ namespace frith
 		if(name_collision_check())
 			return match_result::error;
 
-		function & current_function = add_name(symbol::class_symbol);
+		function & current_function = *add_name(symbol::class_symbol).function_pointer;
+		for(std::size_t i = 2, end = lexemes.size(); i < end; i++)
+			current_function.arguments.push_back(*lexemes[i].string);
 
-		indentation++;
-
-		while(true)
-		{
-			process_line_result::type result = process_line();
-			if(result == match_result::error)
-				return process_line_result::error;
-			else if(result == process_line_result::end_of_block)
-			{
-				if(indentation > 0)
-					indentation--;
-				current_node = current_node->parent;
-				return match_result::match;
-			}
-		}
+		return process_body(false);
 	}
 
 	bool interpreter::read_statement(function & current_function)

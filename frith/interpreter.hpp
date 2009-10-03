@@ -60,6 +60,7 @@ namespace frith
 		std::string const & get_declaration_name();
 		bool name_collision_check();
 		symbol_tree_node & add_name(symbol::type symbol_type);
+		match_result::type process_body(bool is_class);
 
 		match_result::type read_class();
 		match_result::type read_function();
