@@ -9,53 +9,53 @@ namespace frith
 
 	operator_lexeme operators[] =
 	{
-		operator_lexeme(lexeme_type_addition, "+"),
-		operator_lexeme(lexeme_type_subtraction, "-"),
-		operator_lexeme(lexeme_type_multiplication, "*"),
-		operator_lexeme(lexeme_type_division, "/"),
-		operator_lexeme(lexeme_type_modulo, "%"),
-		operator_lexeme(lexeme_type_exponentiation, "**"),
+		operator_lexeme(addition, "+"),
+		operator_lexeme(subtraction, "-"),
+		operator_lexeme(multiplication, "*"),
+		operator_lexeme(division, "/"),
+		operator_lexeme(modulo, "%"),
+		operator_lexeme(exponentiation, "**"),
 
-		operator_lexeme(lexeme_type_increment, "++"),
-		operator_lexeme(lexeme_type_decrement, "--"),
+		operator_lexeme(increment, "++"),
+		operator_lexeme(decrement, "--"),
 
-		operator_lexeme(lexeme_type_less_than, "<"),
-		operator_lexeme(lexeme_type_less_than_or_equal, "<="),
-		operator_lexeme(lexeme_type_greater_than, ">"),
-		operator_lexeme(lexeme_type_greater_than_or_equal, ">="),
-		operator_lexeme(lexeme_type_unequal, "!="),
-		operator_lexeme(lexeme_type_equal, "="),
+		operator_lexeme(less_than, "<"),
+		operator_lexeme(less_than_or_equal, "<="),
+		operator_lexeme(greater_than, ">"),
+		operator_lexeme(greater_than_or_equal, ">="),
+		operator_lexeme(unequal, "!="),
+		operator_lexeme(equal, "="),
 
-		operator_lexeme(lexeme_type_logical_not, "!"),
+		operator_lexeme(logical_not, "!"),
 
-		operator_lexeme(lexeme_type_logical_and, "&"),
-		operator_lexeme(lexeme_type_logical_or, "|"),
+		operator_lexeme(logical_and, "&"),
+		operator_lexeme(logical_or, "|"),
 
-		operator_lexeme(lexeme_type_shift_left, "<<"),
-		operator_lexeme(lexeme_type_shift_right, ">>"),
+		operator_lexeme(shift_left, "<<"),
+		operator_lexeme(shift_right, ">>"),
 
-		operator_lexeme(lexeme_type_binary_and, "&&"),
-		operator_lexeme(lexeme_type_binary_or, "||"),
-		operator_lexeme(lexeme_type_binary_xor, "^"),
+		operator_lexeme(binary_and, "&&"),
+		operator_lexeme(binary_or, "||"),
+		operator_lexeme(binary_xor, "^"),
 
-		operator_lexeme(lexeme_type_binary_not, "~"),
+		operator_lexeme(binary_not, "~"),
 
-		operator_lexeme(lexeme_type_bracket_start, "["),
-		operator_lexeme(lexeme_type_bracket_end, "]"),
+		operator_lexeme(bracket_start, "["),
+		operator_lexeme(bracket_end, "]"),
 
-		operator_lexeme(lexeme_type_array_start, "{"),
-		operator_lexeme(lexeme_type_array_end, "}"),
+		operator_lexeme(array_start, "{"),
+		operator_lexeme(array_end, "}"),
 
-		operator_lexeme(lexeme_type_scope_start, "("),
-		operator_lexeme(lexeme_type_scope_end, ")"),
+		operator_lexeme(scope_start, "("),
+		operator_lexeme(scope_end, ")"),
 
-		operator_lexeme(lexeme_type_iteration, "\\"),
-		operator_lexeme(lexeme_type_iterator, "#"),
-		operator_lexeme(lexeme_type_function_declaration, "@"),
-		operator_lexeme(lexeme_type_anonymous_function_declaration, "@@"),
-		operator_lexeme(lexeme_type_class_operator, "$"),
-		operator_lexeme(lexeme_type_dot, "."),
-		operator_lexeme(lexeme_type_scope_operator, ":"),
+		operator_lexeme(iteration, "\\"),
+		operator_lexeme(iterator, "#"),
+		operator_lexeme(function_declaration, "@"),
+		operator_lexeme(anonymous_function_declaration, "@@"),
+		operator_lexeme(class_operator, "$"),
+		operator_lexeme(dot, "."),
+		operator_lexeme(scope_operator, ":"),
 	};
 
 	std::vector<operator_lexeme> operator_lexeme_data;

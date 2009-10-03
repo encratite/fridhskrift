@@ -56,8 +56,13 @@ namespace frith
 
 		symbol_tree_node * current_node;
 
+		bool name_is_used(std::string const & name);
+		std::string const & get_declaration_name();
+		bool name_collision_check();
+		symbol_tree_node & add_name(symbol::type symbol_type);
+
 		match_result::type read_class();
-		match_result::type read_function(function & current_function);
+		match_result::type read_function();
 		bool read_statement(function & current_function);
 		process_line_result::type process_line(function * active_function = 0);
 

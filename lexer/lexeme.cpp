@@ -3,173 +3,175 @@
 
 namespace frith
 {	
-	lexeme::lexeme()
+	lexeme_type::lexeme()
 	{
 	}
 
-	lexeme::lexeme(lexeme_type type):
+	lexeme_type::lexeme(lexeme_type::type type):
 		type(type)
 	{
 	}
 
-	lexeme::lexeme(types::boolean boolean):
-		type(lexeme_type_boolean),
+	lexeme_type::lexeme(types::boolean boolean):
+		type(boolean),
 		boolean(boolean)
 	{
 	}
 
-	lexeme::lexeme(types::signed_integer signed_integer):
-		type(lexeme_type_signed_integer),
+	lexeme_type::lexeme(types::signed_integer signed_integer):
+		type(signed_integer),
 		signed_integer(signed_integer)
 	{
 	}
 
-	lexeme::lexeme(types::unsigned_integer unsigned_integer):
-		type(lexeme_type_unsigned_integer),
+	lexeme_type::lexeme(types::unsigned_integer unsigned_integer):
+		type(unsigned_integer),
 		unsigned_integer(unsigned_integer)
 	{
 	}
 
-	lexeme::lexeme(types::floating_point_value floating_point_value):
-		type(lexeme_type_floating_point_value),
+	lexeme_type::lexeme(types::floating_point_value floating_point_value):
+		type(floating_point_value),
 		floating_point_value(floating_point_value)
 	{
 	}
 
-	lexeme::lexeme(lexeme_type type, std::string const & string):
+	lexeme_type::lexeme(lexeme_type::type type, std::string const & string):
 		type(type),
 		string(new std::string(string))
 	{
 	}
 
-	std::string lexeme::to_string() const
+	std::string lexeme_type::to_string() const
 	{
+		using namespace lexeme_type;
+
 		switch(type)
 		{
-			case lexeme_type_name:
+			case name:
 				return "name: " + *string;
 
-			case lexeme_type_boolean:
+			case boolean:
 				return "boolean: " + ail::bool_to_string(boolean);
 
-			case lexeme_type_signed_integer:
+			case signed_integer:
 				return "integer: " + ail::number_to_string(signed_integer);
 
-			case lexeme_type_unsigned_integer:
+			case unsigned_integer:
 				return "unsigned-integer: " + ail::number_to_string(unsigned_integer);
 
-			case lexeme_type_floating_point_value:
+			case floating_point_value:
 				return "float: " + ail::number_to_string(floating_point_value);
 
-			case lexeme_type_string:
+			case string:
 				return "string: " + ail::replace_string(*string, "\n", "\\n");
 
-			case lexeme_type_addition:
+			case addition:
 				return "+";
 
-			case lexeme_type_subtraction:
+			case subtraction:
 				return "-";
 
-			case lexeme_type_multiplication:
+			case multiplication:
 				return "*";
 
-			case lexeme_type_division:
+			case division:
 				return "/";
 
-			case lexeme_type_modulo:
+			case modulo:
 				return "%";
 
-			case lexeme_type_increment:
+			case increment:
 				return "++";
 
-			case lexeme_type_decrement:
+			case decrement:
 				return "--";
 
-			case lexeme_type_exponentiation:
+			case exponentiation:
 				return "**";
 
-			case lexeme_type_less_than:
+			case less_than:
 				return "<";
 
-			case lexeme_type_less_than_or_equal:
+			case less_than_or_equal:
 				return "<=";
 
-			case lexeme_type_greater_than:
+			case greater_than:
 				return ">";
 
-			case lexeme_type_greater_than_or_equal:
+			case greater_than_or_equal:
 				return ">=";
 
-			case lexeme_type_unequal:
+			case unequal:
 				return "!=";
 
-			case lexeme_type_equal:
+			case equal:
 				return "=";
 
-			case lexeme_type_logical_not:
+			case logical_not:
 				return "!";
 
-			case lexeme_type_logical_and:
+			case logical_and:
 				return "&";
 
-			case lexeme_type_logical_or:
+			case logical_or:
 				return "|";
 
-			case lexeme_type_shift_left:
+			case shift_left:
 				return "<<";
 
-			case lexeme_type_shift_right:
+			case shift_right:
 				return ">>";
 
-			case lexeme_type_binary_and:
+			case binary_and:
 				return "&&";
 
-			case lexeme_type_binary_or:
+			case binary_or:
 				return "||";
 
-			case lexeme_type_binary_xor:
+			case binary_xor:
 				return "^";
 
-			case lexeme_type_binary_not:
+			case binary_not:
 				return "~";
 
-			case lexeme_type_bracket_start:
+			case bracket_start:
 				return "bracket: start";
 
-			case lexeme_type_bracket_end:
+			case bracket_end:
 				return "bracket: end";
 
-			case lexeme_type_array_start:
+			case array_start:
 				return "array: start";
 
-			case lexeme_type_array_end:
+			case array_end:
 				return "array: end";
 
-			case lexeme_type_scope_start:
+			case scope_start:
 				return "symbol_tree_node: start";
 
-			case lexeme_type_scope_end:
+			case scope_end:
 				return "symbol_tree_node: end";
 
-			case lexeme_type_iteration:
+			case iteration:
 				return "iteration";
 
-			case lexeme_type_iterator:
+			case iterator:
 				return "iterator";
 
-			case lexeme_type_function_declaration:
+			case function_declaration:
 				return "function";
 
-			case lexeme_type_anonymous_function_declaration:
+			case anonymous_function_declaration:
 				return "anonymous function";
 
-			case lexeme_type_class_operator:
+			case class_operator:
 				return "class operator";
 
-			case lexeme_type_dot:
+			case dot:
 				return ".";
 
-			case lexeme_type_scope_operator:
+			case scope_operator:
 				return ":";
 
 			default:

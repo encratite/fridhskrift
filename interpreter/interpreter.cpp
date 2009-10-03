@@ -27,27 +27,49 @@ namespace frith
 		return true;
 	}
 
-	match_result::type interpreter::read_class()
+	bool interpreter::name_is_used(std::string const & name)
 	{
-		std::vector<lexeme> lexemes = lines[line_offset].lexemes;
-		if(!(lexemes.size() == 2 && lexemes[0].type == lexeme_type::lexeme_type_class_operator && lexemes[1].type == lexeme_type::lexeme_type_name))
-			return match_result::no_match;
-
-		std::string const & name = *lexemes[1].string;
-
 		frith::symbol_tree_node * node;
 		frith::symbol_tree_entity * entity;
 
 		symbol_tree_node & class_parent_node = *current_node;
 
-		if(class_parent_node.exists(name, node, entity))
-		{
-			error_message = error("Name \"" + name + "\" has already been used by another function or class in the current scope");
-			return match_result::error;
-		}
+		return class_parent_node.exists(name, node, entity);
+	}
 
-		symbol_tree_node & class_node = class_parent_node.entities[name];
-		class_node = symbol_tree_node(symbol::class_symbol);
+	std::string const & interpreter::get_declaration_name()
+	{
+		return *lines[line_offset][1].string;
+	}
+
+	bool interpreter::name_collision_check()
+	{
+		std::string const & name = get_declaration_name();
+		bool output = name_is_used(name);
+		if(output)
+			error_message = error("Name \"" + name + "\" has already been used by another function or class in the current scope");
+		return output;
+	}
+
+	symbol_tree_node & interpreter::add_name(symbol::type symbol_type)
+	{
+		std::string const & name = get_declaration_name();
+		symbol_tree_node & new_node = current_node->entities[name];
+		new_node = symbol_tree_node(symbol_type);
+		current_node = &new_node;
+		return new_node;
+	}
+
+	match_result::type interpreter::read_class()
+	{
+		std::vector<lexeme> & lexemes = lines[line_offset].lexemes;
+		if(!(lexemes.size() == 2 && lexemes[0].type == lexeme_type::class_operator && lexemes[1].type == lexeme_type::name))
+			return match_result::no_match;
+
+		if(name_collision_check())
+			return match_result::error;
+
+		add_name(symbol::class_symbol);
 
 		indentation++;
 		nested_class_level++;
@@ -59,16 +81,48 @@ namespace frith
 				return process_line_result::error;
 			else if(result == process_line_result::end_of_block)
 			{
-				if(indentation > 0)
-					indentation--;
 				nested_class_level--;
+				current_node = current_node->parent;
 				return match_result::match;
 			}
 		}
 	}
 
-	match_result::type interpreter::read_function(function & current_function)
+	match_result::type interpreter::read_function()
 	{
+		std::vector<lexeme> & lexemes = lines[line_offset].lexemes;
+		if(!(lexemes.size() >= 2 && lexemes[0].type == lexeme_type::function_declaration))
+			return match_result::no_match;
+
+		for(std::size_t i = 1, end = lexemes.size(); i < end; i++)
+		{
+			if(lexemes[i].type != lexeme_type::name)
+			{
+				error_message = error("Encountered an invalid lexeme type in a function declaration - at this point only names are permitted");
+				return match_result::error;
+			}
+		}
+
+		if(name_collision_check())
+			return match_result::error;
+
+		function & current_function = add_name(symbol::class_symbol);
+
+		indentation++;
+
+		while(true)
+		{
+			process_line_result::type result = process_line();
+			if(result == match_result::error)
+				return process_line_result::error;
+			else if(result == process_line_result::end_of_block)
+			{
+				if(indentation > 0)
+					indentation--;
+				current_node = current_node->parent;
+				return match_result::match;
+			}
+		}
 	}
 
 	bool interpreter::read_statement(function & current_function)
@@ -91,12 +145,12 @@ namespace frith
 		{
 			if(active_function)
 			{
-				function & current_function = *active_function;
-				result = read_function(current_function);
+				result = read_function();
 				if(result == match_result::error)
 					return process_line_result::error;
 				else if(result == match_result::no_match)
 				{
+					function & current_function = *active_function;
 					if(!read_statement(current_function))
 						return process_line_result::error;
 				}

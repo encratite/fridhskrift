@@ -8,68 +8,71 @@
 
 namespace frith
 {
-	enum lexeme_type
+	namespace lexeme_type
 	{
-		lexeme_type_name,
+		enum type
+		{
+			name,
 
-		lexeme_type_boolean,
-		lexeme_type_signed_integer,
-		lexeme_type_unsigned_integer,
-		lexeme_type_floating_point_value,
-		lexeme_type_string,
+			boolean,
+			signed_integer,
+			unsigned_integer,
+			floating_point_value,
+			string,
 
-		lexeme_type_addition,
-		lexeme_type_subtraction,
-		lexeme_type_multiplication,
-		lexeme_type_division,
-		lexeme_type_modulo,
-		lexeme_type_exponentiation,
+			addition,
+			subtraction,
+			multiplication,
+			division,
+			modulo,
+			exponentiation,
 
-		lexeme_type_increment,
-		lexeme_type_decrement,
+			increment,
+			decrement,
 
-		lexeme_type_less_than,
-		lexeme_type_less_than_or_equal,
-		lexeme_type_greater_than,
-		lexeme_type_greater_than_or_equal,
-		lexeme_type_unequal,
-		lexeme_type_equal,
+			less_than,
+			less_than_or_equal,
+			greater_than,
+			greater_than_or_equal,
+			unequal,
+			equal,
 
-		lexeme_type_logical_not,
+			logical_not,
 
-		lexeme_type_logical_and,
-		lexeme_type_logical_or,
+			logical_and,
+			logical_or,
 
-		lexeme_type_shift_left,
-		lexeme_type_shift_right,
+			shift_left,
+			shift_right,
 
-		lexeme_type_binary_and,
-		lexeme_type_binary_or,
-		lexeme_type_binary_xor,
+			binary_and,
+			binary_or,
+			binary_xor,
 
-		lexeme_type_binary_not,
+			binary_not,
 
-		lexeme_type_bracket_start,
-		lexeme_type_bracket_end,
+			bracket_start,
+			bracket_end,
 
-		lexeme_type_array_start,
-		lexeme_type_array_end,
+			array_start,
+			array_end,
 
-		lexeme_type_scope_start,
-		lexeme_type_scope_end,
+			scope_start,
+			scope_end,
 
-		lexeme_type_iteration,
-		lexeme_type_iterator,
-		lexeme_type_function_declaration,
-		lexeme_type_anonymous_function_declaration,
-		lexeme_type_class_operator,
-		lexeme_type_dot,
-		lexeme_type_scope_operator,
-	};
+			iteration,
+			iterator,
+			function_declaration,
+			anonymous_function_declaration,
+			class_operator,
+			dot,
+			scope_operator,
+		};
+	}
 
 	struct lexeme
 	{
-		lexeme_type type;
+		lexeme_type::type type;
 		union
 		{
 			bool boolean;
@@ -80,12 +83,12 @@ namespace frith
 		};
 
 		lexeme();
-		lexeme(lexeme_type type);
+		lexeme(lexeme_type::type type);
 		explicit lexeme(types::boolean boolean);
 		explicit lexeme(types::signed_integer signed_integer);
 		explicit lexeme(types::unsigned_integer unsigned_integer);
 		explicit lexeme(types::floating_point_value floating_point_value);
-		explicit lexeme(lexeme_type type, std::string const & string);
+		explicit lexeme(lexeme_type::type type, std::string const & string);
 		std::string to_string() const;
 	};
 
@@ -100,10 +103,10 @@ namespace frith
 
 	struct operator_lexeme
 	{
-		lexeme_type lexeme;
+		lexeme_type::type lexeme;
 		std::string string;
 
-		operator_lexeme(lexeme_type lexeme, std::string const & string);
+		operator_lexeme(lexeme_type::type lexeme, std::string const & string);
 		bool operator<(operator_lexeme const & other) const;
 	};
 

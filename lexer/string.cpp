@@ -70,7 +70,7 @@ namespace frith
 				case '"':
 					if(byte == string_character)
 					{
-						output.lexemes.push_back(lexeme(lexeme_type_string, string));
+						output.lexemes.push_back(lexeme(string, string));
 						i++;
 						return true;
 					}
