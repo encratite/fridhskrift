@@ -1,5 +1,5 @@
 #include <ail/string.hpp>
-#include <frith/variable.hpp>
+#include <frith/symbol.hpp>
 
 namespace frith
 {

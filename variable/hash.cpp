@@ -1,5 +1,5 @@
 #include <ail/exception.hpp>
-#include <frith/variable.hpp>
+#include <frith/symbol.hpp>
 #include <fnv.hpp>
 
 namespace frith
@@ -63,7 +63,7 @@ namespace frith
 			return map_hash(previous_hash);
 
 		case variable_type_identifier::function:
-			throw ail::exception("Hashing for functions has not been implemented yet");
+			return fnv1a_hash(&hash_pointer, sizeof(hash_pointer), previous_hash);
 
 		case variable_type_identifier::object:
 			throw ail::exception("Hashing for objects has not been implemented yet");

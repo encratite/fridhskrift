@@ -1,5 +1,3 @@
-#pragma once
-
 #include <string>
 #include <vector>
 #include <map>
@@ -60,10 +58,6 @@ namespace frith
 		typedef std::vector<variable> vector;
 		typedef std::map<variable, variable> map;
 	}
-
-	class function_type
-	{
-	};
 
 	class variable
 	{
@@ -127,7 +121,7 @@ namespace frith
 			types::string * string;
 			types::vector * array;
 			types::map * map;
-			function_type * function;
+			function * function_pointer;
 			void * hash_pointer;
 		};
 

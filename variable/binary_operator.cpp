@@ -1,4 +1,4 @@
-#include <frith/variable.hpp>
+#include <frith/symbol.hpp>
 
 namespace frith
 {

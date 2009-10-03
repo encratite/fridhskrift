@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <ail/types.hpp>
-#include <frith/variable.hpp>
+#include <frith/symbol.hpp>
 #include <boost/thread/mutex.hpp>
 
 namespace frith
