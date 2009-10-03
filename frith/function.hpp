@@ -5,17 +5,21 @@
 
 namespace frith
 {
-	enum executable_unit_type
+	namespace executable_unit
 	{
-		executable_unit_type_statement,
-		executable_unit_type_if,
-		executable_unit_type_for,
-		executable_unit_type_while
-	};
+		enum type
+		{
+			statement,
+			assignment,
+			if_statement,
+			for_statement,
+			while_statement,
+		};
+	}
 
 	struct executable_unit
 	{
-		line_of_code line;
+		executable_unit_type type;
 	};
 
 	struct function

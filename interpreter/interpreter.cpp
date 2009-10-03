@@ -56,7 +56,62 @@ namespace frith
 		}
 	}
 
-	bool interpreter::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message)
+	match_result::type interpreter::read_class()
+	{
+	}
+
+	match_result::type interpreter::read_function(function & current_function)
+	{
+	}
+
+	bool interpreter::read_statement(function & current_function)
+	{
+	}
+
+	process_line_result::type interpreter::process_line(function & active_function)
+	{
+		line_of_code & current_line = lines[line_offset];
+		if(current_line.indentation_level > indentation)
+		{
+			error = error("Unexpected increase in the indentation level");
+			return process_line_result::error;
+		}
+
+		match_result::type result = read_class();
+		if(result == match_result::error)
+			return process_line_result::error;
+		else if(result == match_result::no_match)
+		{
+			result = read_function(current_function);
+			if(result == match_result::error)
+				return process_line_result::error;
+			else
+			{
+				if(!read_statement(active_function))
+					return process_line_result::error;
+			}
+		}
+
+		line_offset++;
+
+		if(line_offset == line_end)
+		{
+			//end of file -> end of the module entry function block
+			return process_line_result::end_of_block;
+		}
+
+		line_of_code & next_line = lines[line_offset];
+		
+		if(next_line.indentation_level < indentation)
+		{
+			//end of block
+			return process_line_result::end_of_block;
+		}
+		else
+			return process_line_result::ok;
+	}
+
+	bool interpreter::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output)
 	{
 		lines = std::vector<line_of_code>();
 		lexer current_lexer(data, lines, error_message);
@@ -64,51 +119,18 @@ namespace frith
 			return false;
 
 		current_node = 0;
+		indentation_level = 0;
+		in_a_class = false;
 
-		uword indentation_level = 0;
-		bool expected_indentation = false;
-
-		for(line_offset = 0, line_end = lines.size(); line_offset < line_end;)
+		while(line_offset < line_end)
 		{
-			line_of_code & current_line = lines[line_offset];
-			word difference = current_line.indentation_level - indentation_level;
-			if(difference > 1)
-			{
-				error("Invalid jump in the indentation level (difference is " + ail::number_to_string(difference) + ")", error_message);
-				return false;
-			}
-			else if(expected_indentation && difference != 1)
-			{
-				error("Expected an indentation of 1", error_message);
-				return false;
-			}
-
-			std::vector<lexeme> & current_lexemes = current_line.lexemes;
-
-			for(lexeme_offset = 0, lexeme_end = current_lexemes.size(); lexeme_offset < lexeme_end;)
-			{
-				lexeme & current_lexeme = current_lexemes[lexeme_offset];
-				switch(current_lexeme.type)
-				{
-					case lexeme_type_class_operator:
-						continue;
-
-					default:
-						error("Unprocessed lexeme type encountered: " + current_lexeme.to_string(), error_message);
-						return false;
-				}
-
-				lexeme_offset++;
-			}
-
-			line_offset++;
 		}
 
 		return true;
 	}
 
-	void interpreter::error(std::string const & message, std::string & output)
+	void interpreter::error(std::string const & message)
 	{
-		output = "Line " + ail::number_to_string(lines[line_offset].line) + ": " + message;
+		error_message = "Line " + ail::number_to_string(lines[line_offset].line) + ": " + message;
 	}
 }
