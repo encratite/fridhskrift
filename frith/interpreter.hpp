@@ -50,11 +50,16 @@ namespace frith
 
 		std::string error_message;
 
-		bool in_a_class;
+		uword nested_class_level;
 
 		std::vector<line_of_code> lines;
 
 		symbol_tree_node * current_node;
+
+		match_result::type read_class();
+		match_result::type read_function(function & current_function);
+		bool read_statement(function & current_function);
+		process_line_result::type process_line(function * active_function = 0);
 
 		bool translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output);
 

@@ -49,9 +49,21 @@ namespace frith
 		symbol_tree_node & class_node = class_parent_node.entities[name];
 		class_node = symbol_tree_node(symbol::class_symbol);
 
+		indentation++;
+		nested_class_level++;
+
 		while(true)
 		{
-			process_line_result::type result = process_line
+			process_line_result::type result = process_line();
+			if(result == match_result::error)
+				return process_line_result::error;
+			else if(result == process_line_result::end_of_block)
+			{
+				if(indentation > 0)
+					indentation--;
+				nested_class_level--;
+				return match_result::match;
+			}
 		}
 	}
 
@@ -124,7 +136,7 @@ namespace frith
 
 		current_node = &target_module.symbols;
 		indentation_level = 0;
-		in_a_class = false;
+		nested_class_level = 0;
 
 		while(line_offset < line_end)
 		{
