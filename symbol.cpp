@@ -1,13 +1,16 @@
 #include <frith/symbol_tree_node.hpp>
+#include <boost/foreach.hpp>
 
 namespace frith
 {
-	symbol_tree_entity::symbol_tree_entity()
+	symbol_tree_node::symbol_tree_node():
+		parent(0)
 	{
 	}
 
-	symbol_tree_entity::symbol_tree_entity(symbol::type type):
-		type(type)
+	symbol_tree_node::symbol_tree_node(symbol::type type):
+		type(type),
+		parent(0)
 	{
 		switch(type)
 		{
@@ -25,29 +28,48 @@ namespace frith
 		}
 	}
 
-	symbol_tree_node::symbol_tree_node():
-		parent(0)
+	symbol_tree_node::~symbol_tree_node()
 	{
+		BOOST_FOREACH(symbol_tree_node * i, children)
+			delete i;
+
+		switch(type)
+		{
+			case variable::variable:
+				delete variable_pointer;
+				break;
+
+			case variable::function:
+				delete function_pointer;
+				break;
+
+			case variable::class_symbol:
+				delete class_pointer;
+				break;
+
+			case variable::module:
+				delete module_pointer;
+				break;
+		}
 	}
 
 	bool symbol_tree_node::exists(std::string const & name)
 	{
-		scope_entities::iterator iterator = entities.find(name);
-		return iterator != entities.end();
+		node_children::iterator iterator = children.find(name);
+		return iterator != children.end();
 	}
 
-	bool symbol_tree_node::find_entity(std::string const & name, symbol_tree_node * & entity_scope_output, symbol_tree_entity * & entity_output)
+	bool symbol_tree_node::find_entity(std::string const & name, symbol_tree_node * & output)
 	{
-		scope_entities::iterator iterator = entities.find(name);
-		if(iterator == entities.end())
+		node_children::iterator iterator = children.find(name);
+		if(iterator == children.end())
 		{
 			if(parent == 0)
 				return false;
-			return parent->find_entity(name, entitiy_scope_output, entity_output);
+			return parent->find_entity(name, output);
 		}
 
-		entity_scope_output = this;
-		entity_output = &iterator->second;
+		output = &iterator->second;
 		return true;
 	}
 }

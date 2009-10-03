@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <frith/variable.hpp>
+#include <frith/class.hpp>
 #include <frith/function.hpp>
 
 namespace frith
@@ -21,7 +22,9 @@ namespace frith
 	struct symbol_tree_node;
 	struct class_type;
 
-	struct symbol_tree_entity
+	typedef std::map<std::string, symbol_tree_node *> node_children;
+
+	struct symbol_tree_node
 	{
 		symbol::type type;
 		union
@@ -32,21 +35,15 @@ namespace frith
 			module * module_pointer;
 		};
 
-		symbol_tree_entity();
-		symbol_tree_entity(symbol::type type);
-	};
-
-	typedef std::map<std::string, symbol_tree_entity> scope_entities;
-
-	struct symbol_tree_node
-	{
-		scope_entities entities;
+		node_children children;
 		symbol_tree_node * parent;
 
 		symbol_tree_node();
+		symbol_tree_node(symbol::type type);
+		~symbol_tree_node();
 
 		bool exists(std::string const & name);
-		bool find_entity(std::string const & name, symbol_tree_node * & entity_scope_output, symbol_tree_entity * & entity_output);
+		bool find_entity(std::string const & name, symbol_tree_node * & output);
 	};
 }
 

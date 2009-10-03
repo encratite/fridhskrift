@@ -29,12 +29,7 @@ namespace frith
 
 	bool interpreter::name_is_used(std::string const & name)
 	{
-		frith::symbol_tree_node * node;
-		frith::symbol_tree_entity * entity;
-
-		symbol_tree_node & class_parent_node = *current_node;
-
-		return class_parent_node.exists(name, node, entity);
+		return current_node->exists(name);
 	}
 
 	std::string const & interpreter::get_declaration_name()
@@ -54,7 +49,7 @@ namespace frith
 	symbol_tree_node & interpreter::add_name(symbol::type symbol_type)
 	{
 		std::string const & name = get_declaration_name();
-		symbol_tree_node & new_node = current_node->entities[name];
+		symbol_tree_node & new_node = current_node->children[name];
 		new_node = symbol_tree_node(symbol_type);
 		current_node = &new_node;
 		return new_node;
