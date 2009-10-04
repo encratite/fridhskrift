@@ -62,7 +62,8 @@ namespace frith
 		operator_lexeme(function_declaration, "@"),
 		operator_lexeme(anonymous_function_declaration, "@@"),
 		operator_lexeme(class_operator, "$"),
-		operator_lexeme(dot, "."),
+		operator_lexeme(property_operator, "."),
+		operator_lexeme(call_operator, ","),
 		operator_lexeme(scope_operator, ":"),
 	};
 

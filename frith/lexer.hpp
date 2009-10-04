@@ -60,6 +60,7 @@ namespace frith
 			binary_not,
 
 			bracket_start,
+			bracket_start_call,
 			bracket_end,
 
 			array_start,
@@ -73,7 +74,8 @@ namespace frith
 			function_declaration,
 			anonymous_function_declaration,
 			class_operator,
-			dot,
+			property_operator,
+			call_operator,
 			scope_operator,
 		};
 	}
@@ -136,6 +138,7 @@ namespace frith
 			end,
 			line_offset;
 		line_of_code current_line;
+		bool is_call_bracket;
 
 		bool parse_operator(line_of_code & output);
 		bool parse_string(line_of_code & output, std::string & error_message, std::string error_prefix = "");

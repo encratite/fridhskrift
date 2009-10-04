@@ -44,7 +44,12 @@ namespace frith
 
 			if(substring == current_lexeme.string)
 			{
-				output.lexemes.push_back(lexeme(current_lexeme.lexeme));
+				lexeme output;
+				if(current_lexeme.lexeme == lexeme_type::bracket_start && !is_call_bracket)
+					output = lexeme_type::bracket_start_call;
+				else
+					output = current_lexeme.lexeme;
+				output.lexemes.push_back(output);
 				i += operator_length;
 				return true;
 			}
@@ -107,6 +112,7 @@ namespace frith
 		line++;
 		i++;
 		line_offset = i;
+		is_call_bracket = false;
 	}
 
 	bool lexer::parse()
@@ -117,6 +123,8 @@ namespace frith
 
 		line_offset = 0;
 
+		is_call_bracket = false;
+
 		for(i = 0, end = input.size(); i < end;)
 		{
 			if(parse_operator(current_line))
@@ -125,6 +133,9 @@ namespace frith
 			char const tab = '\t';
 
 			char byte = input[i];
+
+			is_call_bracket = (byte == ' ');
+
 			switch(byte)
 			{
 				case tab:
