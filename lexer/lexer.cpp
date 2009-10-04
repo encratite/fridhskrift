@@ -141,7 +141,7 @@ namespace frith
 				case tab:
 					if(current_line.indentation_level > 0)
 					{
-						error = lexer_error("Tabs are only permitted at the beginning of a line (offset " + ail::number_to_string(i - line_offset + 1) + ")");
+						error = lexer_error("Tabs are only permitted in the beginning of a line (offset " + ail::number_to_string(i - line_offset + 1) + ")");
 						return false;
 					}
 					for(i++, current_line.indentation_level = 1; i < end && input[i] == tab; i++, current_line.indentation_level++);
