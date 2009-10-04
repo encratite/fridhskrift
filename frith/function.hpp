@@ -7,7 +7,7 @@
 
 namespace frith
 {
-	namespace executable_unit
+	namespace executable_unit_type
 	{
 		enum type
 		{
@@ -15,6 +15,8 @@ namespace frith
 			assignment,
 			return_statement,
 			if_statement,
+			if_else_statement,
+			for_each_statement,
 			for_statement,
 			while_statement,
 		};
@@ -91,10 +93,12 @@ namespace frith
 
 	struct
 		parse_tree_node,
-		parse_tree_symbol;
+		parse_tree_symbol,
+		executable_units;
 
 	typedef std::vector<parse_tree_node> parse_tree_nodes;
 	typedef std::vector<parse_tree_symbol> parse_tree_symbols;
+	typedef std::vector<executable_unit> executable_units;
 
 	struct parse_tree_symbol
 	{
@@ -146,14 +150,59 @@ namespace frith
 		parse_tree_node term;
 	};
 
+	struct if_statement
+	{
+		parse_tree_node conditional_term;
+		parse_tree_nodes body;
+	};
+
+	struct if_else_statement
+	{
+		parse_tree_node conditional_term;
+		parse_tree_nodes
+			if_body,
+			else_body;
+	};
+
+	struct for_each_statement
+	{
+		parse_tree_symbol container;
+		parse_tree_nodes body;
+	};
+
+	struct for_statement
+	{
+		parse_tree_node
+			initialisation,
+			conditional,
+			iteration;
+		parse_tree_nodes body;
+	};
+
+	struct while_statement
+	{
+		parse_tree_node conditional_term;
+		parse_tree_nodes body;
+	};
+
 	struct executable_unit
 	{
-		executable_unit_type type;
+		executable_unit_type::type type;
+
+		union
+		{
+			parse_tree_node * statement_pointer;
+			if_statement * if_pointer;
+			if_else_statement * if_else_pointer;
+			for_each_statement * for_each_pointer;
+			for_statement * for_pointer;
+			while_statement * while_pointer;
+		}
 	};
 
 	struct function
 	{
-		std::vector<std::string> arguments;
-		std::vector<executable_unit> units;
+		string_vector arguments;
+		executable_units units;
 	};
 }
