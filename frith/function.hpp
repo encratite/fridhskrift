@@ -22,6 +22,20 @@ namespace frith
 	{
 		enum type
 		{
+			assignment,
+			addition,
+			subtraction,
+			multiplication,
+			division,
+			modulo,
+			exponentiation,
+		};
+	}
+
+	namespace operator_type
+	{
+		enum type
+		{
 
 		};
 	}
