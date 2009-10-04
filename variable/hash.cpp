@@ -42,16 +42,16 @@ namespace frith
 			return string_hash("none", previous_hash);
 
 		case variable_type_identifier::boolean:
-			return fnv1a_hash(hash_pointer, sizeof(types::signed_integer), previous_hash);
+			return fnv1a_hash(&hash_pointer, sizeof(types::signed_integer), previous_hash);
 
 		case variable_type_identifier::signed_integer:
-			return fnv1a_hash(hash_pointer, sizeof(types::signed_integer), previous_hash);
+			return fnv1a_hash(&hash_pointer, sizeof(types::signed_integer), previous_hash);
 
 		case variable_type_identifier::unsigned_integer:
-			return fnv1a_hash(hash_pointer, sizeof(types::unsigned_integer), previous_hash);
+			return fnv1a_hash(&hash_pointer, sizeof(types::unsigned_integer), previous_hash);
 
 		case variable_type_identifier::floating_point_value:
-			return fnv1a_hash(hash_pointer, sizeof(types::floating_point_value), previous_hash);
+			return fnv1a_hash(&hash_pointer, sizeof(types::floating_point_value), previous_hash);
 
 		case variable_type_identifier::string:
 			return fnv1a_hash(string->c_str(), string->size(), previous_hash);
