@@ -11,9 +11,18 @@ namespace frith
 		{
 			statement,
 			assignment,
+			return_statement,
 			if_statement,
 			for_statement,
 			while_statement,
+		};
+	}
+
+	namespace assignment_type
+	{
+		enum type
+		{
+
 		};
 	}
 

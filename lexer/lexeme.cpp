@@ -81,6 +81,24 @@ namespace frith
 			case modulo:
 				return "%";
 
+			case assignment:
+				return "=";
+
+			case addition_assignment:
+				return "+=";
+
+			case subtraction_assignment:
+				return "-=";
+
+			case multiplication_assignment:
+				return "*=";
+
+			case division_assignment:
+				return "/=";
+
+			case modulo_assignment:
+				return "%=";
+
 			case increment:
 				return "++";
 
@@ -106,7 +124,7 @@ namespace frith
 				return "!=";
 
 			case equal:
-				return "=";
+				return "==";
 
 			case logical_not:
 				return "!";

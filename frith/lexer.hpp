@@ -27,6 +27,14 @@ namespace frith
 			modulo,
 			exponentiation,
 
+			assignment,
+			addition_assignment,
+			subtraction_assignment,
+			multiplication_assignment,
+			division_assignment,
+			modulo_assignment,
+			exponentiation_assignment,
+
 			increment,
 			decrement,
 

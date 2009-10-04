@@ -16,6 +16,14 @@ namespace frith
 		operator_lexeme(modulo, "%"),
 		operator_lexeme(exponentiation, "**"),
 
+		operator_lexeme(assignment, "="),
+		operator_lexeme(addition_assignment, "+="),
+		operator_lexeme(subtraction_assignment, "-="),
+		operator_lexeme(multiplication_assignment, "*="),
+		operator_lexeme(division_assignment, "/="),
+		operator_lexeme(modulo_assignment, "%="),
+		operator_lexeme(exponentiation_assignment, "**="),
+
 		operator_lexeme(increment, "++"),
 		operator_lexeme(decrement, "--"),
 
@@ -24,7 +32,7 @@ namespace frith
 		operator_lexeme(greater_than, ">"),
 		operator_lexeme(greater_than_or_equal, ">="),
 		operator_lexeme(unequal, "!="),
-		operator_lexeme(equal, "="),
+		operator_lexeme(equal, "=="),
 
 		operator_lexeme(logical_not, "!"),
 
