@@ -48,22 +48,22 @@ namespace frith
 				}
 			}
 
-			char const property_operator = '.';
+			char const dot = '.';
 
-			bool got_property_operator = false;
+			bool got_dot = false;
 			char last_byte = byte;
 			for(; i < end; i++)
 			{
 				byte = input[i];
-				if(byte == property_operator)
+				if(byte == dot)
 				{
-					if(got_property_operator)
+					if(got_dot)
 					{
-						error = number_parsing_error("Encountered a floating point value containing multiple property_operators", error_occured);
+						error = number_parsing_error("Encountered a floating point value containing multiple dots", error_occured);
 						return false;
 					}
 					else
-						got_property_operator = true;
+						got_dot = true;
 				}
 				else if(!ail::is_digit(byte))
 					break;
@@ -71,15 +71,15 @@ namespace frith
 				last_byte = byte;
 			}
 
-			if(last_byte == property_operator)
+			if(last_byte == dot)
 			{
-				error = number_parsing_error("Encountered a floating point value ending with a property_operator", error_occured);
+				error = number_parsing_error("Encountered a floating point value ending with a dot", error_occured);
 				return false;
 			}
 
 			std::string number_string = input.substr(start, i - start);
 			lexeme current_lexeme;
-			if(got_property_operator)
+			if(got_dot)
 				current_lexeme = lexeme(ail::string_to_number<types::floating_point_value>(number_string));
 			else
 				current_lexeme = lexeme(ail::string_to_number<types::signed_integer>(number_string));

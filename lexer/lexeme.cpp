@@ -189,7 +189,7 @@ namespace frith
 			case class_operator:
 				return "class operator";
 
-			case property_operator:
+			case selection_operator:
 				return ".";
 
 			case call_operator:

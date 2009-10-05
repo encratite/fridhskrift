@@ -30,7 +30,7 @@ namespace frith
 	{
 		enum type
 		{
-			property_operator,
+			selection,
 
 			negation,
 			logical_not,

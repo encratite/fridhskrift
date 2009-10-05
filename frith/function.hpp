@@ -102,7 +102,7 @@ namespace frith
 
 	struct parse_tree_symbol
 	{
-		string_vector names;
+		std::string name;
 	};
 
 	struct parse_tree_unary_operator_node

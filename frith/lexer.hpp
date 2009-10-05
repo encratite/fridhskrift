@@ -71,10 +71,12 @@ namespace frith
 
 			iteration,
 			iterator,
+
 			function_declaration,
 			anonymous_function_declaration,
+
 			class_operator,
-			property_operator,
+			selection_operator,
 			call_operator,
 			scope_operator,
 		};
