@@ -26,6 +26,45 @@ namespace frith
 		};
 	}
 
+	namespace operator_precedence
+	{
+		enum type
+		{
+			property_operator,
+
+			negation,
+			logical_not,
+			binary_not,
+
+			exponentiation,
+
+			multiplication,
+			division,
+			modulo,
+
+			addition,
+			subtraction,
+
+			shift_left,
+			shift_right,
+
+			less_than,
+			less_than_or_equal,
+
+			greater_than,
+			greater_than_or_equal,
+
+			equal,
+			not_equal,
+
+			binary_and,
+			binary_or,
+
+			logical_and,
+			logical_or,
+		};
+	}
+
 	class intermediary_translator
 	{
 	public:
