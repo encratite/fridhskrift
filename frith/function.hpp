@@ -83,6 +83,7 @@ namespace frith
 	{
 		enum type
 		{
+			variable,
 			symbol,
 			unary_operator_node,
 			binary_operator_node,
@@ -136,6 +137,7 @@ namespace frith
 		parse_tree_node_type::type type;
 		union
 		{
+			variable * variable_pointer;
 			parse_tree_symbol * symbol_pointer;
 			parse_tree_unary_operator_node * unary_operator_pointer;
 			parse_tree_binary_operator_node * binary_operator_pointer;

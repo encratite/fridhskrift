@@ -158,10 +158,7 @@ namespace frith
 		}
 
 		if(bracket_level > 0)
-		{
-			error("Unmatched opening bracket");
-			return false;
-		}
+			return error("Unmatched opening bracket");
 
 		return true;
 	}
@@ -198,33 +195,23 @@ namespace frith
 					break;
 
 				case lexeme_type::bracket_end:
-					error("Unmatched closing bracket");
-					return false;
+					return error("Unmatched closing bracket");
 			}
 
 			lexeme_group::type group;
 			if(!get_lexeme_group(current_lexeme.type, group))
-			{
-				error("Invalid lexeme type in statement");
-				return false;
-			}
+				return error("Invalid lexeme type in statement");
 
 			switch(group)
 			{
 				case lexeme_group::argument:
 					if(got_last_group && last_group == lexeme_group::argument)
-					{
-						error("Encountered two arguments without an operator between them");
-						return false;
-					}
+						return error("Encountered two arguments without an operator between them");
 					break;
 
 				case lexeme_group::unary_operator:
 					if(got_last_group && last_group == lexeme_group::argument)
-					{
-						error("Encountered an argument followed by an unary operator without a binary operator between them");
-						return false;
-					}
+						return error("Encountered an argument followed by an unary operator without a binary operator between them");
 					break;
 
 				case lexeme_group::binary_operator:
@@ -233,12 +220,10 @@ namespace frith
 						switch(last_group)
 						{
 							case lexeme_group::unary_operator:
-								error("Encountered a unary operator followed by a binary operator");
-								return false;
+								return error("Encountered a unary operator followed by a binary operator");
 
 							case lexeme_group::binary_operator:
-								error("Encountered two sequential binary operators");
-								return false;
+								return error("Encountered two sequential binary operators");
 						}
 					}
 					break;
@@ -246,6 +231,9 @@ namespace frith
 
 			set_last_group(group);
 		}
+
+		if(last_group != lexeme_group::argument)
+			return error("An operator is missing an argument");
 
 		return true;
 	}
@@ -324,8 +312,9 @@ namespace frith
 		return true;
 	}
 
-	void intermediary_translator::error(std::string const & message)
+	bool intermediary_translator::error(std::string const & message)
 	{
 		error_message = "Line " + ail::number_to_string(lines[line_offset].line) + ": " + message;
+		return false;
 	}
 }
