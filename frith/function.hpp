@@ -132,7 +132,7 @@ namespace frith
 
 	struct parse_tree_array
 	{
-		parse_tree_node elements;
+		parse_tree_nodes elements;
 	};
 
 	struct parse_tree_node
@@ -152,6 +152,7 @@ namespace frith
 		parse_tree_node(variable * variable_pointer);
 		parse_tree_node(unary_operator_type::type unary_operator);
 		parse_tree_node(binary_operator_type::type binary_operator);
+		parse_tree_node(parse_tree_nodes & elements);
 	};
 
 	struct assignment_statement

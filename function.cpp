@@ -26,4 +26,11 @@ namespace frith
 		binary_operator_pointer = new parse_tree_binary_operator_node;
 		binary_operator_pointer->type = binary_operator;
 	}
+
+	parse_tree_node::parse_tree_node(parse_tree_nodes & elements):
+		type(parse_tree_node::array)
+	{
+		array_pointer = new parse_tree_array;
+		array_pointer->elements = elements;
+	}
 }

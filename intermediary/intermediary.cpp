@@ -218,21 +218,40 @@ namespace frith
 			lexeme & current_lexeme = lexemes[i];
 
 			if(current_lexeme.type == terminator)
+			{
+				i++;
 				break;
+			}
 
 			switch(current_lexeme.type)
 			{
 				case lexeme_type::bracket_start:
 				{
-					parse_tree_nodes content;
-					parse_statement(lexemes, offset, content, false, lexeme_type::bracket_end);
-					arguments.push_back(content[0]);
-					set_last_group(lexeme_group::argument);
+					if(got_last_group && last_group == lexeme_group::argument)
+					{
+						//call
+					}
+					else
+					{
+						parse_tree_nodes content;
+						parse_statement(lexemes, offset, content, false, lexeme_type::bracket_end);
+						arguments.push_back(content[0]);
+						set_last_group(lexeme_group::argument);
+					}
 					break;
 				}
 
 				case lexeme_type::bracket_end:
 					return error("Unmatched closing bracket");
+
+				case lexeme_type::array_start:
+				{
+					parse_tree_nodes elements;
+					parse_statement(lexemes, offset, content, true, lexeme_type::array_end);
+					arguments.push_back(parse_tree_node(elements));
+					set_last_group(lexeme_group::argument);
+					break;
+				}
 
 				case lexeme_type::array_end:
 					return error("Unmatched curled brace");
