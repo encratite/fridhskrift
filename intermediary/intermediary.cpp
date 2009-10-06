@@ -1,3 +1,4 @@
+#include <stack>
 #include <ail/file.hpp>
 #include <ail/string.hpp>
 #include <frith/intermediary.hpp>
@@ -124,17 +125,61 @@ namespace frith
 
 	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, symbol_tree_node & output)
 	{
-		bool got_parenthesis = false;
+		word bracket_level = 0;
+		//false: normal bracket, true: call bracket
+		std::stack<bool> bracket_type_stack;
+		std::size_t bracket_start;
+
+		parse_tree_symbols arguments;
+		binary_operator_container binary_operators;
+
 		for(std::size_t i = offset; i < end; i++)
 		{
 			lexeme & current_lexeme = lexemes[i];
-			if(current_lexeme.type != lexeme_type::bracket_end)
+			switch(current_lexeme.type)
 			{
-			}
-			if(current_lexeme.type != lexeme_type::bracket_start)
-				continue;
+				case lexeme_type::bracket_start:
+					if(bracket_level == 0)
+						bracket_start = i;
+					bracket_level++;
+					bracket_type_stack.push(false);
+					break;
 
+				case lexeme_type::bracket_start_call:
+					bracket_level++;
+					bracket_type_stack.push(true);
+					break;
+
+				case lexeme_type::bracket_end:
+					switch(bracket_level)
+					{
+						case 1:
+							if(!bracket_type_stack.top())
+							{
+								parse_tree_symbol new_argument;
+								if(!parse_statement(lexemes, bracket_start, i, new_argument))
+									return false;
+								arguments.push_back(new_argument);
+							}
+							break;
+
+						case 0:
+							error("Unmatched closing bracket");
+							return false;
+					}
+					bracket_level--;
+					bracket_type_stack.pop();
+					break;
+			}
 		}
+
+		if(bracket_level > 0)
+		{
+			error("Unmatched opening bracket");
+			return false;
+		}
+
+		return true;
 	}
 
 	bool intermediary_translator::process_statement(function & current_function)

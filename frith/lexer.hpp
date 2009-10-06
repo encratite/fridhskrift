@@ -82,6 +82,16 @@ namespace frith
 		};
 	}
 
+	namespace lexeme_group
+	{
+		enum type
+		{
+			argument,
+			unary_operator,
+			binary_operator
+		};
+	}
+
 	struct lexeme;
 
 	typedef std::vector<lexeme> lexeme_container;
@@ -163,6 +173,8 @@ namespace frith
 	std::string visualise_lexemes(std::vector<line_of_code> & lines);
 	
 	void initialise_tables();
+
+	bool get_lexeme_group(lexeme_type::type input, lexeme_group::type & output);
 
 	extern boost::mutex table_mutex;
 	extern std::vector<operator_lexeme> operator_lexeme_data;
