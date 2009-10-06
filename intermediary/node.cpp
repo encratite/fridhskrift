@@ -48,6 +48,8 @@ namespace frith
 		binary_lexeme_map[binary_or] = binary_operator_type::binary_or;
 		binary_lexeme_map[binary_xor] = binary_operator_type::binary_xor;
 
+		binary_lexeme_map[selection_operator] = binary_operator_type::selection;
+
 		maps_are_initialised = true;
 	}
 

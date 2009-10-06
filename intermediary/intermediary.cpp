@@ -124,7 +124,7 @@ namespace frith
 		return process_body(false);
 	}
 
-	bool process_brackets(lexeme_container & lexemes, std::size_t & i, std::size_t end, parse_tree_symbols & arguments, bool allow_multi_statements)
+	bool process_brackets(lexeme_container & lexemes, std::size_t & i, std::size_t end, parse_tree_nodes & arguments)
 	{
 		std::size_t bracket_start = i;
 
@@ -148,8 +148,8 @@ namespace frith
 					bracket_level--;
 					if(bracket_level == 0)
 					{
-						parse_tree_symbol new_argument;
-						if(!parse_statement(lexemes, bracket_start, i, new_argument, allow_multi_statements))
+						parse_tree_node new_argument;
+						if(!parse_statement(lexemes, bracket_start, i, new_argument, false))
 							return false;
 						arguments.push_back(new_argument);
 						return true;
@@ -246,6 +246,13 @@ namespace frith
 			add_unary_node(lexeme(lexeme_type::negation));
 		}
 
+		void process_node_group()
+		{
+			parse_tree_node new_node;
+			operator_resolution(arguments, new_node);
+			output.push_back(new_node);
+		}
+
 		if(offset == end)
 			return error("Empty statement in line");
 
@@ -287,7 +294,10 @@ namespace frith
 
 					if(allow_multi_statements)
 					{
-						//add final code here
+						process_node_group();
+						arguments.clear();
+						got_last_group = false;
+						continue;
 					}
 					break;
 				}
@@ -333,6 +343,8 @@ namespace frith
 
 		if(last_group != lexeme_group::argument)
 			return error("An operator is missing an argument");
+
+		process_node_group();
 
 		return true;
 	}
