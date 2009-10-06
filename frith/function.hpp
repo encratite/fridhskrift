@@ -76,6 +76,8 @@ namespace frith
 			binary_and,
 			binary_or,
 			binary_xor,
+
+			selection,
 		};
 	}
 
@@ -143,6 +145,11 @@ namespace frith
 			parse_tree_call * call_pointer;
 			parse_tree_array * array_pointer;
 		}
+
+		parse_tree_node();
+		parse_tree_node(variable * variable_pointer);
+		parse_tree_node(unary_operator_type::type unary_operator);
+		parse_tree_node(binary_operator_type::type binary_operator);
 	};
 
 	struct assignment_statement

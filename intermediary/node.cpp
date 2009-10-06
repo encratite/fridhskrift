@@ -99,6 +99,8 @@ namespace frith
 
 	void lexeme_to_unary_operator_node(lexeme & input, parse_tree_node & output, parse_tree_node & argument)
 	{
+		initialise_maps();
+
 		unary_lexeme_map_type::iterator iterator = unary_lexeme_map.find(input.type);
 		if(iterator == unary_lexeme_map.end())
 			throw ail::exception("Unknown lexeme type encountered while trying to match it to a corresponding unary operator parse tree node type");
@@ -112,6 +114,8 @@ namespace frith
 
 	void lexeme_to_binary_operator_node(lexeme & input, parse_tree_node & output, parse_tree_node & left_argument, parse_tree_node & right_argument)
 	{
+		initialise_maps();
+
 		binary_lexeme_map_type::iterator iterator = binary_lexeme_map.find(input.type);
 		if(iterator == binary_lexeme_map.end())
 			throw ail::exception("Unknown lexeme type encountered while trying to match it to a corresponding binary operator parse tree node type");

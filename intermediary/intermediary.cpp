@@ -167,16 +167,10 @@ namespace frith
 	{
 	}
 
-	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, symbol_tree_node & output)
+	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, parse_tree_node & output)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;
-
-		parse_tree_symbols arguments;
-
-		lexeme_container
-			unary_operators,
-			binary_operators;
 
 		void set_last_group(lexeme_group::type new_last_group)
 		{
@@ -221,21 +215,12 @@ namespace frith
 					
 					parse_tree_node argument_node;
 					lexeme_to_argument_node(current_lexeme, argument_node);
-					for(lexeme_container::reverse_iterator unary_iterator = unary_operators.rbegin(), unary_end = unary_operators.rend(); unary_iterator != unary_end; unary_iterator++)
-					{
-						parse_tree_node new_argument_node;
-						lexeme_to_unary_operator_node(*unary_iterator, new_argument_node, argument_node);
-						argument_node = new_argument_node;
-					}
-					unary_operators.clear();
-					arguments.push_back(argument_node);
 					break;
 				}
 
 				case lexeme_group::unary_operator:
 					if(got_last_group && last_group == lexeme_group::argument)
 						return error("Encountered an argument followed by an unary operator without a binary operator between them");
-					unary_operators.push_back(current_lexeme);
 					break;
 
 				case lexeme_group::binary_operator:
@@ -250,7 +235,6 @@ namespace frith
 								return error("Encountered two sequential binary operators");
 						}
 					}
-					binary_operators.push_back(current_lexeme);
 					break;
 			}
 
