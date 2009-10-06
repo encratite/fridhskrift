@@ -123,52 +123,36 @@ namespace frith
 		return process_body(false);
 	}
 
-	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, symbol_tree_node & output)
+	bool process_brackets(lexeme_container & lexemes, std::size_t & i, std::size_t end, parse_tree_symbols & arguments)
 	{
-		word bracket_level = 0;
-		//false: normal bracket, true: call bracket
-		std::stack<bool> bracket_type_stack;
-		std::size_t bracket_start;
+		std::size_t bracket_start = i;
 
-		parse_tree_symbols arguments;
-		binary_operator_container binary_operators;
+		word bracket_level = 0;
 
 		for(std::size_t i = offset; i < end; i++)
 		{
-			lexeme & current_lexeme = lexemes[i];
 			switch(current_lexeme.type)
 			{
 				case lexeme_type::bracket_start:
 					if(bracket_level == 0)
 						bracket_start = i;
 					bracket_level++;
-					bracket_type_stack.push(false);
 					break;
 
 				case lexeme_type::bracket_start_call:
 					bracket_level++;
-					bracket_type_stack.push(true);
 					break;
 
 				case lexeme_type::bracket_end:
-					switch(bracket_level)
-					{
-						case 1:
-							if(!bracket_type_stack.top())
-							{
-								parse_tree_symbol new_argument;
-								if(!parse_statement(lexemes, bracket_start, i, new_argument))
-									return false;
-								arguments.push_back(new_argument);
-							}
-							break;
-
-						case 0:
-							error("Unmatched closing bracket");
-							return false;
-					}
 					bracket_level--;
-					bracket_type_stack.pop();
+					if(bracket_level == 0)
+					{
+						parse_tree_symbol new_argument;
+						if(!parse_statement(lexemes, bracket_start, i, new_argument))
+							return false;
+						arguments.push_back(new_argument);
+						return true;
+					}
 					break;
 			}
 		}
@@ -177,6 +161,90 @@ namespace frith
 		{
 			error("Unmatched opening bracket");
 			return false;
+		}
+
+		return true;
+	}
+
+	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, symbol_tree_node & output)
+	{
+		bool got_last_group = false;
+		lexeme_group::type last_group;
+
+		parse_tree_symbols arguments;
+		binary_operator_container binary_operators;
+
+		void set_last_group(lexeme_group::type new_last_group)
+		{
+			last_group = new_last_group;
+			got_last_group = true;
+		}
+
+		for(std::size_t i = offset; i < end; i++)
+		{
+			lexeme & current_lexeme = lexemes[i];
+
+			switch(current_lexeme.type)
+			{
+				case lexeme_type::bracket_start:
+					if(!process_brackets(lexemes, i, end, arguments))
+						return false;
+					set_last_group(lexeme_group::argument);
+					break;
+
+				case lexeme_type::bracket_start_call:
+					//process the call
+					set_last_group(lexeme_group::argument);
+					break;
+
+				case lexeme_type::bracket_end:
+					error("Unmatched closing bracket");
+					return false;
+			}
+
+			lexeme_group::type group;
+			if(!get_lexeme_group(current_lexeme.type, group))
+			{
+				error("Invalid lexeme type in statement");
+				return false;
+			}
+
+			switch(group)
+			{
+				case lexeme_group::argument:
+					if(got_last_group && last_group == lexeme_group::argument)
+					{
+						error("Encountered two arguments without an operator between them");
+						return false;
+					}
+					break;
+
+				case lexeme_group::unary_operator:
+					if(got_last_group && last_group == lexeme_group::argument)
+					{
+						error("Encountered an argument followed by an unary operator without a binary operator between them");
+						return false;
+					}
+					break;
+
+				case lexeme_group::binary_operator:
+					if(got_last_group)
+					{
+						switch(last_group)
+						{
+							case lexeme_group::unary_operator:
+								error("Encountered a unary operator followed by a binary operator");
+								return false;
+
+							case lexeme_group::binary_operator:
+								error("Encountered two sequential binary operators");
+								return false;
+						}
+					}
+					break;
+			}
+
+			set_last_group(group);
 		}
 
 		return true;
