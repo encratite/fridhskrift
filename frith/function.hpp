@@ -100,7 +100,6 @@ namespace frith
 	typedef std::vector<parse_tree_node> parse_tree_nodes;
 	typedef std::vector<parse_tree_symbol> parse_tree_symbols;
 	typedef std::vector<executable_unit> executable_units;
-	typedef std::vector<binary_operator_type::type> binary_operator_container;
 
 	struct parse_tree_symbol
 	{
