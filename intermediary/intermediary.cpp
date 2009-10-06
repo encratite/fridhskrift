@@ -123,7 +123,7 @@ namespace frith
 		return process_body(false);
 	}
 
-	bool process_brackets(lexeme_container & lexemes, std::size_t & i, std::size_t end, parse_tree_symbols & arguments)
+	bool process_brackets(lexeme_container & lexemes, std::size_t & i, std::size_t end, parse_tree_symbols & arguments, bool allow_multi_statements)
 	{
 		std::size_t bracket_start = i;
 
@@ -148,7 +148,7 @@ namespace frith
 					if(bracket_level == 0)
 					{
 						parse_tree_symbol new_argument;
-						if(!parse_statement(lexemes, bracket_start, i, new_argument))
+						if(!parse_statement(lexemes, bracket_start, i, new_argument, allow_multi_statements))
 							return false;
 						arguments.push_back(new_argument);
 						return true;
@@ -167,10 +167,12 @@ namespace frith
 	{
 	}
 
-	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, parse_tree_nodes & output)
+	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, parse_tree_nodes & output, bool allow_multi_statements)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;
+
+		parse_tree_nodes arguments;
 
 		void set_last_group(lexeme_group::type new_last_group)
 		{
@@ -182,7 +184,7 @@ namespace frith
 		{
 			parse_tree_node unary_operator_node;
 			lexeme_to_unary_operator_node(current_lexeme, unary_operator_node);
-			output.push_back(unary_operator_node);
+			arguments.push_back(unary_operator_node);
 		}
 
 		void add_negation_lexeme()
@@ -222,12 +224,17 @@ namespace frith
 			{
 				case lexeme_group::argument:
 				{
-					if(got_last_group && last_group == lexeme_group::argument)
+					if(!allow_multi_statements && !got_last_group && last_group == lexeme_group::argument)
 						return error("Encountered two arguments without an operator between them");
 					
 					parse_tree_node argument_node;
 					lexeme_to_argument_node(current_lexeme, argument_node);
-					output.push_back(argument_node);
+					arguments.push_back(argument_node);
+
+					if(allow_multi_statements)
+					{
+						//add final code here
+					}
 					break;
 				}
 
@@ -263,7 +270,7 @@ namespace frith
 					}
 					parse_tree_node binary_operator_node;
 					lexeme_to_binary_operator_node(current_lexeme, binary_operator_node);
-					output.push_back(binary_operator_node);
+					arguments.push_back(binary_operator_node);
 					break;
 			}
 
