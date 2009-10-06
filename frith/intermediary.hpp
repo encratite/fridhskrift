@@ -114,4 +114,6 @@ namespace frith
 	};
 
 	void lexeme_to_argument_node(lexeme & input, parse_tree_node & output);
+	void lexeme_to_unary_operator_node(lexeme & input, parse_tree_node & output, parse_tree_node & argument);
+	void lexeme_to_binary_operator_node(lexeme & input, parse_tree_node & output, parse_tree_node & left_argument, parse_tree_node & right_argument);
 }
