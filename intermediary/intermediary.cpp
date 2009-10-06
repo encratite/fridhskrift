@@ -163,6 +163,10 @@ namespace frith
 		return true;
 	}
 
+	void resolve_binary_operations(parse_tree_symbols & symbols, lexeme_container & binary_operators, parse_tree_node & output)
+	{
+	}
+
 	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, symbol_tree_node & output)
 	{
 		bool got_last_group = false;
@@ -179,6 +183,9 @@ namespace frith
 			last_group = new_last_group;
 			got_last_group = true;
 		}
+
+		if(offset == end)
+			return error("Empty statement in line");
 
 		for(std::size_t i = offset; i < end; i++)
 		{

@@ -65,6 +65,12 @@ namespace frith
 		};
 	}
 
+	struct sorted_binary_operator_entry
+	{
+
+		std::size_t index;
+	};
+
 	class intermediary_translator
 	{
 	public:
