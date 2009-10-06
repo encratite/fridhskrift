@@ -124,46 +124,6 @@ namespace frith
 		return process_body(false);
 	}
 
-	bool process_brackets(lexeme_container & lexemes, std::size_t & i, std::size_t end, parse_tree_nodes & arguments)
-	{
-		std::size_t bracket_start = i;
-
-		word bracket_level = 0;
-
-		for(std::size_t i = offset; i < end; i++)
-		{
-			switch(current_lexeme.type)
-			{
-				case lexeme_type::bracket_start:
-					if(bracket_level == 0)
-						bracket_start = i;
-					bracket_level++;
-					break;
-
-				case lexeme_type::bracket_start_call:
-					bracket_level++;
-					break;
-
-				case lexeme_type::bracket_end:
-					bracket_level--;
-					if(bracket_level == 0)
-					{
-						parse_tree_node new_argument;
-						if(!parse_statement(lexemes, bracket_start, i, new_argument, false))
-							return false;
-						arguments.push_back(new_argument);
-						return true;
-					}
-					break;
-			}
-		}
-
-		if(bracket_level > 0)
-			return error("Unmatched opening bracket");
-
-		return true;
-	}
-
 	void operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
 		if(input.size() != 1)
@@ -221,7 +181,7 @@ namespace frith
 		}
 	}
 
-	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, parse_tree_nodes & output, bool allow_multi_statements)
+	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;
@@ -253,28 +213,29 @@ namespace frith
 			output.push_back(new_node);
 		}
 
-		if(offset == end)
-			return error("Empty statement in line");
-
-		for(std::size_t i = offset; i < end; i++)
+		for(std::size_t & i = offset, end = lexemes.size(); i < end; i++)
 		{
 			lexeme & current_lexeme = lexemes[i];
+
+			if(current_lexeme.type == terminator)
+				break;
 
 			switch(current_lexeme.type)
 			{
 				case lexeme_type::bracket_start:
-					if(!process_brackets(lexemes, i, end, arguments))
-						return false;
+				{
+					parse_tree_nodes content;
+					parse_statement(lexemes, offset, content, false, lexeme_type::bracket_end);
+					arguments.push_back(content[0]);
 					set_last_group(lexeme_group::argument);
 					break;
-
-				case lexeme_type::bracket_start_call:
-					//process the call
-					set_last_group(lexeme_group::argument);
-					break;
+				}
 
 				case lexeme_type::bracket_end:
 					return error("Unmatched closing bracket");
+
+				case lexeme_type::array_end:
+					return error("Unmatched curled brace");
 			}
 
 			lexeme_group::type group;
@@ -340,6 +301,9 @@ namespace frith
 
 			set_last_group(group);
 		}
+
+		if(!got_last_group)
+			return error("Empty statement");
 
 		if(last_group != lexeme_group::argument)
 			return error("An operator is missing an argument");

@@ -156,9 +156,6 @@ namespace frith
 			case bracket_start:
 				return "bracket: start";
 
-			case bracket_start_call:
-				return "bracket: start (call)";
-
 			case bracket_end:
 				return "bracket: end";
 

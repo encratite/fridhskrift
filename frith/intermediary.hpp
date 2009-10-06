@@ -108,7 +108,7 @@ namespace frith
 		symbol_tree_node & add_name(symbol::type symbol_type);
 		match_result::type process_body(function * current_function = 0);
 
-		bool parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, parse_tree_node & output, bool allow_multi_statements = false);
+		bool parse_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_node & output, bool allow_multi_statements = false, lexeme_type::type terminator = lexeme_type::non_terminating_placeholder);
 
 		match_result::type process_class();
 		match_result::type process_function();
