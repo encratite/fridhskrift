@@ -72,4 +72,23 @@ namespace frith
 			throw ail::exception("Invalid binary operator value specified for operator precedence lookup");
 		return static_cast<word>(iterator->second);
 	}
+
+	bool get_parse_tree_node_precedence(parse_tree_node & input, word & output)
+	{
+		switch(input.type)
+		{
+			case parse_tree_node_type::unary_operator_node:
+				output = get_unary_operator_precedence(input.unary_operator_pointer->type);
+				break;
+
+			case parse_tree_node_type::binary_operator_node:
+				output = get_binary_operator_precedence(input.binary_operator_pointer->type);
+				break;
+
+			default:
+				return false;
+		}
+
+		return true;
+	}
 }

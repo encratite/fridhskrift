@@ -1,6 +1,7 @@
 #include <stack>
 #include <ail/file.hpp>
 #include <ail/string.hpp>
+#include <ail/string.hpp>
 #include <frith/intermediary.hpp>
 #include <frith/lexer.hpp>
 
@@ -163,8 +164,61 @@ namespace frith
 		return true;
 	}
 
-	void resolve_binary_operations(parse_tree_symbols & symbols, lexeme_container & binary_operators, parse_tree_node & output)
+	void operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
+		if(input.size() != 1)
+		{
+			output = input[0];
+			return;
+		}
+
+		bool got_an_operator = false;
+		word minimum;
+		std::size_t minimum_offset;
+
+		for(std::size_t i = 0, end = input.size(); i < end; i++)
+		{
+			word precedence;
+			if(get_parse_tree_node_precedence(input[i], precedence))
+			{
+				//<= instead < so unary operators and the selection operator will be parsed from right to left
+				if(!got_an_operator || precedence <= minimum)
+				{
+					got_an_operator = true;
+					minimum = precedence;
+					minimum_offset = i;
+				}
+			}
+		}
+
+		if(!got_an_operator)
+			throw ail::exception("Failed to perform operator resolution");
+
+		parse_tree_node & operator_node = input[minimum_offset];
+		std::size_t next_offset = minimum_offset + 1;
+		if(operator_node.type == parse_tree_node_type::unary_operator_node)
+		{
+			std::size_t argument_offset = next_offset;
+			parse_tree_unary_operator_node & unary_operator_node = *operator_node.unary_operator_pointer;
+			unary_operator_node.argument = input.at(argument_offset);
+			input.erase(input.begin() + argument_offset);
+		}
+		else
+		{
+			parse_tree_binary_operator_node & binary_operator_node = *operator_node.binary_operator_pointer;
+
+			parse_tree_nodes
+				left_side,
+				right_side;
+
+			std::copy(input.begin(), input.begin() + minimum_offset, left_side.begin());
+			std::copy(input.begin() + next_offset, input.end(), right_side.begin());
+
+			operator_resolution(left_side, binary_operator_node.left_argument);
+			operator_resolution(right_side, binary_operator_node.right_argument);
+
+			output = operator_node;
+		}
 	}
 
 	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, parse_tree_nodes & output, bool allow_multi_statements)

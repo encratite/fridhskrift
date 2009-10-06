@@ -2,7 +2,8 @@
 
 namespace frith
 {
-	parse_tree_node::parse_tree_node()
+	parse_tree_node::parse_tree_node():
+		type(parse_tree_node_type::uninitialised)
 	{
 	}
 

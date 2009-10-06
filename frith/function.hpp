@@ -85,6 +85,8 @@ namespace frith
 	{
 		enum type
 		{
+			uninitialised,
+
 			variable,
 			symbol,
 			unary_operator_node,

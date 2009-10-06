@@ -126,4 +126,5 @@ namespace frith
 
 	word get_unary_operator_precedence(unary_operator_type::type input);
 	word get_binary_operator_precedence(binary_operator_type::type input);
+	bool get_parse_tree_node_precedence(parse_tree_node & input, word & output);
 }
