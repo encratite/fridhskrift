@@ -101,9 +101,9 @@ namespace frith
 		symbol_tree_node & add_name(symbol::type symbol_type);
 		match_result::type process_body(function * current_function = 0);
 
-		match_result::type read_class();
-		match_result::type read_function();
-		bool read_statement(function & current_function);
+		match_result::type process_class();
+		match_result::type process_function();
+		bool process_statement(function & current_function);
 		process_line_result::type process_line(function * active_function = 0);
 
 		bool translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output);

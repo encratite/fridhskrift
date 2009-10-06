@@ -1,6 +1,6 @@
 #include <ail/file.hpp>
 #include <ail/string.hpp>
-#include <frith/intermediary_translator.hpp>
+#include <frith/intermediary.hpp>
 #include <frith/lexer.hpp>
 
 namespace frith
@@ -42,7 +42,7 @@ namespace frith
 		std::string const & name = get_declaration_name();
 		bool output = name_is_used(name);
 		if(output)
-			error_message = error("Name \"" + name + "\" has already been used by another function or class in the current scope");
+			error("Name \"" + name + "\" has already been used by another function or class in the current scope");
 		return output;
 	}
 
@@ -83,9 +83,9 @@ namespace frith
 		}
 	}
 
-	match_result::type intermediary_translator::read_class()
+	match_result::type intermediary_translator::process_class()
 	{
-		std::vector<lexeme> & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(!(lexemes.size() == 2 && lexemes[0].type == lexeme_type::class_operator && lexemes[1].type == lexeme_type::name))
 			return match_result::no_match;
 
@@ -97,9 +97,9 @@ namespace frith
 		return process_body(true);
 	}
 
-	match_result::type intermediary_translator::read_function()
+	match_result::type intermediary_translator::process_function()
 	{
-		std::vector<lexeme> & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(!(lexemes.size() >= 2 && lexemes[0].type == lexeme_type::function_declaration))
 			return match_result::no_match;
 
@@ -107,7 +107,7 @@ namespace frith
 		{
 			if(lexemes[i].type != lexeme_type::name)
 			{
-				error_message = error("Encountered an invalid lexeme type in a function declaration - at this point only names are permitted");
+				error("Encountered an invalid lexeme type in a function declaration - at this point only names are permitted");
 				return match_result::error;
 			}
 		}
@@ -122,7 +122,22 @@ namespace frith
 		return process_body(false);
 	}
 
-	bool intermediary_translator::read_statement(function & current_function)
+	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, symbol_tree_node & output)
+	{
+		bool got_parenthesis = false;
+		for(std::size_t i = offset; i < end; i++)
+		{
+			lexeme & current_lexeme = lexemes[i];
+			if(current_lexeme.type != lexeme_type::bracket_end)
+			{
+			}
+			if(current_lexeme.type != lexeme_type::bracket_start)
+				continue;
+
+		}
+	}
+
+	bool intermediary_translator::process_statement(function & current_function)
 	{
 	}
 
@@ -131,30 +146,30 @@ namespace frith
 		line_of_code & current_line = lines[line_offset];
 		if(current_line.indentation_level > indentation)
 		{
-			error_message = error("Unexpected increase in the indentation level");
+			error("Unexpected increase in the indentation level");
 			return process_line_result::error;
 		}
 
-		match_result::type result = read_class();
+		match_result::type result = process_class();
 		if(result == match_result::error)
 			return process_line_result::error;
 		else if(result == match_result::no_match)
 		{
 			if(active_function)
 			{
-				result = read_function();
+				result = process_function();
 				if(result == match_result::error)
 					return process_line_result::error;
 				else if(result == match_result::no_match)
 				{
 					function & current_function = *active_function;
-					if(!read_statement(current_function))
+					if(!process_statement(current_function))
 						return process_line_result::error;
 				}
 			}
 			else
 			{
-				error_message = error("Regular statements and assignments need to be placed within functions");
+				error("Regular statements and assignments need to be placed within functions");
 				return process_line_result::error;
 			}
 		}

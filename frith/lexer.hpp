@@ -82,6 +82,10 @@ namespace frith
 		};
 	}
 
+	struct lexeme;
+
+	typedef std::vector<lexeme> lexeme_container;
+
 	struct lexeme
 	{
 		lexeme_type::type type;
@@ -108,7 +112,7 @@ namespace frith
 	{
 		uword line;
 		uword indentation_level;
-		std::vector<lexeme> lexemes;
+		lexeme_container lexemes;
 
 		line_of_code();
 	};
