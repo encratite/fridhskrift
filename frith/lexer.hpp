@@ -27,6 +27,8 @@ namespace frith
 			modulo,
 			exponentiation,
 
+			negation,
+
 			assignment,
 			addition_assignment,
 			subtraction_assignment,

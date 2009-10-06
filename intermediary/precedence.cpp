@@ -55,6 +55,8 @@ namespace frith
 
 	word get_unary_operator_precedence(unary_operator_type::type input)
 	{
+		initialise_maps();
+
 		unary_operator_precedence_map_type::iterator iterator = unary_operator_precedence_map.find(input);
 		if(iterator == unary_operator_precedence_map.end())
 			throw ail::exception("Invalid unary operator value specified for operator precedence lookup");
@@ -63,6 +65,8 @@ namespace frith
 
 	word get_binary_operator_precedence(binary_operator_type::type input)
 	{
+		initialise_maps();
+
 		binary_operator_precedence_map_type::iterator iterator = binary_operator_precedence_map.find(input);
 		if(iterator == binary_operator_precedence_map.end())
 			throw ail::exception("Invalid binary operator value specified for operator precedence lookup");

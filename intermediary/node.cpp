@@ -97,7 +97,7 @@ namespace frith
 		}
 	}
 
-	void lexeme_to_unary_operator_node(lexeme & input, parse_tree_node & output, parse_tree_node & argument)
+	void lexeme_to_unary_operator_node(lexeme & input, parse_tree_node & output)
 	{
 		initialise_maps();
 
@@ -109,10 +109,9 @@ namespace frith
 		parse_tree_unary_operator_node * & unary_operator_pointer = output.unary_operator_pointer;
 		unary_operator_pointer = new parse_tree_unary_operator_node;
 		unary_operator_pointer->type = iterator->second;
-		unary_operator_pointer->argument = argument;
 	}
 
-	void lexeme_to_binary_operator_node(lexeme & input, parse_tree_node & output, parse_tree_node & left_argument, parse_tree_node & right_argument)
+	void lexeme_to_binary_operator_node(lexeme & input, parse_tree_node & output)
 	{
 		initialise_maps();
 
@@ -124,7 +123,5 @@ namespace frith
 		parse_tree_binary_operator_node * & binary_operator_pointer = output.binary_operator_pointer;
 		binary_operator_pointer = new parse_tree_binary_operator_node;
 		binary_operator_pointer->type = iterator->second;
-		unary_operator_pointer->left_argument = left_argument;
-		unary_operator_pointer->right_argument = right_argument;
 	}
 }

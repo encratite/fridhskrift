@@ -167,7 +167,7 @@ namespace frith
 	{
 	}
 
-	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, parse_tree_node & output)
+	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t offset, std::size_t end, parse_tree_nodes & output)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;
@@ -176,6 +176,18 @@ namespace frith
 		{
 			last_group = new_last_group;
 			got_last_group = true;
+		}
+
+		void add_unary_node(lexeme & current_lexeme)
+		{
+			parse_tree_node unary_operator_node;
+			lexeme_to_unary_operator_node(current_lexeme, unary_operator_node);
+			output.push_back(unary_operator_node);
+		}
+
+		void add_negation_lexeme()
+		{
+			add_unary_node(lexeme(lexeme_type::negation));
 		}
 
 		if(offset == end)
@@ -215,12 +227,14 @@ namespace frith
 					
 					parse_tree_node argument_node;
 					lexeme_to_argument_node(current_lexeme, argument_node);
+					output.push_back(argument_node);
 					break;
 				}
 
 				case lexeme_group::unary_operator:
 					if(got_last_group && last_group == lexeme_group::argument)
 						return error("Encountered an argument followed by an unary operator without a binary operator between them");
+					add_unary_node(current_lexeme);
 					break;
 
 				case lexeme_group::binary_operator:
@@ -232,9 +246,24 @@ namespace frith
 								return error("Encountered a unary operator followed by a binary operator");
 
 							case lexeme_group::binary_operator:
-								return error("Encountered two sequential binary operators");
+								if(current_lexeme.type == lexeme_type::subtraction)
+									add_negation_lexeme();
+								else
+									return error("Encountered two sequential binary operators");
+								break;
 						}
 					}
+					else
+					{
+						if(current_lexeme.type == lexeme_type::subtraction)
+							add_negation_lexeme();
+						else
+							return error("Encountered a binary operator in the beginning of a statement");
+						break;
+					}
+					parse_tree_node binary_operator_node;
+					lexeme_to_binary_operator_node(current_lexeme, binary_operator_node);
+					output.push_back(binary_operator_node);
 					break;
 			}
 
