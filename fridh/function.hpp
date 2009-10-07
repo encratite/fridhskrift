@@ -93,6 +93,9 @@ namespace fridh
 			binary_operator_node,
 			call,
 			array,
+
+			call_operator,
+			spaced_call_operator,
 		};
 	}
 
@@ -162,6 +165,7 @@ namespace fridh
 		}
 
 		parse_tree_node();
+		parse_tree_node(parse_tree_node_type::type type);
 		parse_tree_node(variable * variable_pointer);
 		parse_tree_node(unary_operator_type::type unary_operator);
 		parse_tree_node(binary_operator_type::type binary_operator);

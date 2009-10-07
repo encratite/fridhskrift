@@ -84,6 +84,7 @@ namespace fridh
 			selection_operator,
 
 			call_operator,
+			spaced_call_operator,
 		};
 	}
 
@@ -93,7 +94,9 @@ namespace fridh
 		{
 			argument,
 			unary_operator,
-			binary_operator
+			binary_operator,
+
+			call_operator,
 		};
 	}
 

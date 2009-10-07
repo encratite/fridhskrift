@@ -115,6 +115,12 @@ namespace fridh
 
 	void operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
+		void call_check(std::size_t extremum_offset)
+		{
+			if(extremum_offset != 1)
+				throw ail::exception("Invalid call offset encountered during operator resolution");
+		}
+
 		if(input.size() != 1)
 		{
 			output = input[0];
@@ -177,10 +183,23 @@ namespace fridh
 
 			case parse_tree_node_type::call:
 				//this is questionable
-				if(extremum_offset != 1)
-					throw ail::exception("Invalid call offset encountered during operator resolution");
+				call_check(extremum_offset);
 				operator_node.call_pointer->function = input[0];
 				input.erase(input.begin());
+				break;
+
+			case parse_tree_node_type::call_operator:
+			case parse_tree_node_type::spaced_call_operator:
+				call_check(extremum_offset);
+				operator_node.is_call();
+				operator_node.call_pointer->function = input[0];
+				input.erase(input.begin());
+				if(operator_node.type != parse_tree_node_type::spaced_call_operator && next_offset != input.size())
+				{
+					//it's an unary call
+					operator_node.call_pointer->arguments.push_back(input[next_offset]);
+					input.erase(input.end() - 1);
+				}
 				break;
 
 			default:
@@ -278,6 +297,16 @@ namespace fridh
 
 				case lexeme_type::array_end:
 					error("Unmatched curled brace");
+
+				case lexeme_type::call_operator:
+					arguments.push_back(parse_tree_node(parse_tree_node_type::call_operator));
+					set_last_group(lexeme_group::call_operator);
+					continue;
+
+				case lexeme_type::spaced_call_operator:
+					arguments.push_back(parse_tree_node(parse_tree_node_type::spaced_call_operator));
+					set_last_group(lexeme_group::call_operator);
+					continue;
 			}
 
 			lexeme_group::type group;
@@ -428,9 +457,8 @@ namespace fridh
 		return true;
 	}
 
-	bool intermediary_translator::error(std::string const & message)
+	void intermediary_translator::error(std::string const & message)
 	{
-		error_message = "Line " + ail::number_to_string(lines[line_offset].line) + ": " + message;
-		return false;
+		throw ail::exception("Line " + ail::number_to_string(lines[line_offset].line) + ": " + message);
 	}
 }

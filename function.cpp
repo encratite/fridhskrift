@@ -7,6 +7,11 @@ namespace fridh
 	{
 	}
 
+	parse_tree_node::parse_tree_node(parse_tree_node_type::type type):
+		type(type)
+	{
+	}
+
 	parse_tree_node::parse_tree_node(variable * variable_pointer):
 		type(parse_tree_node_type::variable),
 		variable_pointer(variable_pointer)

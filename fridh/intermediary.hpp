@@ -97,7 +97,7 @@ namespace fridh
 
 		bool translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output);
 
-		bool error(std::string const & message);
+		void error(std::string const & message);
 	};
 
 	void lexeme_to_argument_node(lexeme & input, parse_tree_node & output);

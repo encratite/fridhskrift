@@ -78,6 +78,7 @@ namespace fridh
 		switch(input.type)
 		{
 			case parse_tree_node_type::call:
+			case parse_tree_node_type::call_operator:
 				output = static_cast<word>(operator_precedence::call);
 				break;
 
