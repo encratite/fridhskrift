@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <frith/lexer.hpp>
+#include <fridh/lexer.hpp>
 #include <ail/file.hpp>
-#include <frith/interpreter.hpp>
+#include <fridh/interpreter.hpp>
 
 int main(int argc, char ** argv)
 {
@@ -20,9 +20,9 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 
-	std::vector<frith::line_of_code> lines;
+	std::vector<fridh::line_of_code> lines;
 	std::string error;
-	frith::lexer lexer(code, lines, error);
+	fridh::lexer lexer(code, lines, error);
 	if(!lexer.parse(lines))
 	{
 		std::cout << "Error: " << error << std::endl;
@@ -30,7 +30,7 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 
-	ail::write_file(argv[2], frith::visualise_lexemes(lines));
+	ail::write_file(argv[2], fridh::visualise_lexemes(lines));
 
 	return 0;
 }

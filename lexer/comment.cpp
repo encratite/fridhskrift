@@ -1,6 +1,6 @@
-#include <frith/lexer.hpp>
+#include <fridh/lexer.hpp>
 
-namespace frith
+namespace fridh
 {
 		bool lexer::parse_comment(std::string & error_message)
 	{

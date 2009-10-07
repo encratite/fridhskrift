@@ -1,6 +1,6 @@
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 	std::string get_unary_argument_type_error(std::string const & operation, variable_type type)
 	{

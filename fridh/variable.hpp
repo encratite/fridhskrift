@@ -3,7 +3,7 @@
 #include <map>
 #include <ail/types.hpp>
 
-namespace frith
+namespace fridh
 {
 	namespace variable_type_identifier
 	{

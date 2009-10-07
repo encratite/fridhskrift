@@ -1,7 +1,7 @@
-#include <frith/symbol_tree_node.hpp>
+#include <fridh/symbol_tree_node.hpp>
 #include <boost/foreach.hpp>
 
-namespace frith
+namespace fridh
 {
 	symbol_tree_node::symbol_tree_node():
 		parent(0)

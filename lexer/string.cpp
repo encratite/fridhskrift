@@ -1,7 +1,7 @@
-#include <frith/lexer.hpp>
+#include <fridh/lexer.hpp>
 #include <ail/string.hpp>
 
-namespace frith
+namespace fridh
 {
 	bool lexer::parse_string(line_of_code & output, std::string & error_message, std::string error_prefix)
 	{

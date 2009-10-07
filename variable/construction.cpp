@@ -1,6 +1,6 @@
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 	void variable::nil()
 	{

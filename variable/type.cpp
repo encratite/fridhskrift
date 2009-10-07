@@ -1,6 +1,6 @@
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 	variable_type variable::get_type() const
 	{

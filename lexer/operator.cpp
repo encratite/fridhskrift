@@ -1,9 +1,9 @@
-#include <frith/lexer.hpp>
+#include <fridh/lexer.hpp>
 #include <algorithm>
 #include <ail/string.hpp>
 #include <ail/array.hpp>
 
-namespace frith
+namespace fridh
 {
 	bool tables_initialised = false;
 

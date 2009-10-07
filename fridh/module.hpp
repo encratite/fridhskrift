@@ -1,7 +1,7 @@
 #include <string>
-#include <frith/function.hpp>
+#include <fridh/function.hpp>
 
-namespace frith
+namespace fridh
 {
 	struct module
 	{

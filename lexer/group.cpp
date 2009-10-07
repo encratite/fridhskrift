@@ -1,6 +1,6 @@
-#include <frith/lexer.hpp>
+#include <fridh/lexer.hpp>
 
-namespace frith
+namespace fridh
 {
 	bool get_lexeme_group(lexeme_type::type input, lexeme_group::type & output)
 	{

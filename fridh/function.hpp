@@ -5,7 +5,7 @@
 
 #include <ail/types.hpp>
 
-namespace frith
+namespace fridh
 {
 	namespace executable_unit_type
 	{

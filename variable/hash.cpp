@@ -1,8 +1,8 @@
 #include <ail/exception.hpp>
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 #include <fnv.hpp>
 
-namespace frith
+namespace fridh
 {
 	uword variable::array_hash(uword previous_hash) const
 	{

@@ -1,7 +1,7 @@
 #include <ail/string.hpp>
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 	namespace
 	{

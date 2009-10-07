@@ -1,6 +1,6 @@
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 #define NUMERIC_COMPARISON(operator) \
 		if(is_numeric_type() && argument.other.is_numeric_type()) \

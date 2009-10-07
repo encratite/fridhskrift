@@ -3,9 +3,9 @@
 #include <ail/types.hpp>
 #include <string>
 #include <vector>
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 	namespace match_result
 	{

@@ -2,10 +2,10 @@
 #include <ail/file.hpp>
 #include <ail/string.hpp>
 #include <ail/string.hpp>
-#include <frith/intermediary.hpp>
-#include <frith/lexer.hpp>
+#include <fridh/intermediary.hpp>
+#include <fridh/lexer.hpp>
 
-namespace frith
+namespace fridh
 {
 	intermediary_translator::intermediary_translator():
 		running(false)

@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace frith
+namespace fridh
 {
 
 	class interpreter

@@ -1,8 +1,8 @@
 #include <map>
-#include <frith/intermediary.hpp>
-#include <frith/symbol.hpp>
+#include <fridh/intermediary.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 	typedef std::map<unary_operator_type::type, operator_precedence::type> unary_operator_precedence_map_type;
 	typedef std::map<binary_operator_type::type, operator_precedence::type> binary_operator_precedence_map_type;

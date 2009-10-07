@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 #include <ail/types.hpp>
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 #include <boost/thread/mutex.hpp>
 
-namespace frith
+namespace fridh
 {
 	namespace lexeme_type
 	{

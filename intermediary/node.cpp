@@ -1,7 +1,7 @@
 #include <map>
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 	typedef std::map<lexeme_type::type, unary_operator_type::type> unary_lexeme_map_type;
 	typedef std::map<lexeme_type::type, binary_operator_type::type> binary_lexeme_map_type;

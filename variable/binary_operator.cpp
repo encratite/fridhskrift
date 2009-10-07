@@ -1,6 +1,6 @@
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 #define BINARY_OPERATOR(name, operator) \
 		if(is_integer_type() && argument.other.is_integer_type()) \

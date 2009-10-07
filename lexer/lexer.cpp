@@ -1,9 +1,9 @@
-#include <frith/lexer.hpp>
+#include <fridh/lexer.hpp>
 #include <ail/array.hpp>
 #include <ail/string.hpp>
 #include <boost/foreach.hpp>
 
-namespace frith
+namespace fridh
 {
 	boost::mutex table_mutex;
 

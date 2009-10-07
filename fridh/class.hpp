@@ -1,7 +1,7 @@
 #include <vector>
-#include <frith/function.hpp>
+#include <fridh/function.hpp>
 
-namespace frith
+namespace fridh
 {
 	struct class_type
 	{

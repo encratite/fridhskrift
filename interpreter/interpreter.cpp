@@ -1,9 +1,9 @@
 #include <ail/file.hpp>
 #include <ail/string.hpp>
-#include <frith/interpreter.hpp>
-#include <frith/lexer.hpp>
+#include <fridh/interpreter.hpp>
+#include <fridh/lexer.hpp>
 
-namespace frith
+namespace fridh
 {
 	interpreter::interpreter():
 		running(false)

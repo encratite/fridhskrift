@@ -1,7 +1,7 @@
-#include <frith/lexer.hpp>
+#include <fridh/lexer.hpp>
 #include <ail/string.hpp>
 
-namespace frith
+namespace fridh
 {	
 	lexeme_type::lexeme()
 	{

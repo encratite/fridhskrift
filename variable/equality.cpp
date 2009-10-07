@@ -1,7 +1,7 @@
 #include <ail/exception.hpp>
-#include <frith/symbol.hpp>
+#include <fridh/symbol.hpp>
 
-namespace frith
+namespace fridh
 {
 	bool variable::array_equality(variable const & other) const
 	{

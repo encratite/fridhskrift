@@ -2,11 +2,11 @@
 
 #include <map>
 #include <string>
-#include <frith/variable.hpp>
-#include <frith/class.hpp>
-#include <frith/function.hpp>
+#include <fridh/variable.hpp>
+#include <fridh/class.hpp>
+#include <fridh/function.hpp>
 
-namespace frith
+namespace fridh
 {
 	namespace symbol
 	{
@@ -47,5 +47,5 @@ namespace frith
 	};
 }
 
-#include <frith/class.hpp>
-#include <frith/module.hpp>
+#include <fridh/class.hpp>
+#include <fridh/module.hpp>
