@@ -231,6 +231,8 @@ namespace fridh
 			output.push_back(new_node);
 		}
 
+		symbol_prefix::type prefix = symbol_prefix::none;
+
 		for(std::size_t & i = offset, end = lexemes.size(); i < end; i++)
 		{
 			lexeme & current_lexeme = lexemes[i];
@@ -240,9 +242,22 @@ namespace fridh
 				i++;
 				break;
 			}
+			else if(prefix != symbol_prefix::none && current_lexeme.type == lexeme_type::name)
+			{
+				error("Invalid use of a symbol prefix");
+				return false;
+			}
 
 			switch(current_lexeme.type)
 			{
+				case lexeme_type::scope_operator:
+					prefix = symbol_prefix::scope_operator;
+					continue;
+
+				case lexeme_type::class_operator:
+					prefix = symbol_prefix::class_operator;
+					continue;
+
 				case lexeme_type::bracket_start:
 				{
 					parse_tree_nodes content;
@@ -292,6 +307,23 @@ namespace fridh
 					
 					parse_tree_node argument_node;
 					lexeme_to_argument_node(current_lexeme, argument_node);
+					if(current_lexeme.type == lexeme_type::name)
+					{
+						argument_node.symbol_pointer->type = prefix;
+						if(prefix != symbol_prefix::none)
+						{
+							if
+							(
+								argument_node.type == parse_tree_node_type::binary_operator_node &&
+								argument_node.binary_operator_pointer->type == binary_operator_type::selection
+							)
+							{
+								error("Encountered a symbol prefix after a selection operator");
+								return false;
+							}
+							prefix = symbol_prefix::none;
+						}
+					}
 					arguments.push_back(argument_node);
 
 					if(allow_multi_statements)

@@ -96,6 +96,16 @@ namespace fridh
 		};
 	}
 
+	namespace symbol_prefix
+	{
+		enum type
+		{
+			none,
+			scope_operator,
+			class_operator,
+		};
+	}
+
 	struct
 		parse_tree_node,
 		parse_tree_symbol,
@@ -108,6 +118,9 @@ namespace fridh
 	struct parse_tree_symbol
 	{
 		std::string name;
+		symbol_prefix::type type;
+
+		parse_tree_symbol();
 	};
 
 	struct parse_tree_unary_operator_node

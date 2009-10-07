@@ -39,4 +39,9 @@ namespace fridh
 		type = parse_tree_node_type::call;
 		call_pointer = new parse_tree_call;
 	}
+
+	parse_tree_symbol::parse_tree_symbol():
+	type(symbol_prefix::none)
+	{
+	}
 }
