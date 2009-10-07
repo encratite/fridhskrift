@@ -33,6 +33,8 @@ namespace frith
 		{
 			selection,
 
+			call,
+
 			negation,
 			logical_not,
 			binary_not,
@@ -127,4 +129,6 @@ namespace frith
 	word get_unary_operator_precedence(unary_operator_type::type input);
 	word get_binary_operator_precedence(binary_operator_type::type input);
 	bool get_parse_tree_node_precedence(parse_tree_node & input, word & output);
+
+	bool is_right_to_left_operator(parse_tree_node & input);
 }

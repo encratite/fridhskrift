@@ -139,10 +139,15 @@ namespace frith
 		for(std::size_t i = 0, end = input.size(); i < end; i++)
 		{
 			word precedence;
-			if(get_parse_tree_node_precedence(input[i], precedence))
+			parse_tree_node & current_node = input[i];
+			if(get_parse_tree_node_precedence(current_node, precedence))
 			{
-				//<= instead < so unary operators and the selection operator will be parsed from right to left
-				if(!got_an_operator || precedence <= minimum)
+				if
+				(
+					!got_an_operator ||
+					precedence < minimum ||
+					(is_right_to_left_operator(current_node) && precedence == minimum)
+				)
 				{
 					got_an_operator = true;
 					minimum = precedence;
@@ -227,17 +232,20 @@ namespace frith
 			{
 				case lexeme_type::bracket_start:
 				{
+					parse_tree_nodes content;
 					if(got_last_group && last_group == lexeme_group::argument)
 					{
-						//call
+						parse_statement(lexemes, offset, content, true, lexeme_type::bracket_end);
+						parse_tree_node call;
+						call.is_call();
+						arguments.push_
 					}
 					else
 					{
-						parse_tree_nodes content;
 						parse_statement(lexemes, offset, content, false, lexeme_type::bracket_end);
 						arguments.push_back(content[0]);
-						set_last_group(lexeme_group::argument);
 					}
+					set_last_group(lexeme_group::argument);
 					break;
 				}
 

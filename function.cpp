@@ -33,4 +33,10 @@ namespace frith
 		array_pointer = new parse_tree_array;
 		array_pointer->elements = elements;
 	}
+
+	void parse_tree_node::is_call()
+	{
+		type = parse_tree_node_type::call;
+		call_pointer = new parse_tree_call;
+	}
 }

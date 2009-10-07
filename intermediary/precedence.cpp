@@ -77,6 +77,10 @@ namespace frith
 	{
 		switch(input.type)
 		{
+			case parse_tree_node_type::call:
+				output = static_cast<word>(operator_precedence::call);
+				break;
+
 			case parse_tree_node_type::unary_operator_node:
 				output = get_unary_operator_precedence(input.unary_operator_pointer->type);
 				break;
@@ -90,5 +94,10 @@ namespace frith
 		}
 
 		return true;
+	}
+
+	bool is_right_to_left_operator(parse_tree_node & input)
+	{
+		return input.type == parse_tree_node_type::unary_operator_node;
 	}
 }
