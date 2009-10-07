@@ -78,10 +78,12 @@ namespace fridh
 			function_declaration,
 			anonymous_function_declaration,
 
-			class_operator,
-			selection_operator,
-			call_operator,
 			scope_operator,
+			class_operator,
+
+			selection_operator,
+
+			call_operator,
 		};
 	}
 

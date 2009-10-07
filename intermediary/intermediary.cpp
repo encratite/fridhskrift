@@ -39,13 +39,11 @@ namespace fridh
 		return *lines[line_offset][1].string;
 	}
 
-	bool intermediary_translator::name_collision_check()
+	void intermediary_translator::name_collision_check()
 	{
 		std::string const & name = get_declaration_name();
-		bool output = name_is_used(name);
-		if(output)
+		if(name_is_used(name))
 			error("Name \"" + name + "\" has already been used by another function or class in the current scope");
-		return output;
 	}
 
 	symbol_tree_node & intermediary_translator::add_name(symbol::type symbol_type)
@@ -58,7 +56,7 @@ namespace fridh
 		return new_node;
 	}
 
-	match_result::type intermediary_translator::process_body(function * current_function)
+	void intermediary_translator::process_body(function * current_function)
 	{
 		indentation++;
 
@@ -69,59 +67,50 @@ namespace fridh
 
 		while(true)
 		{
-			process_line_result::type result;
-			result = process_line(current_function);
-			if(result == match_result::error)
-				return process_line_result::error;
-			else if(result == process_line_result::end_of_block)
+			if(process_line(current_function))
 			{
 				if(indentation > 0)
 					indentation--;
 				if(is_class)
 					nested_class_level--;
 				current_node = current_node->parent;
-				return match_result::match;
+				break;
 			}
 		}
 	}
 
-	match_result::type intermediary_translator::process_class()
+	bool intermediary_translator::process_class()
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(!(lexemes.size() == 2 && lexemes[0].type == lexeme_type::class_operator && lexemes[1].type == lexeme_type::name))
-			return match_result::no_match;
+			return false;
 
-		if(name_collision_check())
-			return match_result::error;
+		name_collision_check();
 
 		add_name(symbol::class_symbol);
 
-		return process_body(true);
+		process_body(true);
+		return true;
 	}
 
-	match_result::type intermediary_translator::process_function()
+	bool intermediary_translator::process_function()
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(!(lexemes.size() >= 2 && lexemes[0].type == lexeme_type::function_declaration))
-			return match_result::no_match;
+			return false;
 
 		for(std::size_t i = 1, end = lexemes.size(); i < end; i++)
-		{
 			if(lexemes[i].type != lexeme_type::name)
-			{
 				error("Encountered an invalid lexeme type in a function declaration - at this point only names are permitted");
-				return match_result::error;
-			}
-		}
 
-		if(name_collision_check())
-			return match_result::error;
+		name_collision_check();
 
 		function & current_function = *add_name(symbol::class_symbol).function_pointer;
 		for(std::size_t i = 2, end = lexemes.size(); i < end; i++)
 			current_function.arguments.push_back(*lexemes[i].string);
 
-		return process_body(false);
+		process_body(false);
+		return true;
 	}
 
 	void operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
@@ -199,7 +188,7 @@ namespace fridh
 		}
 	}
 
-	bool intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
+	void intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;
@@ -243,10 +232,7 @@ namespace fridh
 				break;
 			}
 			else if(prefix != symbol_prefix::none && current_lexeme.type == lexeme_type::name)
-			{
 				error("Invalid use of a symbol prefix");
-				return false;
-			}
 
 			switch(current_lexeme.type)
 			{
@@ -279,7 +265,7 @@ namespace fridh
 				}
 
 				case lexeme_type::bracket_end:
-					return error("Unmatched closing bracket");
+					error("Unmatched closing bracket");
 
 				case lexeme_type::array_start:
 				{
@@ -291,19 +277,19 @@ namespace fridh
 				}
 
 				case lexeme_type::array_end:
-					return error("Unmatched curled brace");
+					error("Unmatched curled brace");
 			}
 
 			lexeme_group::type group;
 			if(!get_lexeme_group(current_lexeme.type, group))
-				return error("Invalid lexeme type in statement");
+				error("Invalid lexeme type in statement");
 
 			switch(group)
 			{
 				case lexeme_group::argument:
 				{
 					if(!allow_multi_statements && !got_last_group && last_group == lexeme_group::argument)
-						return error("Encountered two arguments without an operator between them");
+						error("Encountered two arguments without an operator between them");
 					
 					parse_tree_node argument_node;
 					lexeme_to_argument_node(current_lexeme, argument_node);
@@ -317,10 +303,7 @@ namespace fridh
 								argument_node.type == parse_tree_node_type::binary_operator_node &&
 								argument_node.binary_operator_pointer->type == binary_operator_type::selection
 							)
-							{
 								error("Encountered a symbol prefix after a selection operator");
-								return false;
-							}
 							prefix = symbol_prefix::none;
 						}
 					}
@@ -338,7 +321,7 @@ namespace fridh
 
 				case lexeme_group::unary_operator:
 					if(got_last_group && last_group == lexeme_group::argument)
-						return error("Encountered an argument followed by an unary operator without a binary operator between them");
+						error("Encountered an argument followed by an unary operator without a binary operator between them");
 					add_unary_node(current_lexeme);
 					break;
 
@@ -348,13 +331,13 @@ namespace fridh
 						switch(last_group)
 						{
 							case lexeme_group::unary_operator:
-								return error("Encountered a unary operator followed by a binary operator");
+								error("Encountered a unary operator followed by a binary operator");
 
 							case lexeme_group::binary_operator:
 								if(current_lexeme.type == lexeme_type::subtraction)
 									add_negation_lexeme();
 								else
-									return error("Encountered two sequential binary operators");
+									error("Encountered two sequential binary operators");
 								break;
 						}
 					}
@@ -363,7 +346,7 @@ namespace fridh
 						if(current_lexeme.type == lexeme_type::subtraction)
 							add_negation_lexeme();
 						else
-							return error("Encountered a binary operator in the beginning of a statement");
+							error("Encountered a binary operator in the beginning of a statement");
 						break;
 					}
 					parse_tree_node binary_operator_node;
@@ -376,51 +359,36 @@ namespace fridh
 		}
 
 		if(!got_last_group)
-			return error("Empty statement");
+			error("Empty statement");
 
 		if(last_group != lexeme_group::argument)
-			return error("An operator is missing an argument");
+			error("An operator is missing an argument");
 
 		process_node_group();
-
-		return true;
 	}
 
-	bool intermediary_translator::process_statement(function & current_function)
+	void intermediary_translator::process_statement(function & current_function)
 	{
 	}
 
-	process_line_result::type intermediary_translator::process_line(function * active_function)
+	bool intermediary_translator::process_line(function * active_function)
 	{
 		line_of_code & current_line = lines[line_offset];
 		if(current_line.indentation_level > indentation)
-		{
 			error("Unexpected increase in the indentation level");
-			return process_line_result::error;
-		}
 
-		match_result::type result = process_class();
-		if(result == match_result::error)
-			return process_line_result::error;
-		else if(result == match_result::no_match)
+		if(!process_class())
 		{
 			if(active_function)
 			{
-				result = process_function();
-				if(result == match_result::error)
-					return process_line_result::error;
-				else if(result == match_result::no_match)
+				if(!process_function())
 				{
 					function & current_function = *active_function;
-					if(!process_statement(current_function))
-						return process_line_result::error;
+					process_statement(current_function);
 				}
 			}
 			else
-			{
 				error("Regular statements and assignments need to be placed within functions");
-				return process_line_result::error;
-			}
 		}
 
 		line_offset++;
@@ -428,7 +396,7 @@ namespace fridh
 		if(line_offset == line_end)
 		{
 			//end of file -> end of the module entry function block
-			return process_line_result::end_of_block;
+			return true;
 		}
 
 		line_of_code & next_line = lines[line_offset];
@@ -436,10 +404,10 @@ namespace fridh
 		if(next_line.indentation_level < indentation)
 		{
 			//end of block
-			return process_line_result::end_of_block;
+			return true;
 		}
 		else
-			return process_line_result::ok;
+			return false;
 	}
 
 	bool intermediary_translator::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output)
