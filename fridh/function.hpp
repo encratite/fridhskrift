@@ -236,6 +236,6 @@ namespace fridh
 	struct function
 	{
 		string_vector arguments;
-		executable_units units;
+		executable_units body;
 	};
 }

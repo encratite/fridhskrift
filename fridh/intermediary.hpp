@@ -78,7 +78,7 @@ namespace fridh
 
 		uword nested_class_level;
 
-		std::vector<line_of_code> lines;
+		lines_of_code lines;
 
 		symbol_tree_node * current_node;
 
@@ -86,14 +86,14 @@ namespace fridh
 		std::string const & get_declaration_name();
 		void name_collision_check();
 		symbol_tree_node & add_name(symbol::type symbol_type);
-		void process_body(function * current_function = 0);
+		void process_body(executable_units * output = 0);
 
 		void parse_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_node & output, bool allow_multi_statements = false, lexeme_type::type terminator = lexeme_type::non_terminating_placeholder);
 
 		bool process_class();
 		bool process_function();
-		void process_statement(function & current_function);
-		bool process_line(function * active_function = 0);
+		void process_statement(executable_units & output);
+		bool process_line(executable_units * output = 0);
 
 		bool translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output);
 

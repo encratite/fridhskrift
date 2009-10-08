@@ -100,9 +100,12 @@ namespace fridh
 		};
 	}
 
-	struct lexeme;
+	struct
+		lexeme,
+		line_of_code;
 
 	typedef std::vector<lexeme> lexeme_container;
+	typedef std::vector<line_of_code> lines_of_code;
 
 	struct lexeme
 	{

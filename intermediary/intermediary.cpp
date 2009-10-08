@@ -56,18 +56,19 @@ namespace fridh
 		return new_node;
 	}
 
-	void intermediary_translator::process_body(function * current_function)
+	void intermediary_translator::process_body(executable_units * output)
 	{
+		line_offset++;
 		indentation++;
 
-		bool is_class = (current_function == 0);
+		bool is_class = (output == 0);
 
 		if(is_class)
 			nested_class_level++;
 
-		while(true)
+		while(line_offset < line_end)
 		{
-			if(process_line(current_function))
+			if(process_line(output))
 			{
 				if(indentation > 0)
 					indentation--;
@@ -89,7 +90,7 @@ namespace fridh
 
 		add_name(symbol::class_symbol);
 
-		process_body(true);
+		process_body(0);
 		return true;
 	}
 
@@ -109,7 +110,7 @@ namespace fridh
 		for(std::size_t i = 2, end = lexemes.size(); i < end; i++)
 			current_function.arguments.push_back(*lexemes[i].string);
 
-		process_body(false);
+		process_body(&current_function.body);
 		return true;
 	}
 
@@ -401,11 +402,62 @@ namespace fridh
 		process_node_group();
 	}
 
-	void intermediary_translator::process_statement(function & current_function)
+	bool intermediary_translator::is_if_statement()
+	{
+		return lines[line_offset].lexemes[0].type == lexeme_type::division;
+	}
+
+	bool intermediary_translator::process_if(executable_unit & output)
+	{
+		lexeme_container & lexemes = lines[line_offset].lexemes;
+		if(is_if_statement())
+			return false;
+
+		std::size_t offset = 1;
+		parse_tree_nodes output;
+		parse_statement(lexemes, offset, output, false, lexeme_type::non_terminating_placeholder);
+
+		parse_tree_node & conditional = output[0];
+
+		executable_units if_body;
+		process_body(&if_body);
+
+		bool is_if_else = false;
+
+		if(line_offset < line_end)
+		{
+			lexeme_container & lexemes = lines[line_offset].lexemes;
+			if(is_if_statement() && lexemes.size() == 1)
+			{
+				is_if_else = true;
+
+				executable_units else_body;
+				process_body(&else_body);
+
+				output.type = executable_unit_type::if_else_statement;
+				if_else_statement * & if_else_pointer = output.if_else_pointer;
+				if_else_pointer = new if_else_statement;
+				if_else_pointer->conditional_term = conditional;
+				if_else_pointer->if_body = if_body;
+				if_else_pointer->else_body = else_body;
+			}
+		}
+
+		if(!is_if_else)
+		{
+			output.type = executable_unit_type::if_statement;
+			if_statement * & if_pointer = output.if_pointer;
+			if_pointer = new if_statement;
+			if_pointer->conditional_term = conditional;
+			if_pointer->body = if_body;
+		}
+	}
+
+	void intermediary_translator::process_statement(executable_units & output)
 	{
 	}
 
-	bool intermediary_translator::process_line(function * active_function)
+	bool intermediary_translator::process_line(executable_units * output)
 	{
 		line_of_code & current_line = lines[line_offset];
 		if(current_line.indentation_level > indentation)
@@ -413,13 +465,10 @@ namespace fridh
 
 		if(!process_class())
 		{
-			if(active_function)
+			if(output)
 			{
 				if(!process_function())
-				{
-					function & current_function = *active_function;
-					process_statement(current_function);
-				}
+					process_statement(*output);
 			}
 			else
 				error("Regular statements and assignments need to be placed within functions");
