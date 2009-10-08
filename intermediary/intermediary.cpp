@@ -307,6 +307,11 @@ namespace fridh
 					arguments.push_back(parse_tree_node(parse_tree_node_type::spaced_call_operator));
 					set_last_group(lexeme_group::call_operator);
 					continue;
+
+				case lexeme_type::iterator:
+					arguments.push_back(parse_tree_node(parse_tree_node_type::iterator));
+					set_last_group(lexeme_group::argument);
+					continue;
 			}
 
 			lexeme_group::type group;

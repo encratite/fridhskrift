@@ -96,6 +96,8 @@ namespace fridh
 
 			call_operator,
 			spaced_call_operator,
+
+			iterator,
 		};
 	}
 
@@ -184,13 +186,13 @@ namespace fridh
 	struct if_statement
 	{
 		parse_tree_node conditional_term;
-		parse_tree_nodes body;
+		executable_units body;
 	};
 
 	struct if_else_statement
 	{
 		parse_tree_node conditional_term;
-		parse_tree_nodes
+		executable_units
 			if_body,
 			else_body;
 	};
@@ -198,7 +200,7 @@ namespace fridh
 	struct for_each_statement
 	{
 		parse_tree_symbol container;
-		parse_tree_nodes body;
+		executable_units body;
 	};
 
 	struct for_statement
@@ -207,13 +209,13 @@ namespace fridh
 			initialisation,
 			conditional,
 			iteration;
-		parse_tree_nodes body;
+		executable_units body;
 	};
 
 	struct while_statement
 	{
 		parse_tree_node conditional_term;
-		parse_tree_nodes body;
+		executable_units body;
 	};
 
 	struct executable_unit
