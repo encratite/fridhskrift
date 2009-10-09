@@ -208,7 +208,7 @@ namespace fridh
 		}
 	}
 
-	void intermediary_translator::parse_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
+	void intermediary_translator::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;
@@ -269,7 +269,7 @@ namespace fridh
 					parse_tree_nodes content;
 					if(got_last_group && last_group == lexeme_group::argument)
 					{
-						parse_statement(lexemes, offset, content, true, lexeme_type::bracket_end);
+						process_atomic_statement(lexemes, offset, content, true, lexeme_type::bracket_end);
 						parse_tree_node call;
 						call.is_call();
 						call.call_pointer->arguments = content;
@@ -277,7 +277,7 @@ namespace fridh
 					}
 					else
 					{
-						parse_statement(lexemes, offset, content, false, lexeme_type::bracket_end);
+						process_atomic_statement(lexemes, offset, content, false, lexeme_type::bracket_end);
 						arguments.push_back(content[0]);
 					}
 					set_last_group(lexeme_group::argument);
@@ -290,7 +290,7 @@ namespace fridh
 				case lexeme_type::array_start:
 				{
 					parse_tree_nodes elements;
-					parse_statement(lexemes, offset, content, true, lexeme_type::array_end);
+					process_atomic_statement(lexemes, offset, content, true, lexeme_type::array_end);
 					arguments.push_back(parse_tree_node(elements));
 					set_last_group(lexeme_group::argument);
 					break;
@@ -415,7 +415,7 @@ namespace fridh
 
 		std::size_t offset = 1;
 		parse_tree_nodes output;
-		parse_statement(lexemes, offset, output, false, lexeme_type::non_terminating_placeholder);
+		process_atomic_statement(lexemes, offset, output);
 
 		parse_tree_node & conditional = output[0];
 
@@ -463,7 +463,7 @@ namespace fridh
 
 		std::size_t offset = 1;
 		parse_tree_nodes output;
-		parse_statement(lexemes, offset, output, false, lexeme_type::non_terminating_placeholder);
+		process_atomic_statement(lexemes, offset, output);
 
 		parse_tree_node & conditional = output[0];
 
@@ -475,6 +475,63 @@ namespace fridh
 		process_body(&while_pointer->body);
 
 		return true;
+	}
+
+	bool intermediary_translator::process_for(executable_unit & output)
+	{
+		lexeme_container & lexemes = lines[line_offset].lexemes;
+		if(lexemes[0].type != lexeme_type::iteration)
+			return false;
+
+		if(lexemes.size() == 1)
+		{
+			//three part for
+		}
+		else
+		{
+			//for each statement
+
+			std::size_t offset = 1;
+			parse_tree_nodes output;
+			process_atomic_statement(lexemes, offset, output);
+
+			parse_tree_node & conditional = output[0];
+
+			output.type = executable_unit_type::for_each_statement;
+			for_each_statement * & for_each_pointer = output.for_each_pointer;
+			for_each_pointer = new for_each_statement;
+			for_each_pointer->conditional_term = conditional;
+
+			process_body(&for_each_pointer->body);
+		}
+
+		return true;
+	}
+
+	bool intermediary_translator::process_assignment(executable_unit & output)
+	{
+		lexeme_container & lexemes = lines[line_offset].lexemes;
+
+		uword assignment_count = 0;
+		std::size_t assignment_offset;
+		assignment_type::type type;
+
+		for(std::size_t i = 0, end = lexemes.size(); i < end; i++)
+		{
+			lexeme_type::type current_lexeme = lexeme_type::lexemes[i];
+
+			if(is_assignment_lexeme())
+				assignment_count++;
+
+			if(convert_lexeme_to_assignment_type(current_lexeme, type))
+				assignment_offset = i;
+		}
+
+		if(assignment_count == 0)
+			return false;
+
+		if(assignment_count > 1)
+			error("Encountered multiple assignments within one statement");
 	}
 
 	void intermediary_translator::process_statement(executable_units & output)
@@ -508,13 +565,9 @@ namespace fridh
 
 		line_of_code & next_line = lines[line_offset];
 		
-		if(next_line.indentation_level < indentation)
+		//end of block?
+		return next_line.indentation_level < indentation;
 		{
-			//end of block
-			return true;
-		}
-		else
-			return false;
 	}
 
 	bool intermediary_translator::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output)

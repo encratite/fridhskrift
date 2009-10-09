@@ -13,6 +13,7 @@ namespace fridh
 		{
 			statement,
 			assignment,
+			crement,
 			return_statement,
 			if_statement,
 			if_else_statement,
@@ -33,9 +34,15 @@ namespace fridh
 			division,
 			modulo,
 			exponentiation,
+		};
+	}
 
-			increment,
+	namespace crement_type
+	{
+		enum type
+		{
 			decrement,
+			increment,
 		};
 	}
 
@@ -183,6 +190,12 @@ namespace fridh
 		parse_tree_node term;
 	};
 
+	struct crement_statement
+	{
+		parse_tree_symbol symbol;
+		crement_type::type type;
+	};
+
 	struct if_statement
 	{
 		parse_tree_node conditional_term;
@@ -225,6 +238,8 @@ namespace fridh
 		union
 		{
 			parse_tree_node * statement_pointer;
+			assignment_stamtent * assignment_pointer;
+			crement_statement * crement_pointer;
 			if_statement * if_pointer;
 			if_else_statement * if_else_pointer;
 			for_each_statement * for_each_pointer;
@@ -238,4 +253,8 @@ namespace fridh
 		string_vector arguments;
 		executable_units body;
 	};
+
+	bool convert_lexeme_to_assignment_type(lexeme_type::type input, assignment_type::type & output);
+	bool convert_lexeme_to_crement_type(lexeme_type::type input, crement_type::type & output);
+	bool is_assignment_lexeme(lexeme_type::type input);
 }
