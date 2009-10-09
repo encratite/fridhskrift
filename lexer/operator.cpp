@@ -59,6 +59,9 @@ namespace fridh
 
 		operator_lexeme(iteration, "\\"),
 		operator_lexeme(iterator, "#"),
+
+		operator_lexeme(while_operator, "\\\\"),
+
 		operator_lexeme(function_declaration, "@"),
 		operator_lexeme(anonymous_function_declaration, "@@"),
 		operator_lexeme(class_operator, "$"),

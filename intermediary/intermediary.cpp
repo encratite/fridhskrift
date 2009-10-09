@@ -451,6 +451,30 @@ namespace fridh
 			if_pointer->conditional_term = conditional;
 			if_pointer->body = if_body;
 		}
+
+		return true;
+	}
+
+	bool intermediary_translator::process_while(executable_unit & output)
+	{
+		lexeme_container & lexemes = lines[line_offset].lexemes;
+		if(lexemes[0].type != lexeme_type::while_statement)
+			return false;
+
+		std::size_t offset = 1;
+		parse_tree_nodes output;
+		parse_statement(lexemes, offset, output, false, lexeme_type::non_terminating_placeholder);
+
+		parse_tree_node & conditional = output[0];
+
+		output.type = executable_unit_type::while_statement;
+		while_statement * & while_pointer = output.while_pointer;
+		while_pointer = new while_statement;
+		while_pointer->conditional_term = conditional;
+
+		process_body(&while_pointer->body);
+
+		return true;
 	}
 
 	void intermediary_translator::process_statement(executable_units & output)

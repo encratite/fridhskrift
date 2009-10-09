@@ -75,6 +75,8 @@ namespace fridh
 			iteration,
 			iterator,
 
+			while_operator,
+
 			function_declaration,
 			anonymous_function_declaration,
 

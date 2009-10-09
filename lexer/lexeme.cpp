@@ -177,6 +177,9 @@ namespace fridh
 			case iterator:
 				return "iterator";
 
+			case while_operator:
+				return "while";
+
 			case function_declaration:
 				return "function";
 
