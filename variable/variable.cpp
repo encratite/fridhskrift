@@ -8,19 +8,6 @@ namespace fridh
 		std::string const zero_division_error_message = "Zero division error";
 	}
 
-	unary_argument::unary_argument(variable & output, std::string & error_message):
-		output(output),
-		error_message(error_message)
-	{
-	}
-
-	binary_argument::binary_argument(variable const & other, variable & output, std::string & error_message):
-		other(other),
-		output(output),
-		error_message(error_message)
-	{
-	}
-
 	variable::variable():
 		type(variable_type_identifier::undefined)
 	{
@@ -96,54 +83,44 @@ namespace fridh
 		throw ail::exception("Failed to retrieve floating point value");
 	}
 
-	bool variable::get_string_representation(std::string & output) const
+	std::string variable::get_string_representation() const
 	{
 		switch(type)
 		{
 		case variable_type_identifier::boolean:
-			output = ail::bool_to_string(boolean);
-			break;
+			return ail::bool_to_string(boolean);
 
 		case variable_type_identifier::signed_integer:
-			output = ail::number_to_string<types::signed_integer>(signed_integer);
-			break;
+			return ail::number_to_string<types::signed_integer>(signed_integer);
 
 		case variable_type_identifier::unsigned_integer:
-			output = ail::number_to_string<types::unsigned_integer>(unsigned_integer);
-			break;
+			return ail::number_to_string<types::unsigned_integer>(unsigned_integer);
 
 		case variable_type_identifier::floating_point_value:
-			output = ail::number_to_string<types::floating_point_value>(floating_point_value);
-			break;
+			return ail::number_to_string<types::floating_point_value>(floating_point_value);
 
-		default:
-			return false;
+		case variable_type_identifier::string:
+			return *string;
 		}
 
-		return true;
+		get_unary_argument_type_error("String representation", type);
 	}
 
-	bool variable::get_boolean_value(bool & output) const
+	bool variable::get_boolean_value() const
 	{
 		switch(type)
 		{
 		case variable_type_identifier::boolean:
-			output = boolean;
-			break;
+			return boolean;
 
 		case variable_type_identifier::signed_integer:
-			output = signed_integer != 0;
-			break;
+			return signed_integer != 0;
 
 		case variable_type_identifier::unsigned_integer:
-			output = unsigned_integer != 0;
-			break;
-
-		default:
-			return false;
+			return unsigned_integer != 0;
 		}
 
-		return true;
+		get_unary_argument_type_error("Boolean representation", type);
 	}
 
 	bool variable::is_zero() const

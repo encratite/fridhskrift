@@ -2,28 +2,18 @@
 
 namespace fridh
 {
-#define LOGICAL_OPERATOR(name, operator) \
+#define LOGICAL_OPERATOR(name, description, operator) \
+	void variable::name(variable const & argument, variable & output) \
+	{ \
 		bool \
 			left_value, \
 			right_value; \
-		if(get_boolean_value(left_value) && argument.other.get_boolean_value(right_value)) \
-		{ \
-			argument.output.new_boolean(left_value operator right_value); \
-			return true; \
-		} \
+		if(get_boolean_value(left_value) && argument.get_boolean_value(right_value)) \
+			output.new_boolean(left_value operator right_value); \
 		else \
-		{ \
-			argument.error_message = get_unary_argument_type_error(name, type); \
-			return false; \
-		}
-
-	bool variable::logical_and(binary_argument & argument) const
-	{
-		LOGICAL_OPERATOR("Logical and", &&)
+			unary_argument_type_error(description, type); \
 	}
 
-	bool variable::logical_or(binary_argument & argument) const
-	{
-		LOGICAL_OPERATOR("Logical or", ||)
-	}
+	LOGICAL_OPERATOR(logical_and, "Logical and", &&)
+	LOGICAL_OPERATOR(logical_or, "Logical or", ||)
 }

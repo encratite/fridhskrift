@@ -7,9 +7,9 @@ namespace fridh
 		return type;
 	}
 
-	bool variable::is_floating_point_operation(binary_argument & argument) const
+	bool variable::is_floating_point_operation(variable & argument) const
 	{
-		return type == variable_type_identifier::floating_point_value || argument.other.type == variable_type_identifier::floating_point_value;
+		return type == variable_type_identifier::floating_point_value || argument.type == variable_type_identifier::floating_point_value;
 	}
 
 	bool variable::is_integer_type() const

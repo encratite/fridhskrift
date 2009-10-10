@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <ail/types.hpp>
+#include <ail/exceptionh.pp>
 
 namespace fridh
 {
@@ -28,23 +29,6 @@ namespace fridh
 	class variable;
 
 	typedef variable_type_identifier::variable_type variable_type;
-
-	struct unary_argument
-	{
-		variable & output;
-		std::string & error_message;
-
-		unary_argument(variable & output, std::string & error_message);
-	};
-
-	struct binary_argument
-	{
-		variable const & other;
-		variable & output;
-		std::string & error_message;
-
-		binary_argument(variable const & other, variable & output, std::string & error_message);
-	};
 
 	class variable;
 
@@ -78,34 +62,40 @@ namespace fridh
 		void new_array();
 		void new_map();
 
-		bool addition(binary_argument & argument) const;
-		bool subtraction(binary_argument & argument) const;
-		bool multiplication(binary_argument & argument) const;
-		bool division(binary_argument & argument) const;
-		bool modulo(binary_argument & argument) const;
+#define DECLARE_UNARY_OPERATOR(name) void name(variable & output) const;
+#define DECLARE_BINARY_OPERATOR(name) void name(variable const & argument, variable & output) const;
 
-		bool negative(unary_argument & argument) const;
+		DECLARE_BINARY_OPERATOR(addition)
+		DECLARE_BINARY_OPERATOR(subtraction)
+		DECLARE_BINARY_OPERATOR(multiplication)
+		DECLARE_BINARY_OPERATOR(division)
+		DECLARE_BINARY_OPERATOR(modulo)
 
-		bool less_than(binary_argument & argument) const;
-		bool less_than_or_equal(binary_argument & argument) const;
-		bool greater_than(binary_argument & argument) const;
-		bool greater_than_or_equal(binary_argument & argument) const;
-		bool unequal(binary_argument & argument) const;
-		bool equal(binary_argument & argument) const;
+		DECLARE_BINARY_OPERATOR(negation)
 
-		bool logical_not(unary_argument & argument) const;
+		DECLARE_BINARY_OPERATOR(less_than)
+		DECLARE_BINARY_OPERATOR(less_than_or_equal)
+		DECLARE_BINARY_OPERATOR(greater_than)
+		DECLARE_BINARY_OPERATOR(greater_than_or_equal)
+		DECLARE_BINARY_OPERATOR(unequal)
+		DECLARE_BINARY_OPERATOR(equal)
 
-		bool logical_and(binary_argument & argument) const;
-		bool logical_or(binary_argument & argument) const;
+		DECLARE_UNARY_OPERATOR(logical_not)
 
-		bool shift_left(binary_argument & argument) const;
-		bool shift_right(binary_argument & argument) const;
+		DECLARE_BINARY_OPERATOR(logical_and)
+		DECLARE_BINARY_OPERATOR(logical_or)
 
-		bool binary_and(binary_argument & argument) const;
-		bool binary_or(binary_argument & argument) const;
-		bool binary_xor(binary_argument & argument) const;
+		DECLARE_BINARY_OPERATOR(shift_left)
+		DECLARE_BINARY_OPERATOR(shift_right)
 
-		bool binary_not(unary_argument & argument) const;
+		DECLARE_BINARY_OPERATOR(binary_and)
+		DECLARE_BINARY_OPERATOR(binary_or)
+		DECLARE_BINARY_OPERATOR(binary_xor)
+
+		DECLARE_UNARY_OPERATOR(binary_not)
+
+#undef DECLARE_UNARY_OPERATOR
+#undef DECLARE_BINARY_OPERATOR
 
 		bool operator==(variable const & other) const;
 		bool operator!=(variable const & other) const;
@@ -127,18 +117,17 @@ namespace fridh
 
 		variable_type type;
 
-		bool is_floating_point_operation(binary_argument & argument) const;
+		bool is_floating_point_operation(variable & argument) const;
 		bool is_integer_type() const;
 		bool is_numeric_type() const;
 		bool is_zero() const;
 
 		types::floating_point_value get_floating_point_value() const;
-		bool get_string_representation(std::string & output) const;
-		bool get_boolean_value(bool & output) const;
+		std::string get_string_representation() const;
+		bool get_boolean_value() const;
 
-		bool array_addition(binary_argument & argument) const;
-		bool perform_string_conversion(std::string & output, bool & error) const;
-		bool string_addition(binary_argument & argument, bool & error) const;
+		bool variable::array_addition(variable const & argument) const
+		bool string_addition(variable const & argument, variable & output) const;
 
 		bool array_equality(variable const & other) const;
 		bool map_equality(variable const & other) const;
@@ -149,6 +138,7 @@ namespace fridh
 	};
 
 	std::string get_type_string(variable_type type);
-	std::string get_unary_argument_type_error(std::string const & operation, variable_type type);
-	std::string get_binary_argument_type_error(std::string const & operation, variable_type left, variable_type right);
+
+	void unary_argument_type_error(std::string const & operation, variable_type type);
+	void binary_argument_type_error(std::string const & operation, variable_type left, variable_type right);
 }

@@ -2,54 +2,26 @@
 
 namespace fridh
 {
-#define BINARY_OPERATOR(name, operator) \
-		if(is_integer_type() && argument.other.is_integer_type()) \
-		{ \
-			argument.output.new_unsigned_integer(unsigned_integer operator argument.other.unsigned_integer); \
-			return true; \
-		} \
+#define BINARY_OPERATOR(name, description, operator) \
+	void variable::name(variable const & argument, variable & output) const \
+	{ \
+		if(is_integer_type() && argument.is_integer_type()) \
+			output.new_unsigned_integer(unsigned_integer operator argument.unsigned_integer); \
 		else \
-		{ \
-			argument.error_message = get_binary_argument_type_error(name, type, argument.other.type); \
-			return false; \
-		}
-
-	bool variable::shift_left(binary_argument & argument) const
-	{
-		BINARY_OPERATOR("Shift left", <<)
+			binary_argument_type_error(description, type, argument.type); \
 	}
 
-	bool variable::shift_right(binary_argument & argument) const
-	{
-		BINARY_OPERATOR("Shift right", >>)
-	}
+	BINARY_OPERATOR(shift_left, "Shift left", <<)
+	BINARY_OPERATOR(shift_right, "Shift right", >>)
+	BINARY_OPERATOR(binary_and, "Binary and", &)
+	BINARY_OPERATOR(binary_or, "Binary or", |)
+	BINARY_OPERATOR(binary_xor, "Binary exclusive or", ^)
 
-	bool variable::binary_and(binary_argument & argument) const
-	{
-		BINARY_OPERATOR("Binary and", &)
-	}
-
-	bool variable::binary_or(binary_argument & argument) const
-	{
-		BINARY_OPERATOR("Binary or", |)
-	}
-
-	bool variable::binary_xor(binary_argument & argument) const
-	{
-		BINARY_OPERATOR("Binary exclusive or", ^)
-	}
-
-	bool variable::binary_not(unary_argument & argument) const
+	void variable::binary_not(variable & output) const
 	{
 		if(is_integer_type())
-		{
-			argument.output.new_unsigned_integer(~unsigned_integer);
-			return true;
-		}
+			output.new_unsigned_integer(~unsigned_integer);
 		else
-		{
-			argument.error_message = get_unary_argument_type_error("Binary not", type);
-			return false;
-		}
+			unary_argument_type_error("Binary not", type);
 	}
 }
