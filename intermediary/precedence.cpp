@@ -24,6 +24,9 @@ namespace fridh
 		unary_operator_precedence_map[unary_operator_type::logical_not] = operator_precedence::logical_not;
 		unary_operator_precedence_map[unary_operator_type::binary_not] = operator_precedence::binary_not;
 
+		unary_operator_precedence_map[unary_operator_type::increment] = operator_precedence::increment;
+		unary_operator_precedence_map[unary_operator_type::decrement] = operator_precedence::decrement;
+
 		binary_operator_precedence_map[binary_operator_type::addition] = operator_precedence::addition;
 		binary_operator_precedence_map[binary_operator_type::subtraction] = operator_precedence::subtraction;
 		binary_operator_precedence_map[binary_operator_type::multiplication] = operator_precedence::multiplication;

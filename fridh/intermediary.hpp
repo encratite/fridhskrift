@@ -15,6 +15,9 @@ namespace fridh
 
 			call,
 
+			increment,
+			decrement,
+
 			negation,
 			logical_not,
 			binary_not,
@@ -45,6 +48,17 @@ namespace fridh
 
 			logical_and,
 			logical_or,
+
+			assignment,
+			addition_assignment,
+			subtraction_assignment,
+			multiplication_assignment,
+			division_assignment,
+			modulo_assignment,
+			exponentiation_assignment,
+
+			increment,
+			decrement,
 		};
 	}
 

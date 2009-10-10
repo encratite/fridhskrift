@@ -3,15 +3,6 @@
 
 namespace fridh
 {
-
-	namespace
-	{
-		typedef std::map<lexeme_type::type, assignment_type::type> assignment_lexeme_map_type;
-
-		assignment_lexeme_map_type assignment_lexeme_map;
-		std::set<lexeme_type> assignment_lexemes;
-	}
-
 	parse_tree_node::parse_tree_node():
 		type(parse_tree_node_type::uninitialised)
 	{
@@ -56,65 +47,7 @@ namespace fridh
 	}
 
 	parse_tree_symbol::parse_tree_symbol():
-	type(symbol_prefix::none)
+		type(symbol_prefix::none)
 	{
-	}
-
-	void initialise_map()
-	{
-		if(!assignment_lexeme_map.empty())
-			return;
-
-		using namespace lexeme_type::type;
-
-		assignment_lexeme_map[assignment] = assignment_type::assignment;
-		assignment_lexeme_map[addition_assignment] = assignment_type::addition;
-		assignment_lexeme_map[subtraction_assignment] = assignment_type::subtraction;
-		assignment_lexeme_map[multiplication_assignment] = assignment_type::multiplication;
-		assignment_lexeme_map[division_assignment] = assignment_type::division;
-		assignment_lexeme_map[modulo_assignment] = assignment_type::modulo;
-		assignment_lexeme_map[exponentiation_assignment] = assignment_type::exponentiation;
-
-		for(assignment_lexeme_map_type::iterator i = assignment_lexeme_map.begin(), end = assignment_lexeme_map.end(); i != end; i++)
-			assignment_lexemes.insert(i->first);
-
-		assignment_lexemes.insert(lexeme_type::decrement);
-		assignment_lexemes.insert(lexeme_type::increment);
-	}
-
-	bool convert_lexeme_to_assignment_type(lexeme_type::type input, assignment_type::type & output)
-	{
-		initialise_map();
-
-		assignment_lexeme_map_type::iterator iterator = assignment_lexeme_map.find(input);
-		if(iterator == assignment_lexeme_map.end())
-			return false;
-
-		output = iterator->second;
-		return true;
-	}
-
-	bool convert_lexeme_to_crement_type(lexeme_type::type input, crement_type::type & output)
-	{
-		switch(input)
-		{
-			case lexeme_type::decrement:
-				output = crement_type::decrement;
-				break;
-
-			case lexeme_type::increment:
-				output = crement_type::increment;
-				break;
-
-			default:
-				return false;
-		}
-
-		return true;
-	}
-
-	bool is_assignment_lexeme(lexeme_type::type input)
-	{
-		return assignment_lexemes.find(input) != assignment_lexemes.end();
 	}
 }

@@ -49,6 +49,9 @@ namespace fridh
 
 			case binary_not:
 
+			case increment:
+			case decrement:
+
 				output = lexeme_group::unary_argument;
 				return true;
 

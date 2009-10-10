@@ -99,6 +99,9 @@ namespace fridh
 			case modulo_assignment:
 				return "%=";
 
+			case exponentiation_assignment:
+				return "**=";
+
 			case increment:
 				return "++";
 

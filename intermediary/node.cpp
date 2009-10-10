@@ -24,6 +24,9 @@ namespace fridh
 		unary_lexeme_map[logical_not] = unary_operator_type::logical_not;
 		unary_lexeme_map[binary_not] = unary_operator_type::binary_not;
 
+		unary_lexeme_map[increment] = unary_operator_type::increment;
+		unary_lexeme_map[decrement] = unary_operator_type::decrement;
+
 		binary_lexeme_map[addition] = binary_operator_type::;
 		binary_lexeme_map[subtraction] = binary_operator_type::subtraction;
 		binary_lexeme_map[multiplication] = binary_operator_type::multiplication;
@@ -49,6 +52,14 @@ namespace fridh
 		binary_lexeme_map[binary_xor] = binary_operator_type::binary_xor;
 
 		binary_lexeme_map[selection_operator] = binary_operator_type::selection;
+
+		binary_lexeme_map[assignment] = binary_operator_type::assignment;
+		binary_lexeme_map[addition_assignment] = binary_operator_type::addition_assignment;
+		binary_lexeme_map[subtraction_assignment] = binary_operator_type::subtraction_assignment;
+		binary_lexeme_map[multiplication_assignment] = binary_operator_type::multiplication_assignment;
+		binary_lexeme_map[division_assignment] = binary_operator_type::division_assignment;
+		binary_lexeme_map[modulo_assignment] = binary_operator_type::modulo_assignment;
+		binary_lexeme_map[exponentiation_assignment] = binary_operator_type::exponentiation_assignment;
 
 		maps_are_initialised = true;
 	}
