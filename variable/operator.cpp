@@ -52,7 +52,7 @@ namespace fridh
 			return false;
 	}
 
-#define ARITHMETIC_OPERATION(operator) \
+#define ARITHMETIC_OPERATION(description, operator) \
 		if(is_numeric_type() && argument.is_numeric_type()) \
 		{ \
 			if(is_floating_point_operation(argument)) \
@@ -63,44 +63,38 @@ namespace fridh
 				output.new_signed_integer(signed_integer operator argument.signed_integer); \
 		} \
 		else \
-			binary_argument_type_error(name_of_operation, type, argument.type);
+			binary_argument_type_error(description, type, argument.type);
 
 	void variable::addition(variable const & argument, variable & output) const
 	{
-		std::string const name_of_operation = "Addition";
-
 		if(array_addition(argument, output))
 			return;
 
 		if(string_addition(argument, output))
 			return;
 
-		ARITHMETIC_OPERATION(+)
+		ARITHMETIC_OPERATION("Addition", +)
 	}
 
 	void variable::subtraction(variable const & argument, variable & output) const
 	{
-		std::string const name_of_operation = "Subtraction";
-		ARITHMETIC_OPERATION(-)
+		ARITHMETIC_OPERATION("Subtraction", -)
 	}
 
 	void variable::multiplication(variable const & argument, variable & output) const
 	{
-		std::string const name_of_operation = "Multiplication";
-		ARITHMETIC_OPERATION(*)
+		ARITHMETIC_OPERATION("Multiplication", *)
 	}
 
 	void variable::addition(variable const & argument, variable & output) const
 	{
-		std::string const name_of_operation = "Division";
-		if(argument.other.is_zero())
+		if(argument.is_zero())
 			throw ail::exception(zero_division_error_message);
-		ARITHMETIC_OPERATION(/)
+		ARITHMETIC_OPERATION("Division", /)
 	}
 
 	void variable::addition(variable const & argument, variable & output) const
 	{
-		std::string const name_of_operation = "Modulo";
 		if(argument.is_zero())
 			throw ail::exception(zero_division_error_message);
 		else if(is_integer_type() && argument.is_integer_type())
@@ -111,7 +105,7 @@ namespace fridh
 				output.new_signed_integer(signed_integer % argument.signed_integer);
 		}
 		else
-			binary_argument_type_error(name_of_operation, type, argument.type);
+			binary_argument_type_error("Modulo", type, argument.type);
 	}
 
 	void variable::negation(variable & output) const
