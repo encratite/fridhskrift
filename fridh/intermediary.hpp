@@ -113,6 +113,15 @@ namespace fridh
 		void process_body(executable_units * output = 0);
 
 		void process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_node & output, bool allow_multi_statements = false, lexeme_type::type terminator = lexeme_type::non_terminating_placeholder);
+		void process_offset_atomic_statement(parse_tree_node & output, std::size_t offset = 0);
+		void process_composite_term(parse_tree_node & output);
+
+		bool is_if_statement();
+
+		bool process_if(executable_unit & output);
+		bool process_while(executable_unit & output);
+		bool process_for(executable_unit & output);
+
 
 		bool process_class();
 		bool process_function();

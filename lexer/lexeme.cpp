@@ -169,10 +169,10 @@ namespace fridh
 				return "array: end";
 
 			case scope_start:
-				return "symbol_tree_node: start";
+				return "scope: start";
 
 			case scope_end:
-				return "symbol_tree_node: end";
+				return "scope: end";
 
 			case iteration:
 				return "iteration";

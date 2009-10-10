@@ -211,7 +211,6 @@ namespace fridh
 		union
 		{
 			parse_tree_node * statement_pointer;
-			crement_statement * crement_pointer;
 			if_statement * if_pointer;
 			if_else_statement * if_else_pointer;
 			for_each_statement * for_each_pointer;
