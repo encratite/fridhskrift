@@ -408,6 +408,7 @@ namespace fridh
 		parse_tree_nodes nodes;
 		process_atomic_statement(lexemes, offset, nodes);
 		output = nodes[0];
+		line_offset++;
 	}
 
 	void intermediary_translator::process_composite_term(parse_tree_node & output)
@@ -493,18 +494,33 @@ namespace fridh
 		if(lexemes.size() == 1)
 		{
 			//three part for
+
+			if(lines.size() - line_offset < 4)
+				throw ail::exception("Incomplete for statement");
+
+			line_offset++;
+
+			for(std::size_t i = line_offset, end = i + 3; i < end; i++)
+			{
+				if(lines[i].indentation_level != indentation_level)
+					throw ail::exception("Invalid indentation level in a for statement");
+			}
+
+			output.type = executable_unit_type::for_statement;
+			for_statement * & for_pointer = output.for_pointer;
+			for_pointer = new for_statement;
+			process_offset_atomic_statement(for_pointer->initialisation);
+			process_offset_atomic_statement(for_pointer->conditional);
+			process_offset_atomic_statement(for_pointer->iteration);
 		}
 		else
 		{
 			//for each statement
 
-			parse_tree_node conditional;
-			process_composite_term(conditional);
-
 			output.type = executable_unit_type::for_each_statement;
 			for_each_statement * & for_each_pointer = output.for_each_pointer;
 			for_each_pointer = new for_each_statement;
-			for_each_pointer->conditional_term = conditional;
+			process_composite_term(for_each_pointer->conditional_term);
 
 			process_body(&for_each_pointer->body);
 		}
