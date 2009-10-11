@@ -16,7 +16,7 @@ namespace fridh
 		binary_lexeme_map_type binary_lexeme_map;
 	}
 
-	void initialise_maps()
+	void initialise_data()
 	{
 		if(maps_are_initialised)
 			return;
@@ -112,7 +112,7 @@ namespace fridh
 
 	void lexeme_to_unary_operator_node(lexeme & input, parse_tree_node & output)
 	{
-		initialise_maps();
+		initialise_data();
 
 		unary_lexeme_map_type::iterator iterator = unary_lexeme_map.find(input.type);
 		if(iterator == unary_lexeme_map.end())
@@ -126,7 +126,7 @@ namespace fridh
 
 	void lexeme_to_binary_operator_node(lexeme & input, parse_tree_node & output)
 	{
-		initialise_maps();
+		initialise_data();
 
 		binary_lexeme_map_type::iterator iterator = binary_lexeme_map.find(input.type);
 		if(iterator == binary_lexeme_map.end())

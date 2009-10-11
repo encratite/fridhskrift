@@ -11,13 +11,14 @@ namespace fridh
 	{
 		unary_operator_precedence_map_type unary_operator_precedence_map;
 		binary_operator_precedence_map_type binary_operator_precedence_map;
+		std::set<binary_operator_type::type> binary_right_to_left_operators;
 
-		bool initialised_maps = false;
+		bool initialised_data = false;
 	}
 
-	void initialise_maps()
+	void initialise_data()
 	{
-		if(initialised_maps)
+		if(initialised_data)
 			return;
 
 		unary_operator_precedence_map[unary_operator_type::negation] = operator_precedence::negation;
@@ -53,12 +54,24 @@ namespace fridh
 
 		binary_operator_precedence_map[binary_operator_type::selection] = operator_precedence::selection;
 
-		initialised_maps = true;
+		{
+			using namespace binary_operator_type;
+
+			binary_right_to_left_operators.insert(assignment);
+			binary_right_to_left_operators.insert(addition_assignment);
+			binary_right_to_left_operators.insert(subtraction_assignment);
+			binary_right_to_left_operators.insert(multiplication_assignment);
+			binary_right_to_left_operators.insert(division_assignment);
+			binary_right_to_left_operators.insert(modulo_assignment);
+			binary_right_to_left_operators.insert(exponentiation_assignment);
+		}
+
+		initialised_data = true;
 	}
 
 	word get_unary_operator_precedence(unary_operator_type::type input)
 	{
-		initialise_maps();
+		initialise_data();
 
 		unary_operator_precedence_map_type::iterator iterator = unary_operator_precedence_map.find(input);
 		if(iterator == unary_operator_precedence_map.end())
@@ -68,7 +81,7 @@ namespace fridh
 
 	word get_binary_operator_precedence(binary_operator_type::type input)
 	{
-		initialise_maps();
+		initialise_data();
 
 		binary_operator_precedence_map_type::iterator iterator = binary_operator_precedence_map.find(input);
 		if(iterator == binary_operator_precedence_map.end())
@@ -102,6 +115,18 @@ namespace fridh
 
 	bool is_right_to_left_operator(parse_tree_node & input)
 	{
-		return input.type == parse_tree_node_type::unary_operator_node;
+		initialise_data();
+
+		if(input.type == parse_tree_node_type::unary_operator_node)
+			return true;
+
+		if
+		(
+			input.type == parse_tree_node_type::binary_operator_node) &&
+			binary_right_to_left_operators.find(input.binary_operator_pointer->type) != binary_right_to_left_operators.end()
+		)
+				return true;
+
+		return false;
 	}
 }
