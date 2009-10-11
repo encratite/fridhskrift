@@ -121,11 +121,11 @@ namespace fridh
 		bool process_if(executable_unit & output);
 		bool process_while(executable_unit & output);
 		bool process_for(executable_unit & output);
-
+		bool process_return(executable_unit & output);
 
 		bool process_class();
 		bool process_function();
-		void process_statement(executable_units & output);
+		void process_statement(executable_unit & output);
 		bool process_line(executable_unit * output = 0);
 
 		bool translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output);

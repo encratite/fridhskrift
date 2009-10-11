@@ -542,11 +542,22 @@ namespace fridh
 		return true;
 	}
 
-	void intermediary_translator::process_statement(executable_units & output)
+	void intermediary_translator::process_statement(executable_unit & output)
 	{
+		if
+		(
+			!
+			(
+				process_if(output) ||
+				process_while(output) ||
+				process_for(output) ||
+				process_return(output)
+			)
+		)
+			process_offset_atomic_statement(output);
 	}
 
-	bool intermediary_translator::process_line(executable_units * output)
+	bool intermediary_translator::process_line(executable_unit * output)
 	{
 		line_of_code & current_line = lines[line_offset];
 		if(current_line.indentation_level > indentation)
@@ -575,7 +586,6 @@ namespace fridh
 		
 		//end of block?
 		return next_line.indentation_level < indentation;
-		{
 	}
 
 	bool intermediary_translator::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output)
