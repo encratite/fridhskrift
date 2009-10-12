@@ -56,14 +56,8 @@ namespace fridh
 
 		{
 			using namespace binary_operator_type;
-
-			binary_right_to_left_operators.insert(assignment);
-			binary_right_to_left_operators.insert(addition_assignment);
-			binary_right_to_left_operators.insert(subtraction_assignment);
-			binary_right_to_left_operators.insert(multiplication_assignment);
-			binary_right_to_left_operators.insert(division_assignment);
-			binary_right_to_left_operators.insert(modulo_assignment);
-			binary_right_to_left_operators.insert(exponentiation_assignment);
+			for(int i = static_cast<int>(assignment); i <= static_cast<int>(exponentiation_assignment); i++)
+				binary_right_to_left_operators.insert(static_cast<binary_operator_type::type>(i));
 		}
 
 		initialised_data = true;
