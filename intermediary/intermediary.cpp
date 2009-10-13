@@ -92,7 +92,7 @@ namespace fridh
 		return true;
 	}
 
-	bool intermediary_translator::process_function()
+	bool intermediary_translator::process_function(function * output)
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(!(lexemes.size() >= 2 && lexemes[0].type == lexeme_type::function_declaration))
@@ -104,11 +104,16 @@ namespace fridh
 
 		name_collision_check();
 
-		function & current_function = *add_name(symbol::class_symbol).function_pointer;
-		for(std::size_t i = 2, end = lexemes.size(); i < end; i++)
-			current_function.arguments.push_back(*lexemes[i].string);
+		function * current_function;
+		if(output)
+			current_function = output;
+		else
+			current_function = *add_name(symbol::class_symbol).function_pointer;
 
-		process_body(&current_function.body);
+		for(std::size_t i = 2, end = lexemes.size(); i < end; i++)
+			current_function->arguments.push_back(*lexemes[i].string);
+
+		process_body(&current_function->body);
 		return true;
 	}
 
@@ -168,9 +173,7 @@ namespace fridh
 		indentation_level = 0;
 		nested_class_level = 0;
 
-		while(line_offset < line_end)
-		{
-		}
+		process_function(&target_module.entry_function);
 
 		return true;
 	}

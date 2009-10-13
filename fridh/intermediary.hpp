@@ -126,7 +126,7 @@ namespace fridh
 		bool process_return(executable_unit & output);
 
 		bool process_class();
-		bool process_function();
+		bool process_function(function * output = 0);
 		void process_statement(executable_unit & output);
 		bool process_line(executable_unit * output = 0);
 
