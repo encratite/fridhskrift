@@ -22,7 +22,7 @@ namespace fridh
 						i++;
 						remaining_bytes = end - i;
 						if(remaining_bytes == 0)
-							number_parsing_error("Incomplete hex number at the end of the input", error_occured);
+							number_parsing_error("Incomplete hex number at the end of the input");
 
 						std::size_t hex_start = i;
 
@@ -50,7 +50,7 @@ namespace fridh
 				if(byte == dot)
 				{
 					if(got_dot)
-						number_parsing_error("Encountered a floating point value containing multiple dots", error_occured);
+						number_parsing_error("Encountered a floating point value containing multiple dots");
 					else
 						got_dot = true;
 				}
@@ -61,7 +61,7 @@ namespace fridh
 			}
 
 			if(last_byte == dot)
-				number_parsing_error("Encountered a floating point value ending with a dot", error_occured);
+				number_parsing_error("Encountered a floating point value ending with a dot");
 
 			std::string number_string = input.substr(start, i - start);
 			lexeme current_lexeme;

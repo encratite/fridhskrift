@@ -87,7 +87,7 @@ namespace fridh
 				case lexeme_type::array_start:
 				{
 					parse_tree_nodes elements;
-					process_atomic_statement(lexemes, offset, content, true, lexeme_type::array_end);
+					process_atomic_statement(lexemes, offset, elements, true, lexeme_type::array_end);
 					arguments.push_back(parse_tree_node(elements));
 					set_last_group(lexeme_group::argument, last_group, got_last_group);
 					break;

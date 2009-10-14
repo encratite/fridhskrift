@@ -28,7 +28,7 @@ namespace fridh
 		unary_lexeme_map[increment] = unary_operator_type::increment;
 		unary_lexeme_map[decrement] = unary_operator_type::decrement;
 
-		binary_lexeme_map[addition] = binary_operator_type::;
+		binary_lexeme_map[addition] = binary_operator_type::addition;
 		binary_lexeme_map[subtraction] = binary_operator_type::subtraction;
 		binary_lexeme_map[multiplication] = binary_operator_type::multiplication;
 		binary_lexeme_map[division] = binary_operator_type::division;
@@ -103,7 +103,7 @@ namespace fridh
 
 				default:
 					delete new_variable;
-					throw ail::exeption("Unknown lexeme type encountered while trying to produce a parse tree node for a variable");
+					throw ail::exception("Unknown lexeme type encountered while trying to produce a parse tree node for a variable");
 			}
 
 			output.type = parse_tree_node_type::variable;

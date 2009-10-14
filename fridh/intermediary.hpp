@@ -109,8 +109,6 @@ namespace fridh
 		void name_collision_check();
 		symbol_tree_node & add_name(symbol::type symbol_type);
 
-		void operator_resolution(parse_tree_nodes & input, parse_tree_node & output);
-
 		void process_body(executable_units * output = 0);
 
 		void process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements = false, lexeme_type::type terminator = lexeme_type::non_terminating_placeholder);
@@ -143,4 +141,6 @@ namespace fridh
 	bool get_parse_tree_node_precedence(parse_tree_node & input, word & output);
 
 	bool is_right_to_left_operator(parse_tree_node & input);
+	
+	void operator_resolution(parse_tree_nodes & input, parse_tree_node & output);
 }

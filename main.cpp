@@ -14,10 +14,11 @@ bool perform_lexer_test(std::string const & input, std::string const & output)
 		return false;
 	}
 
-	std::vector<fridh::line_of_code> lines;
-	std::string error;
+	fridh::lines_of_code lines;
 	fridh::lexer lexer(code, lines);
-	if(!lexer.parse())
+
+	std::string error;
+	if(!lexer.parse(error))
 	{
 		std::cout << "Error: " << error << std::endl;
 		return false;

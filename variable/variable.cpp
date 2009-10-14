@@ -103,7 +103,10 @@ namespace fridh
 			return *string;
 		}
 
-		get_unary_argument_type_error("String representation", type);
+		unary_argument_type_error("String representation", type);
+
+		//should never get here, suppress warnings
+		return "Error";
 	}
 
 	bool variable::get_boolean_value() const
@@ -120,7 +123,7 @@ namespace fridh
 			return unsigned_integer != 0;
 		}
 
-		get_unary_argument_type_error("Boolean representation", type);
+		unary_argument_type_error("Boolean representation", type);
 	}
 
 	bool variable::is_zero() const
