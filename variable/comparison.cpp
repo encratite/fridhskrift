@@ -23,7 +23,7 @@ namespace fridh
 	NUMERIC_COMPARISON(greater_than, "Less than", >)
 	NUMERIC_COMPARISON(greater_than_or_equal, "Less than", >=)
 
-	void variable::unequal(variable const & argument, variable & output) const
+	void variable::not_equal(variable const & argument, variable & output) const
 	{
 		output.new_boolean(operator!=(argument.other));
 	}

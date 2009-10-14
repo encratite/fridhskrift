@@ -2,7 +2,7 @@
 
 namespace fridh
 {
-		bool lexer::parse_comment(std::string & error_message)
+	void lexer::parse_comment(std::string & error_message)
 	{
 		std::string const
 			multi_line_comment = ";;",
@@ -37,10 +37,7 @@ namespace fridh
 				i++;
 			}
 			if(!got_end)
-			{
-				error_message = lexer_error("Unable to find the end of a multi-line comment", start_of_comment);
-				return false;
-			}
+				lexer_error("Unable to find the end of a multi-line comment", start_of_comment);
 		}
 		else if(string_match(nested_comment_start))
 		{
@@ -69,22 +66,15 @@ namespace fridh
 			}
 
 			if(comment_depth != 0)
-			{
-				error_message = lexer_error("Unable to find the end of a nested comment", start_of_comment);
-				return false;
-			}
+				lexer_error("Unable to find the end of a nested comment", start_of_comment);
 		}
 		else
 		{
 			std::size_t offset = input.find('\n', i);
 			if(offset == std::string::npos)
-			{
-				error_message = lexer_error("Unable to find the end of a multi-line comment", start_of_comment);
-				return false;
-			}
+				lexer_error("Unable to find the end of a multi-line comment", start_of_comment);
 			i = offset;
 			process_newline();
 		}
-		return true;
 	}
 }

@@ -2,9 +2,6 @@
 
 #include <map>
 #include <string>
-#include <fridh/variable.hpp>
-#include <fridh/class.hpp>
-#include <fridh/function.hpp>
 
 namespace fridh
 {
@@ -20,7 +17,11 @@ namespace fridh
 	}
 
 	struct symbol_tree_node;
+	struct function;
 	struct class_type;
+	struct module;
+
+	class variable;
 
 	typedef std::map<std::string, symbol_tree_node *> node_children;
 
@@ -47,5 +48,7 @@ namespace fridh
 	};
 }
 
+#include <fridh/variable.hpp>
 #include <fridh/class.hpp>
+#include <fridh/function.hpp>
 #include <fridh/module.hpp>

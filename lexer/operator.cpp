@@ -31,7 +31,7 @@ namespace fridh
 		operator_lexeme(less_than_or_equal, "<="),
 		operator_lexeme(greater_than, ">"),
 		operator_lexeme(greater_than_or_equal, ">="),
-		operator_lexeme(unequal, "!="),
+		operator_lexeme(not_equal, "!="),
 		operator_lexeme(equal, "=="),
 
 		operator_lexeme(logical_not, "!"),

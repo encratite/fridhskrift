@@ -1,5 +1,6 @@
 #include <map>
 #include <fridh/symbol.hpp>
+#include <fridh/lexer.hpp>
 
 namespace fridh
 {
@@ -38,7 +39,7 @@ namespace fridh
 		binary_lexeme_map[less_than_or_equal] = binary_operator_type::less_than_or_equal;
 		binary_lexeme_map[greater_than] = binary_operator_type::greater_than;
 		binary_lexeme_map[greater_than_or_equal] = binary_operator_type::greater_than_or_equal;
-		binary_lexeme_map[unequal] = binary_operator_type::unequal;
+		binary_lexeme_map[not_equal] = binary_operator_type::not_equal;
 		binary_lexeme_map[equal] = binary_operator_type::equal;
 
 		binary_lexeme_map[logical_and] = binary_operator_type::logical_and;

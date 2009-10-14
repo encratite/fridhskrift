@@ -5,37 +5,37 @@
 
 namespace fridh
 {
+	void set_last_group(lexeme_group::type new_last_group, lexeme_group::type & last_group, bool & got_last_group)
+	{
+		last_group = new_last_group;
+		got_last_group = true;
+	}
+
+	void add_unary_node(lexeme & current_lexeme, parse_tree_nodes & arguments)
+	{
+		parse_tree_node unary_operator_node;
+		lexeme_to_unary_operator_node(current_lexeme, unary_operator_node);
+		arguments.push_back(unary_operator_node);
+	}
+
+	void add_negation_lexeme(parse_tree_nodes & arguments)
+	{
+		add_unary_node(lexeme(lexeme_type::negation), arguments);
+	}
+
+	void process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output)
+	{
+		parse_tree_node new_node;
+		operator_resolution(arguments, new_node);
+		output.push_back(new_node);
+	}
+
 	void intermediary_translator::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;
 
 		parse_tree_nodes arguments;
-
-		void set_last_group(lexeme_group::type new_last_group)
-		{
-			last_group = new_last_group;
-			got_last_group = true;
-		}
-
-		void add_unary_node(lexeme & current_lexeme)
-		{
-			parse_tree_node unary_operator_node;
-			lexeme_to_unary_operator_node(current_lexeme, unary_operator_node);
-			arguments.push_back(unary_operator_node);
-		}
-
-		void add_negation_lexeme()
-		{
-			add_unary_node(lexeme(lexeme_type::negation));
-		}
-
-		void process_node_group()
-		{
-			parse_tree_node new_node;
-			operator_resolution(arguments, new_node);
-			output.push_back(new_node);
-		}
 
 		symbol_prefix::type prefix = symbol_prefix::none;
 
@@ -77,7 +77,7 @@ namespace fridh
 						process_atomic_statement(lexemes, offset, content, false, lexeme_type::bracket_end);
 						arguments.push_back(content[0]);
 					}
-					set_last_group(lexeme_group::argument);
+					set_last_group(lexeme_group::argument, last_group, got_last_group);
 					break;
 				}
 
@@ -89,7 +89,7 @@ namespace fridh
 					parse_tree_nodes elements;
 					process_atomic_statement(lexemes, offset, content, true, lexeme_type::array_end);
 					arguments.push_back(parse_tree_node(elements));
-					set_last_group(lexeme_group::argument);
+					set_last_group(lexeme_group::argument, last_group, got_last_group);
 					break;
 				}
 
@@ -98,17 +98,17 @@ namespace fridh
 
 				case lexeme_type::call_operator:
 					arguments.push_back(parse_tree_node(parse_tree_node_type::call_operator));
-					set_last_group(lexeme_group::call_operator);
+					set_last_group(lexeme_group::call_operator, last_group, got_last_group);
 					continue;
 
 				case lexeme_type::spaced_call_operator:
 					arguments.push_back(parse_tree_node(parse_tree_node_type::spaced_call_operator));
-					set_last_group(lexeme_group::call_operator);
+					set_last_group(lexeme_group::call_operator, last_group, got_last_group);
 					continue;
 
 				case lexeme_type::iterator:
 					arguments.push_back(parse_tree_node(parse_tree_node_type::iterator));
-					set_last_group(lexeme_group::argument);
+					set_last_group(lexeme_group::argument, last_group, got_last_group);
 					continue;
 			}
 
@@ -143,7 +143,7 @@ namespace fridh
 
 					if(allow_multi_statements)
 					{
-						process_node_group();
+						process_node_group(arguments, output);
 						arguments.clear();
 						got_last_group = false;
 						continue;
@@ -154,7 +154,7 @@ namespace fridh
 				case lexeme_group::unary_operator:
 					if(got_last_group && last_group == lexeme_group::argument)
 						error("Encountered an argument followed by an unary operator without a binary operator between them");
-					add_unary_node(current_lexeme);
+					add_unary_node(current_lexeme, arguments);
 					break;
 
 				case lexeme_group::binary_operator:
@@ -167,7 +167,7 @@ namespace fridh
 
 							case lexeme_group::binary_operator:
 								if(current_lexeme.type == lexeme_type::subtraction)
-									add_negation_lexeme();
+									add_negation_lexeme(arguments);
 								else
 									error("Encountered two sequential binary operators");
 								break;
@@ -176,7 +176,7 @@ namespace fridh
 					else
 					{
 						if(current_lexeme.type == lexeme_type::subtraction)
-							add_negation_lexeme();
+							add_negation_lexeme(arguments);
 						else
 							error("Encountered a binary operator in the beginning of a statement");
 						break;
@@ -187,7 +187,7 @@ namespace fridh
 					break;
 			}
 
-			set_last_group(group);
+			set_last_group(group, last_group, got_last_group);
 		}
 
 		if(!got_last_group)
@@ -196,6 +196,6 @@ namespace fridh
 		if(last_group != lexeme_group::argument)
 			error("An operator is missing an argument");
 
-		process_node_group();
+		process_node_group(arguments, output);
 	}
 }

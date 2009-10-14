@@ -49,7 +49,7 @@ namespace fridh
 			less_than_or_equal,
 			greater_than,
 			greater_than_or_equal,
-			unequal,
+			not_equal,
 			equal,
 
 			logical_and,
@@ -104,14 +104,42 @@ namespace fridh
 		};
 	}
 
-	struct
-		parse_tree_node,
-		parse_tree_symbol,
-		executable_units;
+	struct parse_tree_node;
+	struct parse_tree_symbol;
+	struct executable_unit;
 
 	typedef std::vector<parse_tree_node> parse_tree_nodes;
 	typedef std::vector<parse_tree_symbol> parse_tree_symbols;
 	typedef std::vector<executable_unit> executable_units;
+
+	struct parse_tree_symbol;
+	struct parse_tree_unary_operator_node;
+	struct parse_tree_binary_operator_node;
+	struct parse_tree_call;
+	struct parse_tree_array;
+
+	struct parse_tree_node
+	{
+		parse_tree_node_type::type type;
+		union
+		{
+			variable * variable_pointer;
+			parse_tree_symbol * symbol_pointer;
+			parse_tree_unary_operator_node * unary_operator_pointer;
+			parse_tree_binary_operator_node * binary_operator_pointer;
+			parse_tree_call * call_pointer;
+			parse_tree_array * array_pointer;
+		};
+
+		parse_tree_node();
+		parse_tree_node(parse_tree_node_type::type type);
+		parse_tree_node(variable * variable_pointer);
+		parse_tree_node(unary_operator_type::type unary_operator);
+		parse_tree_node(binary_operator_type::type binary_operator);
+		parse_tree_node(parse_tree_nodes & elements);
+
+		void is_call();
+	};
 
 	struct parse_tree_symbol
 	{
@@ -123,13 +151,13 @@ namespace fridh
 
 	struct parse_tree_unary_operator_node
 	{
-		unary_operator_type type;
+		unary_operator_type::type type;
 		parse_tree_node argument;
 	};
 
 	struct parse_tree_binary_operator_node
 	{
-		binary_operator_type type;
+		binary_operator_type::type type;
 		parse_tree_node
 			left_argument,
 			right_argument;
@@ -144,29 +172,6 @@ namespace fridh
 	struct parse_tree_array
 	{
 		parse_tree_nodes elements;
-	};
-
-	struct parse_tree_node
-	{
-		parse_tree_node_type::type type;
-		union
-		{
-			variable * variable_pointer;
-			parse_tree_symbol * symbol_pointer;
-			parse_tree_unary_operator_node * unary_operator_pointer;
-			parse_tree_binary_operator_node * binary_operator_pointer;
-			parse_tree_call * call_pointer;
-			parse_tree_array * array_pointer;
-		}
-
-		parse_tree_node();
-		parse_tree_node(parse_tree_node_type::type type);
-		parse_tree_node(variable * variable_pointer);
-		parse_tree_node(unary_operator_type::type unary_operator);
-		parse_tree_node(binary_operator_type::type binary_operator);
-		parse_tree_node(parse_tree_nodes & elements);
-
-		void is_call();
 	};
 
 	struct if_statement
@@ -216,7 +221,7 @@ namespace fridh
 			for_each_statement * for_each_pointer;
 			for_statement * for_pointer;
 			while_statement * while_pointer;
-		}
+		};
 	};
 
 	struct function

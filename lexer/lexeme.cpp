@@ -3,46 +3,46 @@
 
 namespace fridh
 {	
-	lexeme_type::lexeme()
+	lexeme::lexeme()
 	{
 	}
 
-	lexeme_type::lexeme(lexeme_type::type type):
+	lexeme::lexeme(lexeme::type type):
 		type(type)
 	{
 	}
 
-	lexeme_type::lexeme(types::boolean boolean):
+	lexeme::lexeme(types::boolean boolean):
 		type(boolean),
 		boolean(boolean)
 	{
 	}
 
-	lexeme_type::lexeme(types::signed_integer signed_integer):
+	lexeme::lexeme(types::signed_integer signed_integer):
 		type(signed_integer),
 		signed_integer(signed_integer)
 	{
 	}
 
-	lexeme_type::lexeme(types::unsigned_integer unsigned_integer):
+	lexeme::lexeme(types::unsigned_integer unsigned_integer):
 		type(unsigned_integer),
 		unsigned_integer(unsigned_integer)
 	{
 	}
 
-	lexeme_type::lexeme(types::floating_point_value floating_point_value):
+	lexeme::lexeme(types::floating_point_value floating_point_value):
 		type(floating_point_value),
 		floating_point_value(floating_point_value)
 	{
 	}
 
-	lexeme_type::lexeme(lexeme_type::type type, std::string const & string):
+	lexeme::lexeme(lexeme::type type, std::string const & string):
 		type(type),
 		string(new std::string(string))
 	{
 	}
 
-	std::string lexeme_type::to_string() const
+	std::string lexeme::to_string() const
 	{
 		using namespace lexeme_type;
 
@@ -123,7 +123,7 @@ namespace fridh
 			case greater_than_or_equal:
 				return ">=";
 
-			case unequal:
+			case not_equal:
 				return "!=";
 
 			case equal:

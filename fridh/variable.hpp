@@ -2,13 +2,13 @@
 #include <vector>
 #include <map>
 #include <ail/types.hpp>
-#include <ail/exceptionh.pp>
+#include <ail/exception.hpp>
 
 namespace fridh
 {
 	namespace variable_type_identifier
 	{
-		enum variable_type
+		enum type
 		{
 			undefined,
 			nil,
@@ -27,10 +27,9 @@ namespace fridh
 	}
 
 	class variable;
+	struct function;
 
-	typedef variable_type_identifier::variable_type variable_type;
-
-	class variable;
+	typedef variable_type_identifier::type variable_type;
 
 	namespace types
 	{
@@ -77,7 +76,7 @@ namespace fridh
 		DECLARE_BINARY_OPERATOR(less_than_or_equal)
 		DECLARE_BINARY_OPERATOR(greater_than)
 		DECLARE_BINARY_OPERATOR(greater_than_or_equal)
-		DECLARE_BINARY_OPERATOR(unequal)
+		DECLARE_BINARY_OPERATOR(not_equal)
 		DECLARE_BINARY_OPERATOR(equal)
 
 		DECLARE_UNARY_OPERATOR(logical_not)
@@ -126,7 +125,7 @@ namespace fridh
 		std::string get_string_representation() const;
 		bool get_boolean_value() const;
 
-		bool variable::array_addition(variable const & argument) const
+		bool variable::array_addition(variable const & argument) const;
 		bool string_addition(variable const & argument, variable & output) const;
 
 		bool array_equality(variable const & other) const;

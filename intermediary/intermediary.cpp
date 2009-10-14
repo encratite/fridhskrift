@@ -10,7 +10,7 @@ namespace fridh
 	{
 	}
 
-	bool intermediary_translator::load_module(std::string const & path, std::string const & name, std::string & error_message);
+	bool intermediary_translator::load_module(std::string const & path, std::string const & name, std::string & error_message)
 	{
 		std::string content;
 		if(!ail::read_file(path, content))
@@ -20,7 +20,7 @@ namespace fridh
 		}
 
 		module module_output;
-		bool success = translate_data(module_output, content, error_message);
+		bool success = translate_data(module_output, content, name, error_message);
 		if(!success)
 			return false;
 
@@ -34,7 +34,7 @@ namespace fridh
 
 	std::string const & intermediary_translator::get_declaration_name()
 	{
-		return *lines[line_offset][1].string;
+		return *lines[line_offset].lexemes[1].string;
 	}
 
 	void intermediary_translator::name_collision_check()
@@ -164,18 +164,24 @@ namespace fridh
 
 	bool intermediary_translator::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output)
 	{
-		lines = std::vector<line_of_code>();
-		lexer current_lexer(data, lines, error_message);
-		if(!current_lexer.parse())
+		try
+		{
+			lines = lines_of_code();
+			lexer current_lexer(data, lines, error_message);
+
+			current_node = &target_module.symbols;
+			indentation_level = 0;
+			nested_class_level = 0;
+
+			process_function(&target_module.entry_function);
+
+			return true;
+		}
+		catch(ail::exception & exception)
+		{
+			error_message_output = exception.get_message();
 			return false;
-
-		current_node = &target_module.symbols;
-		indentation_level = 0;
-		nested_class_level = 0;
-
-		process_function(&target_module.entry_function);
-
-		return true;
+		}
 	}
 
 	void intermediary_translator::error(std::string const & message)

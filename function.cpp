@@ -20,21 +20,21 @@ namespace fridh
 	}
 
 	parse_tree_node::parse_tree_node(unary_operator_type::type unary_operator):
-		type(parse_tree_node::unary_operator)
+		type(parse_tree_node_type::unary_operator_node)
 	{
 		unary_operator_pointer = new parse_tree_unary_operator_node;
 		unary_operator_pointer->type = unary_operator;
 	}
 
-	parse_tree_node::parse_tree_node(binary_operator_type::type binary_operator)
-		type(parse_tree_node::binary_operator)
+	parse_tree_node::parse_tree_node(binary_operator_type::type binary_operator):
+		type(parse_tree_node_type::binary_operator_node)
 	{
 		binary_operator_pointer = new parse_tree_binary_operator_node;
 		binary_operator_pointer->type = binary_operator;
 	}
 
 	parse_tree_node::parse_tree_node(parse_tree_nodes & elements):
-		type(parse_tree_node::array)
+		type(parse_tree_node_type::array)
 	{
 		array_pointer = new parse_tree_array;
 		array_pointer->elements = elements;

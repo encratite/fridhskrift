@@ -23,10 +23,9 @@ namespace fridh
 		return string.length() > other.string.length();
 	}
 
-	lexer::lexer(std::string const & input, std::vector<line_of_code> & lines, std::string & error):
+	lexer::lexer(std::string const & input, lines_of_code & lines):
 		input(input),
-		lines(lines),
-		error(error)
+		lines(lines)
 	{
 	}
 
@@ -52,17 +51,16 @@ namespace fridh
 		return false;
 	}
 
-	std::string lexer::lexer_error(std::string const & message, uword error_line)
+	void lexer::lexer_error(std::string const & message, uword error_line)
 	{
 		if(error_line == 0)
 			error_line = line;
-		return "Line " + ail::number_to_string<uword>(error_line) + ": " + message;
+		throw ail::exception("Lexer error: Line " + ail::number_to_string<uword>(error_line) + ": " + message);
 	}
 	
-	std::string lexer::number_parsing_error(std::string const & message, bool & error_occured)
+	void lexer::number_parsing_error(std::string const & message)
 	{
-		error_occured = true;
-		return lexer_error(message);
+		lexer_error(message);
 	}
 	
 	bool lexer::is_name_char(char input)
@@ -109,7 +107,7 @@ namespace fridh
 		line_offset = i;
 	}
 
-	bool lexer::parse()
+	void lexer::parse_lexemes()
 	{
 		initialise_tables();
 
@@ -130,10 +128,7 @@ namespace fridh
 			{
 				case tab:
 					if(current_line.indentation_level > 0)
-					{
-						error = lexer_error("Tabs are only permitted in the beginning of a line (offset " + ail::number_to_string(i - line_offset + 1) + ")");
-						return false;
-					}
+						lexer_error("Tabs are only permitted in the beginning of a line (offset " + ail::number_to_string(i - line_offset + 1) + ")");
 					for(i++, current_line.indentation_level = 1; i < end && input[i] == tab; i++, current_line.indentation_level++);
 					continue;
 
@@ -152,23 +147,17 @@ namespace fridh
 				case '"':
 				{
 					std::string string;
-					if(!parse_string(current_line, error))
-						return false;
+					parse_string(current_line);
 					continue;
 				}
 
 				case ';':
-					if(!parse_comment(error))
-						return false;
+					parse_comment();
 					continue;
 			}
 
-			bool error_occured;
-			if(parse_number(current_line, error_occured))
+			if(parse_number(current_line))
 				continue;
-
-			if(error_occured)
-				return false;
 
 			parse_name(current_line);
 		}
@@ -178,11 +167,9 @@ namespace fridh
 			current_line.line = line;
 			lines.push_back(current_line);
 		}
-
-		return true;
 	}
 
-	std::string visualise_lexemes(std::vector<line_of_code> & lines)
+	std::string visualise_lexemes(lines_of_code & lines)
 	{
 		std::string output;
 
@@ -208,5 +195,19 @@ namespace fridh
 		}
 
 		return output;
+	}
+
+	bool lexer::parse(std::string & error)
+	{
+		try
+		{
+			parse();
+			return true;
+		}
+		catch(ail::exception & exception)
+		{
+			error = exception.get_message();
+			return false;
+		}
 	}
 }

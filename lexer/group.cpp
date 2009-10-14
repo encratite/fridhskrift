@@ -29,7 +29,7 @@ namespace fridh
 			case less_than_or_equal:
 			case greater_than:
 			case greater_than_or_equal:
-			case unequal:
+			case not_equal:
 			case equal:
 
 			case logical_and:

@@ -1,9 +1,10 @@
 #pragma once
 
-#include <ail/types.hpp>
 #include <string>
 #include <vector>
+#include <ail/types.hpp>
 #include <fridh/symbol.hpp>
+#include <fridh/lexer.hpp>
 
 namespace fridh
 {
@@ -45,6 +46,7 @@ namespace fridh
 
 			binary_and,
 			binary_or,
+			binary_xor,
 
 			logical_and,
 			logical_or,
@@ -56,9 +58,6 @@ namespace fridh
 			division_assignment,
 			modulo_assignment,
 			exponentiation_assignment,
-
-			increment,
-			decrement,
 		};
 	}
 
@@ -110,11 +109,11 @@ namespace fridh
 		void name_collision_check();
 		symbol_tree_node & add_name(symbol::type symbol_type);
 
-		void intermediary_translator::operator_resolution(parse_tree_nodes & input, parse_tree_node & output);
+		void operator_resolution(parse_tree_nodes & input, parse_tree_node & output);
 
 		void process_body(executable_units * output = 0);
 
-		void process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_node & output, bool allow_multi_statements = false, lexeme_type::type terminator = lexeme_type::non_terminating_placeholder);
+		void process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements = false, lexeme_type::type terminator = lexeme_type::non_terminating_placeholder);
 		void process_offset_atomic_statement(parse_tree_node & output, std::size_t offset = 0);
 		void process_composite_term(parse_tree_node & output);
 

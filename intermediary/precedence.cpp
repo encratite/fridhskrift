@@ -39,7 +39,7 @@ namespace fridh
 		binary_operator_precedence_map[binary_operator_type::less_than_or_equal] = operator_precedence::less_than_or_equal;
 		binary_operator_precedence_map[binary_operator_type::greater_than] = operator_precedence::greater_than;
 		binary_operator_precedence_map[binary_operator_type::greater_than_or_equal] = operator_precedence::greater_than_or_equal;
-		binary_operator_precedence_map[binary_operator_type::unequal] = operator_precedence::unequal;
+		binary_operator_precedence_map[binary_operator_type::not_equal] = operator_precedence::not_equal;
 		binary_operator_precedence_map[binary_operator_type::equal] = operator_precedence::equal;
 
 		binary_operator_precedence_map[binary_operator_type::logical_and] = operator_precedence::logical_and;

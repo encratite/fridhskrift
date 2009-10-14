@@ -3,7 +3,7 @@
 
 namespace fridh
 {
-	bool lexer::parse_string(line_of_code & output, std::string & error_message, std::string error_prefix)
+	void lexer::parse_string(line_of_code & output)
 	{
 		std::string string;
 		char string_character = input[i];
@@ -17,10 +17,7 @@ namespace fridh
 				case '\\':
 				{
 					if(end - i < 2)
-					{
-						error_message = lexer_error(error_prefix + "Backslash at the end of the input");
-						return false;
-					}
+						lexer_error("Backslash at the end of the input");
 
 					i++;
 
@@ -40,39 +37,32 @@ namespace fridh
 					if(ail::is_hex_digit(next_byte))
 					{
 						if(end - i < 2)
-						{
-							error_message = lexer_error(error_prefix + "Incomplete hex number escape sequence at the end of the input");
-							return false;
-						}
+							lexer_error("Incomplete hex number escape sequence at the end of the input");
+
 						if(!ail::is_hex_digit(input[i + 1]))
-						{
-							error_message = lexer_error(error_prefix + "Invalid hex number escape sequence");
-							return false;
-						}
+							lexer_error("Invalid hex number escape sequence");
+
 						std::string hex_string = input.substr(i, 2);
 						i++;
 						char new_byte = ail::string_to_number<char>(hex_string, std::ios_base::hex);
 						string.push_back(new_byte);
 					}
 					else
-					{
-						error_message = lexer_error(error_prefix + "Invalid escape sequence: " + ail::hex_string_8(static_cast<uchar>(next_byte)));
-						return false;
-					}
+						lexer_error("Invalid escape sequence: " + ail::hex_string_8(static_cast<uchar>(next_byte)));
 					break;
 				}
 
 				case '\n':
-					error_message = lexer_error(error_prefix + "Detected a newline in a string");
-					return false;
+					lexer_error("Detected a newline in a string");
+					break;
 
 				case '\'':
 				case '"':
 					if(byte == string_character)
 					{
-						output.lexemes.push_back(lexeme(string, string));
+						output.lexemes.push_back(lexeme(lexeme_type::string, string));
 						i++;
-						return true;
+						return;
 					}
 					string.push_back(byte);
 					break;
@@ -82,7 +72,6 @@ namespace fridh
 					break;
 			}
 		}
-		error_message = lexer_error(error_prefix + "String lacks terminator");
-		return false;
+		lexer_error("String lacks terminator");
 	}
 }

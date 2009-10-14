@@ -1,5 +1,4 @@
-#include <fridh/symbol_tree_node.hpp>
-#include <boost/foreach.hpp>
+#include <fridh/symbol.hpp>
 
 namespace fridh
 {
@@ -14,15 +13,15 @@ namespace fridh
 	{
 		switch(type)
 		{
-			case variable::variable:
+			case symbol::variable:
 				variable_pointer = new variable;
 				break;
 
-			case variable::function:
+			case symbol::function:
 				function_pointer = new function;
 				break;
 
-			case variable::class_symbol:
+			case symbol::class_symbol:
 				class_pointer = new class_type;
 				break;
 		}
@@ -30,24 +29,24 @@ namespace fridh
 
 	symbol_tree_node::~symbol_tree_node()
 	{
-		BOOST_FOREACH(symbol_tree_node * i, children)
-			delete i;
+		for(node_children::iterator i = children.begin(), end = children.end(); i != end; i++)
+			delete i->second;
 
 		switch(type)
 		{
-			case variable::variable:
+			case symbol::variable:
 				delete variable_pointer;
 				break;
 
-			case variable::function:
+			case symbol::function:
 				delete function_pointer;
 				break;
 
-			case variable::class_symbol:
+			case symbol::class_symbol:
 				delete class_pointer;
 				break;
 
-			case variable::module:
+			case symbol::module:
 				delete module_pointer;
 				break;
 		}
@@ -69,7 +68,7 @@ namespace fridh
 			return parent->find_entity(name, output);
 		}
 
-		output = &iterator->second;
+		output = iterator->second;
 		return true;
 	}
 }

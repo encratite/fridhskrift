@@ -46,7 +46,7 @@ namespace fridh
 			less_than_or_equal,
 			greater_than,
 			greater_than_or_equal,
-			unequal,
+			not_equal,
 			equal,
 
 			logical_not,
@@ -102,9 +102,8 @@ namespace fridh
 		};
 	}
 
-	struct
-		lexeme,
-		line_of_code;
+	struct lexeme;
+	struct line_of_code;
 
 	typedef std::vector<lexeme> lexeme_container;
 	typedef std::vector<line_of_code> lines_of_code;
@@ -152,14 +151,12 @@ namespace fridh
 	class lexer
 	{
 	public:
-		lexer(std::string const & input, std::vector<line_of_code> & lines, std::string & error);
-
-		bool parse();
+		lexer(std::string const & input, lines_of_code & lines);
+		bool parse(std::string & error);
 
 	private:
 		std::string const & input;
-		std::vector<line_of_code> & lines;
-		std::string & error;
+		lines_of_code & lines;
 
 		uword line;
 		std::size_t
@@ -169,20 +166,22 @@ namespace fridh
 		line_of_code current_line;
 
 		bool parse_operator(line_of_code & output);
-		bool parse_string(line_of_code & output, std::string & error_message, std::string error_prefix = "");
-		bool parse_number(line_of_code & output, bool & error_occured);
+		void parse_string(line_of_code & output);
+		bool parse_number(line_of_code & output);
 		void parse_name(line_of_code & output);
-		bool parse_comment(std::string & error_message);
+		void parse_comment(std::string & error_message);
 
-		std::string lexer_error(std::string const & message, uword error_line = 0);
-		std::string number_parsing_error(std::string const & message, bool & error_occured);
+		void lexer_error(std::string const & message, uword error_line = 0);
+		void number_parsing_error(std::string const & message, bool & error_occured);
 
 		bool is_name_char(char input);
 		bool string_match(std::string const & target);
 		void process_newline();
+
+		void parse_lexemes();
 	};
 
-	std::string visualise_lexemes(std::vector<line_of_code> & lines);
+	std::string visualise_lexemes(lines_of_code & lines);
 	
 	void initialise_tables();
 

@@ -58,7 +58,7 @@ namespace fridh
 	bool intermediary_translator::process_while(executable_unit & output)
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
-		if(lexemes[0].type != lexeme_type::while_statement)
+		if(lexemes[0].type != lexeme_type::while_operator)
 			return false;
 
 		parse_tree_node conditional;
