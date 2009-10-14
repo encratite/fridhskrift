@@ -2,7 +2,7 @@
 
 namespace fridh
 {
-	void lexer::parse_comment(std::string & error_message)
+	void lexer::parse_comment()
 	{
 		std::string const
 			multi_line_comment = ";;",

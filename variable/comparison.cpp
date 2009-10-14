@@ -3,7 +3,7 @@
 namespace fridh
 {
 #define NUMERIC_COMPARISON(name, description, operator) \
-	void variable::name(variable const & argument, variable & output) \
+	void variable::name(variable const & argument, variable & output) const \
 	{ \
 		if(is_numeric_type() && argument.is_numeric_type()) \
 		{ \
@@ -15,7 +15,7 @@ namespace fridh
 				output.new_boolean(signed_integer operator argument.signed_integer); \
 		} \
 		else \
-			binary_argument_type_error(name_of_operation, type, argument.other.type); \
+			binary_argument_type_error(description, type, argument.type); \
 	}
 
 	NUMERIC_COMPARISON(less_than, "Less than", <)
@@ -25,20 +25,16 @@ namespace fridh
 
 	void variable::not_equal(variable const & argument, variable & output) const
 	{
-		output.new_boolean(operator!=(argument.other));
+		output.new_boolean(operator!=(argument));
 	}
 
 	void variable::equal(variable const & argument, variable & output) const
 	{
-		output.new_boolean(operator==(argument.other));
+		output.new_boolean(operator==(argument));
 	}
 
 	void variable::logical_not(variable & output) const
 	{
-		bool value;
-		if(get_boolean_value(value))
-			output.new_boolean(!value);
-		else
-			unary_argument_type_error("Logical not", type);
+		output.new_boolean(!get_boolean_value());
 	}
 }

@@ -109,7 +109,7 @@ namespace fridh
 			output.type = executable_unit_type::for_each_statement;
 			for_each_statement * & for_each_pointer = output.for_each_pointer;
 			for_each_pointer = new for_each_statement;
-			process_composite_term(for_each_pointer->conditional_term);
+			process_composite_term(for_each_pointer->container);
 
 			process_body(&for_each_pointer->body);
 		}
@@ -143,6 +143,11 @@ namespace fridh
 				process_return(output)
 			)
 		)
-			process_offset_atomic_statement(output);
+		{
+			output.type = executable_unit_type::statement;
+			parse_tree_node * & node = output.statement_pointer;
+			node = new parse_tree_node;
+			process_offset_atomic_statement(*node);
+		}
 	}
 }

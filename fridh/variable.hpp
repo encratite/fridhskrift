@@ -93,6 +93,8 @@ namespace fridh
 
 		DECLARE_UNARY_OPERATOR(binary_not)
 
+		DECLARE_UNARY_OPERATOR(negation)
+
 #undef DECLARE_UNARY_OPERATOR
 #undef DECLARE_BINARY_OPERATOR
 
@@ -116,7 +118,7 @@ namespace fridh
 
 		variable_type type;
 
-		bool is_floating_point_operation(variable & argument) const;
+		bool is_floating_point_operation(variable const & argument) const;
 		bool is_integer_type() const;
 		bool is_numeric_type() const;
 		bool is_zero() const;
@@ -125,7 +127,7 @@ namespace fridh
 		std::string get_string_representation() const;
 		bool get_boolean_value() const;
 
-		bool variable::array_addition(variable const & argument) const;
+		bool array_addition(variable const & argument, variable & output) const;
 		bool string_addition(variable const & argument, variable & output) const;
 
 		bool array_equality(variable const & other) const;

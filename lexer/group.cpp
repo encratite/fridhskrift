@@ -42,7 +42,7 @@ namespace fridh
 			case binary_or:
 			case binary_xor:
 
-				output = lexeme_group::binary_argument;
+				output = lexeme_group::binary_operator;
 				return true;
 
 			case logical_not:
@@ -52,7 +52,7 @@ namespace fridh
 			case increment:
 			case decrement:
 
-				output = lexeme_group::unary_argument;
+				output = lexeme_group::unary_operator;
 				return true;
 
 			default:

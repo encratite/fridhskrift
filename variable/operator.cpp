@@ -2,31 +2,36 @@
 
 namespace fridh
 {
+	namespace
+	{
+		std::string const zero_division_error_message = "Zero division error";
+	}
+
 	bool variable::array_addition(variable const & argument, variable & output) const
 	{
 		bool left_is_array = type == variable_type_identifier::array;
-		bool right_is_array = argument.other.type == variable_type_identifier::array;
+		bool right_is_array = argument.type == variable_type_identifier::array;
 
 		if(left_is_array || right_is_array)
 		{
-			argument.output.type = variable_type_identifier::array;
-			argument.output.array = new types::vector;
-			types::vector & vector = *argument.output.array;
+			output.type = variable_type_identifier::array;
+			output.array = new types::vector;
+			types::vector & vector = *output.array;
 
 			if(left_is_array && right_is_array)
 			{
 				vector = *array;
-				types::vector & right_vector = *argument.other.array;
+				types::vector & right_vector = *argument.array;
 				vector.insert(vector.end(), right_vector.begin(), right_vector.end());
 			}
 			else if(left_is_array && !right_is_array)
 			{
 				vector = *array;
-				vector.push_back(argument.other);
+				vector.push_back(argument);
 			}
 			else if(!left_is_array && right_is_array)
 			{
-				vector = *argument.other.array;
+				vector = *argument.array;
 				vector.push_back(*this);
 			}
 
@@ -39,7 +44,7 @@ namespace fridh
 	bool variable::string_addition(variable const & argument, variable & output) const
 	{
 		bool left_is_string = type == variable_type_identifier::string;
-		bool right_is_string = argument.other.type == variable_type_identifier::string;
+		bool right_is_string = argument.type == variable_type_identifier::string;
 
 		if(left_is_string || right_is_string)
 		{
@@ -86,14 +91,14 @@ namespace fridh
 		ARITHMETIC_OPERATION("Multiplication", *)
 	}
 
-	void variable::addition(variable const & argument, variable & output) const
+	void variable::division(variable const & argument, variable & output) const
 	{
 		if(argument.is_zero())
 			throw ail::exception(zero_division_error_message);
 		ARITHMETIC_OPERATION("Division", /)
 	}
 
-	void variable::addition(variable const & argument, variable & output) const
+	void variable::modulo(variable const & argument, variable & output) const
 	{
 		if(argument.is_zero())
 			throw ail::exception(zero_division_error_message);

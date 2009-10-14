@@ -126,7 +126,7 @@ namespace fridh
 		explicit lexeme(types::signed_integer signed_integer);
 		explicit lexeme(types::unsigned_integer unsigned_integer);
 		explicit lexeme(types::floating_point_value floating_point_value);
-		explicit lexeme(lexeme_type::type type, std::string const & string);
+		explicit lexeme(std::string const & string);
 		std::string to_string() const;
 	};
 
@@ -169,10 +169,10 @@ namespace fridh
 		void parse_string(line_of_code & output);
 		bool parse_number(line_of_code & output);
 		void parse_name(line_of_code & output);
-		void parse_comment(std::string & error_message);
+		void parse_comment();
 
 		void lexer_error(std::string const & message, uword error_line = 0);
-		void number_parsing_error(std::string const & message, bool & error_occured);
+		void number_parsing_error(std::string const & message);
 
 		bool is_name_char(char input);
 		bool string_match(std::string const & target);

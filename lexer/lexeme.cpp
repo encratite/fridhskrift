@@ -7,198 +7,196 @@ namespace fridh
 	{
 	}
 
-	lexeme::lexeme(lexeme::type type):
+	lexeme::lexeme(lexeme_type::type type):
 		type(type)
 	{
 	}
 
 	lexeme::lexeme(types::boolean boolean):
-		type(boolean),
+		type(lexeme_type::boolean),
 		boolean(boolean)
 	{
 	}
 
 	lexeme::lexeme(types::signed_integer signed_integer):
-		type(signed_integer),
+		type(lexeme_type::signed_integer),
 		signed_integer(signed_integer)
 	{
 	}
 
 	lexeme::lexeme(types::unsigned_integer unsigned_integer):
-		type(unsigned_integer),
+		type(lexeme_type::unsigned_integer),
 		unsigned_integer(unsigned_integer)
 	{
 	}
 
 	lexeme::lexeme(types::floating_point_value floating_point_value):
-		type(floating_point_value),
+		type(lexeme_type::floating_point_value),
 		floating_point_value(floating_point_value)
 	{
 	}
 
-	lexeme::lexeme(lexeme::type type, std::string const & string):
-		type(type),
+	lexeme::lexeme(std::string const & string):
+		type(lexeme_type::string),
 		string(new std::string(string))
 	{
 	}
 
 	std::string lexeme::to_string() const
 	{
-		using namespace lexeme_type;
-
 		switch(type)
 		{
-			case name:
+			case lexeme_type::name:
 				return "name: " + *string;
 
-			case boolean:
+			case lexeme_type::boolean:
 				return "boolean: " + ail::bool_to_string(boolean);
 
-			case signed_integer:
+			case lexeme_type::signed_integer:
 				return "integer: " + ail::number_to_string(signed_integer);
 
-			case unsigned_integer:
+			case lexeme_type::unsigned_integer:
 				return "unsigned-integer: " + ail::number_to_string(unsigned_integer);
 
-			case floating_point_value:
+			case lexeme_type::floating_point_value:
 				return "float: " + ail::number_to_string(floating_point_value);
 
-			case string:
+			case lexeme_type::string:
 				return "string: " + ail::replace_string(*string, "\n", "\\n");
 
-			case addition:
+			case lexeme_type::addition:
 				return "+";
 
-			case subtraction:
+			case lexeme_type::subtraction:
 				return "-";
 
-			case multiplication:
+			case lexeme_type::multiplication:
 				return "*";
 
-			case division:
+			case lexeme_type::division:
 				return "/";
 
-			case modulo:
+			case lexeme_type::modulo:
 				return "%";
 
-			case assignment:
+			case lexeme_type::assignment:
 				return "=";
 
-			case addition_assignment:
+			case lexeme_type::addition_assignment:
 				return "+=";
 
-			case subtraction_assignment:
+			case lexeme_type::subtraction_assignment:
 				return "-=";
 
-			case multiplication_assignment:
+			case lexeme_type::multiplication_assignment:
 				return "*=";
 
-			case division_assignment:
+			case lexeme_type::division_assignment:
 				return "/=";
 
-			case modulo_assignment:
+			case lexeme_type::modulo_assignment:
 				return "%=";
 
-			case exponentiation_assignment:
+			case lexeme_type::exponentiation_assignment:
 				return "**=";
 
-			case increment:
+			case lexeme_type::increment:
 				return "++";
 
-			case decrement:
+			case lexeme_type::decrement:
 				return "--";
 
-			case exponentiation:
+			case lexeme_type::exponentiation:
 				return "**";
 
-			case less_than:
+			case lexeme_type::less_than:
 				return "<";
 
-			case less_than_or_equal:
+			case lexeme_type::less_than_or_equal:
 				return "<=";
 
-			case greater_than:
+			case lexeme_type::greater_than:
 				return ">";
 
-			case greater_than_or_equal:
+			case lexeme_type::greater_than_or_equal:
 				return ">=";
 
-			case not_equal:
+			case lexeme_type::not_equal:
 				return "!=";
 
-			case equal:
+			case lexeme_type::equal:
 				return "==";
 
-			case logical_not:
+			case lexeme_type::logical_not:
 				return "!";
 
-			case logical_and:
+			case lexeme_type::logical_and:
 				return "&";
 
-			case logical_or:
+			case lexeme_type::logical_or:
 				return "|";
 
-			case shift_left:
+			case lexeme_type::shift_left:
 				return "<<";
 
-			case shift_right:
+			case lexeme_type::shift_right:
 				return ">>";
 
-			case binary_and:
+			case lexeme_type::binary_and:
 				return "&&";
 
-			case binary_or:
+			case lexeme_type::binary_or:
 				return "||";
 
-			case binary_xor:
+			case lexeme_type::binary_xor:
 				return "^";
 
-			case binary_not:
+			case lexeme_type::binary_not:
 				return "~";
 
-			case bracket_start:
+			case lexeme_type::bracket_start:
 				return "bracket: start";
 
-			case bracket_end:
+			case lexeme_type::bracket_end:
 				return "bracket: end";
 
-			case array_start:
+			case lexeme_type::array_start:
 				return "array: start";
 
-			case array_end:
+			case lexeme_type::array_end:
 				return "array: end";
 
-			case scope_start:
+			case lexeme_type::scope_start:
 				return "scope: start";
 
-			case scope_end:
+			case lexeme_type::scope_end:
 				return "scope: end";
 
-			case iteration:
+			case lexeme_type::iteration:
 				return "iteration";
 
-			case iterator:
+			case lexeme_type::iterator:
 				return "iterator";
 
-			case while_operator:
+			case lexeme_type::while_operator:
 				return "while";
 
-			case function_declaration:
+			case lexeme_type::function_declaration:
 				return "function";
 
-			case anonymous_function_declaration:
+			case lexeme_type::anonymous_function_declaration:
 				return "anonymous function";
 
-			case class_operator:
+			case lexeme_type::class_operator:
 				return "class operator";
 
-			case selection_operator:
+			case lexeme_type::selection_operator:
 				return ".";
 
-			case call_operator:
+			case lexeme_type::call_operator:
 				return ",";
 
-			case scope_operator:
+			case lexeme_type::scope_operator:
 				return ":";
 
 			default:

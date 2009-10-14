@@ -7,7 +7,7 @@ namespace fridh
 		return type;
 	}
 
-	bool variable::is_floating_point_operation(variable & argument) const
+	bool variable::is_floating_point_operation(variable const & argument) const
 	{
 		return type == variable_type_identifier::floating_point_value || argument.type == variable_type_identifier::floating_point_value;
 	}

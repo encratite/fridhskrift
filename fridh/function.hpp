@@ -190,7 +190,7 @@ namespace fridh
 
 	struct for_each_statement
 	{
-		parse_tree_symbol container;
+		parse_tree_node container;
 		executable_units body;
 	};
 

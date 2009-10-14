@@ -60,7 +60,7 @@ namespace fridh
 				case '"':
 					if(byte == string_character)
 					{
-						output.lexemes.push_back(lexeme(lexeme_type::string, string));
+						output.lexemes.push_back(lexeme(string));
 						i++;
 						return;
 					}

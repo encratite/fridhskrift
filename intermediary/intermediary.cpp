@@ -47,7 +47,7 @@ namespace fridh
 	symbol_tree_node & intermediary_translator::add_name(symbol::type symbol_type)
 	{
 		std::string const & name = get_declaration_name();
-		symbol_tree_node & new_node = current_node->children[name];
+		symbol_tree_node & new_node = *current_node->children[name];
 		new_node = symbol_tree_node(symbol_type);
 		new_node.parent = current_node;
 		current_node = &new_node;
@@ -57,7 +57,7 @@ namespace fridh
 	void intermediary_translator::process_body(executable_units * output)
 	{
 		line_offset++;
-		indentation++;
+		indentation_level++;
 
 		bool is_class = (output == 0);
 
@@ -66,10 +66,19 @@ namespace fridh
 
 		while(line_offset < line_end)
 		{
-			if(process_line(output))
+			bool end;
+			if(is_class)
+				end = process_line(0);
+			else
 			{
-				if(indentation > 0)
-					indentation--;
+				executable_unit new_unit;
+				process_line(&new_unit);
+				output->push_back(new_unit);
+			}
+			if(end)
+			{
+				if(indentation_level > 0)
+					indentation_level--;
 				if(is_class)
 					nested_class_level--;
 				current_node = current_node->parent;
@@ -108,7 +117,7 @@ namespace fridh
 		if(output)
 			current_function = output;
 		else
-			current_function = *add_name(symbol::class_symbol).function_pointer;
+			current_function = add_name(symbol::class_symbol).function_pointer;
 
 		for(std::size_t i = 2, end = lexemes.size(); i < end; i++)
 			current_function->arguments.push_back(*lexemes[i].string);
@@ -134,7 +143,7 @@ namespace fridh
 	bool intermediary_translator::process_line(executable_unit * output)
 	{
 		line_of_code & current_line = lines[line_offset];
-		if(current_line.indentation_level > indentation)
+		if(current_line.indentation_level > indentation_level)
 			error("Unexpected increase in the indentation level");
 
 		if(!process_class())
@@ -159,7 +168,7 @@ namespace fridh
 		line_of_code & next_line = lines[line_offset];
 		
 		//end of block?
-		return next_line.indentation_level < indentation;
+		return next_line.indentation_level < indentation_level;
 	}
 
 	bool intermediary_translator::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output)
@@ -167,7 +176,10 @@ namespace fridh
 		try
 		{
 			lines = lines_of_code();
-			lexer current_lexer(data, lines, error_message);
+			lexer current_lexer(data, lines);
+
+			if(!current_lexer.parse(error_message_output))
+				return false;
 
 			current_node = &target_module.symbols;
 			indentation_level = 0;

@@ -12,13 +12,13 @@ namespace fridh
 	{
 	}
 
-	operator_lexeme_type::operator_lexeme(lexeme_type::type lexeme, std::string const & string):
+	operator_lexeme::operator_lexeme(lexeme_type::type lexeme, std::string const & string):
 		lexeme(lexeme),
 		string(string)
 	{
 	}
 
-	bool operator_lexeme_type::operator<(operator_lexeme const & other) const
+	bool operator_lexeme::operator<(operator_lexeme const & other) const
 	{
 		return string.length() > other.string.length();
 	}
@@ -80,7 +80,7 @@ namespace fridh
 		else if(name == "false")
 			current_lexeme = lexeme(false);
 		else
-			current_lexeme = lexeme(name, name);
+			current_lexeme = lexeme(name);
 
 		output.lexemes.push_back(current_lexeme);
 	}
@@ -201,7 +201,7 @@ namespace fridh
 	{
 		try
 		{
-			parse();
+			parse_lexemes();
 			return true;
 		}
 		catch(ail::exception & exception)

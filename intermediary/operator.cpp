@@ -5,14 +5,14 @@
 
 namespace fridh
 {
-	void intermediary_translator::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
+	void call_check(std::size_t extremum_offset)
 	{
-		void call_check(std::size_t extremum_offset)
-		{
-			if(extremum_offset != 1)
-				throw ail::exception("Invalid call offset encountered during operator resolution");
-		}
+		if(extremum_offset != 1)
+			throw ail::exception("Invalid call offset encountered during operator resolution");
+	}
 
+	void operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
+	{
 		if(input.size() != 1)
 		{
 			output = input[0];

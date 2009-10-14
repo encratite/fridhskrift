@@ -3,11 +3,6 @@
 
 namespace fridh
 {
-	namespace
-	{
-		std::string const zero_division_error_message = "Zero division error";
-	}
-
 	variable::variable():
 		type(variable_type_identifier::undefined)
 	{
@@ -124,6 +119,9 @@ namespace fridh
 		}
 
 		unary_argument_type_error("Boolean representation", type);
+
+		//should never get here, suppress warnings
+		return false;
 	}
 
 	bool variable::is_zero() const
