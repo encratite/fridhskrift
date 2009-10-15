@@ -48,11 +48,10 @@ namespace fridh
 	{
 		std::string const & name = get_declaration_name();
 		symbol_tree_node * & new_node_pointer = current_node->children[name];
-		new_node_pointer = new symbol_tree_node;
+		new_node_pointer = new symbol_tree_node(symbol_type);
 		symbol_tree_node & new_node = *new_node_pointer;
-		new_node = symbol_tree_node(symbol_type);
 		new_node.parent = current_node;
-		current_node = &new_node;
+		current_node = new_node_pointer;
 		return new_node;
 	}
 
@@ -119,7 +118,7 @@ namespace fridh
 		if(output)
 			current_function = output;
 		else
-			current_function = add_name(symbol::class_symbol).function_pointer;
+			current_function = add_name(symbol::function).function_pointer;
 
 		for(std::size_t i = 2, end = lexemes.size(); i < end; i++)
 			current_function->arguments.push_back(*lexemes[i].string);
