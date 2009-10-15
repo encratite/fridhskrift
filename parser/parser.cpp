@@ -1,6 +1,6 @@
 #include <ail/file.hpp>
 #include <ail/string.hpp>
-#include <fridh/intermediary.hpp>
+#include <fridh/parser.hpp>
 #include <fridh/lexer.hpp>
 
 namespace fridh

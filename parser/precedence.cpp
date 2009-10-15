@@ -1,5 +1,5 @@
 #include <map>
-#include <fridh/intermediary.hpp>
+#include <fridh/parser.hpp>
 #include <fridh/symbol.hpp>
 
 namespace fridh

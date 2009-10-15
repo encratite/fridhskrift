@@ -24,15 +24,22 @@ bool perform_lexer_test(std::string const & input, std::string const & output)
 		return false;
 	}
 
-	ail::write_file(output, fridh::visualise_lexemes(lines));
+	std::cout << "Processed " << lines.size() << " line(s) of code" << std::endl;
+
+	std::string data = fridh::visualise_lexemes(lines);
+
+	std::cout << "Output: " << data.size() << " byte(s)" << std::endl;
+
+	ail::write_file(output, data);
 	return true;
 }
 
 int main(int argc, char ** argv)
 {
-	if(argc != 3)
+	if(argc != 4)
 	{
-		std::cout << argv[0] << " <input> <output>" << std::endl;
+		std::cout << argv[0] << " lexer <input> <output>" << std::endl;
+		std::cout << argv[0] << " parser <input> <output>" << std::endl;
 		return 1;
 	}
 
