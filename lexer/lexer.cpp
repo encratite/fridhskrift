@@ -79,6 +79,8 @@ namespace fridh
 			current_lexeme = lexeme(true);
 		else if(name == "false")
 			current_lexeme = lexeme(false);
+		else if(name == "nil")
+			current_lexeme.type = lexeme_type::nil;
 		else
 		{
 			current_lexeme = lexeme(name);

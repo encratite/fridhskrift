@@ -81,6 +81,10 @@ namespace fridh
 
 			switch(input.type)
 			{
+				case nil:
+					new_variable->nil();
+					break;
+
 				case boolean:
 					new_variable->new_boolean(input.boolean);
 					break;

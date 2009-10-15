@@ -16,6 +16,7 @@ namespace fridh
 
 			name,
 
+			nil,
 			boolean,
 			signed_integer,
 			unsigned_integer,

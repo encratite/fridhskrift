@@ -49,6 +49,9 @@ namespace fridh
 			case lexeme_type::name:
 				return "name: " + *string;
 
+			case lexeme_type::nil:
+				return "nil";
+
 			case lexeme_type::boolean:
 				return "boolean: " + ail::bool_to_string(boolean);
 
