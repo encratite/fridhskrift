@@ -76,17 +76,14 @@ namespace fridh
 		std::size_t index;
 	};
 
-	class intermediary_translator
+	class parser
 	{
 	public:
-		intermediary_translator();
-		bool load_module(std::string const & path, std::string const & name, std::string & error_message);
+		parser();
+		bool process_module(std::string const & path, std::string const & name, module & output, std::string & error_message);
 
 	private:
 		bool running;
-
-		module main_module;
-		std::vector<module> modules;
 
 		std::size_t
 			line_offset,

@@ -5,12 +5,12 @@
 
 namespace fridh
 {
-	intermediary_translator::intermediary_translator():
+	parser::parser():
 		running(false)
 	{
 	}
 
-	bool intermediary_translator::load_module(std::string const & path, std::string const & name, std::string & error_message)
+	bool parser::process_module(std::string const & path, std::string const & name, module & output, std::string & error_message)
 	{
 		std::string content;
 		if(!ail::read_file(path, content))
@@ -27,24 +27,24 @@ namespace fridh
 		return true;
 	}
 
-	bool intermediary_translator::name_is_used(std::string const & name)
+	bool parser::name_is_used(std::string const & name)
 	{
 		return current_node->exists(name);
 	}
 
-	std::string const & intermediary_translator::get_declaration_name()
+	std::string const & parser::get_declaration_name()
 	{
 		return *lines[line_offset].lexemes[1].string;
 	}
 
-	void intermediary_translator::name_collision_check()
+	void parser::name_collision_check()
 	{
 		std::string const & name = get_declaration_name();
 		if(name_is_used(name))
 			error("Name \"" + name + "\" has already been used by another function or class in the current scope");
 	}
 
-	symbol_tree_node & intermediary_translator::add_name(symbol::type symbol_type)
+	symbol_tree_node & parser::add_name(symbol::type symbol_type)
 	{
 		std::string const & name = get_declaration_name();
 		symbol_tree_node & new_node = *current_node->children[name];
@@ -54,7 +54,7 @@ namespace fridh
 		return new_node;
 	}
 
-	void intermediary_translator::process_body(executable_units * output)
+	void parser::process_body(executable_units * output)
 	{
 		line_offset++;
 		indentation_level++;
@@ -87,7 +87,7 @@ namespace fridh
 		}
 	}
 
-	bool intermediary_translator::process_class()
+	bool parser::process_class()
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(!(lexemes.size() == 2 && lexemes[0].type == lexeme_type::class_operator && lexemes[1].type == lexeme_type::name))
@@ -101,7 +101,7 @@ namespace fridh
 		return true;
 	}
 
-	bool intermediary_translator::process_function(function * output)
+	bool parser::process_function(function * output)
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(!(lexemes.size() >= 2 && lexemes[0].type == lexeme_type::function_declaration))
@@ -126,7 +126,7 @@ namespace fridh
 		return true;
 	}
 
-	void intermediary_translator::process_offset_atomic_statement(parse_tree_node & output, std::size_t offset)
+	void parser::process_offset_atomic_statement(parse_tree_node & output, std::size_t offset)
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		parse_tree_nodes nodes;
@@ -135,12 +135,12 @@ namespace fridh
 		line_offset++;
 	}
 
-	void intermediary_translator::process_composite_term(parse_tree_node & output)
+	void parser::process_composite_term(parse_tree_node & output)
 	{
 		process_offset_atomic_statement(output, 1);
 	}
 
-	bool intermediary_translator::process_line(executable_unit * output)
+	bool parser::process_line(executable_unit * output)
 	{
 		line_of_code & current_line = lines[line_offset];
 		if(current_line.indentation_level > indentation_level)
@@ -171,7 +171,7 @@ namespace fridh
 		return next_line.indentation_level < indentation_level;
 	}
 
-	bool intermediary_translator::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output)
+	bool parser::translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output)
 	{
 		try
 		{
@@ -196,7 +196,7 @@ namespace fridh
 		}
 	}
 
-	void intermediary_translator::error(std::string const & message)
+	void parser::error(std::string const & message)
 	{
 		throw ail::exception("Line " + ail::number_to_string(lines[line_offset].line) + ": " + message);
 	}

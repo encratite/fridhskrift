@@ -1,9 +1,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
 #include <fridh/lexer.hpp>
-#include <ail/file.hpp>
+#include <fridh/parser.hpp>
 #include <fridh/interpreter.hpp>
+
+#include <ail/file.hpp>
 
 bool perform_lexer_test(std::string const & input, std::string const & output)
 {
@@ -34,6 +37,28 @@ bool perform_lexer_test(std::string const & input, std::string const & output)
 	return true;
 }
 
+bool perform_parser_test(std::string const & input, std::string const & output)
+{
+	std::string code;
+	if(!ail::read_file(input, code))
+	{
+		std::cout << "Unable to read input" << std::endl;
+		return false;
+	}
+
+	fridh::module module;
+	fridh::parser parser;
+
+	std::string error;
+	if(!parser.process_module(input, "test", module, error))
+	{
+		std::cout << "Error: " << error << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
 int main(int argc, char ** argv)
 {
 	if(argc != 4)
@@ -43,7 +68,15 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 
-	perform_lexer_test(argv[1], argv[2]);
+	std::string
+		command = argv[1],
+		input = argv[2],
+		output = argv[3];
+
+	if(command == "lexer")
+		perform_lexer_test(input, output);
+	else
+		perform_parser_test(input, output);
 
 	return 0;
 }

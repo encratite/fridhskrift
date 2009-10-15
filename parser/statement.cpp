@@ -30,7 +30,7 @@ namespace fridh
 		output.push_back(new_node);
 	}
 
-	void intermediary_translator::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
+	void parser::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;

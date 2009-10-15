@@ -5,12 +5,12 @@
 
 namespace fridh
 {
-	bool intermediary_translator::is_if_statement()
+	bool parser::is_if_statement()
 	{
 		return lines[line_offset].lexemes[0].type == lexeme_type::division;
 	}
 
-	bool intermediary_translator::process_if(executable_unit & output)
+	bool parser::process_if(executable_unit & output)
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(is_if_statement())
@@ -55,7 +55,7 @@ namespace fridh
 		return true;
 	}
 
-	bool intermediary_translator::process_while(executable_unit & output)
+	bool parser::process_while(executable_unit & output)
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(lexemes[0].type != lexeme_type::while_operator)
@@ -74,7 +74,7 @@ namespace fridh
 		return true;
 	}
 
-	bool intermediary_translator::process_for(executable_unit & output)
+	bool parser::process_for(executable_unit & output)
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(lexemes[0].type != lexeme_type::iteration)
@@ -117,7 +117,7 @@ namespace fridh
 		return true;
 	}
 
-	bool intermediary_translator::process_return(executable_unit & output)
+	bool parser::process_return(executable_unit & output)
 	{
 		lexeme_container & lexemes = lines[line_offset].lexemes;
 		if(lexemes[0].type != lexeme_type::selection_operator)
@@ -131,7 +131,7 @@ namespace fridh
 		return true;
 	}
 
-	void intermediary_translator::process_statement(executable_unit & output)
+	void parser::process_statement(executable_unit & output)
 	{
 		if
 		(
