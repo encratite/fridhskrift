@@ -186,7 +186,7 @@ namespace fridh
 			nested_class_level = 0;
 			line_offset = 0;
 
-			process_function(&target_module.entry_function);
+			process_body(&target_module.entry_function.body);
 
 			return true;
 		}
