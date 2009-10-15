@@ -80,7 +80,10 @@ namespace fridh
 		else if(name == "false")
 			current_lexeme = lexeme(false);
 		else
+		{
 			current_lexeme = lexeme(name);
+			current_lexeme.type = lexeme_type::name;
+		}
 
 		output.lexemes.push_back(current_lexeme);
 	}
