@@ -184,6 +184,7 @@ namespace fridh
 			current_node = &target_module.symbols;
 			indentation_level = 0;
 			nested_class_level = 0;
+			line_offset = 0;
 
 			process_function(&target_module.entry_function);
 

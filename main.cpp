@@ -75,8 +75,15 @@ int main(int argc, char ** argv)
 
 	if(command == "lexer")
 		perform_lexer_test(input, output);
-	else
+	else if(command == "parser")
 		perform_parser_test(input, output);
+	else
+	{
+		std::cout << "Unknown command" << std::endl;
+		std::cin.get();
+		return 1;
+	}
 
+	std::cin.get();
 	return 0;
 }
