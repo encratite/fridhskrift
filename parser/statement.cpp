@@ -120,7 +120,7 @@ namespace fridh
 			{
 				case lexeme_group::argument:
 				{
-					if(!allow_multi_statements && !got_last_group && last_group == lexeme_group::argument)
+					if(!allow_multi_statements && got_last_group && last_group == lexeme_group::argument)
 						error("Encountered two arguments without an operator between them");
 					
 					parse_tree_node argument_node;
