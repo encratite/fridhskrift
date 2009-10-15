@@ -51,13 +51,16 @@ namespace fridh
 		switch(operator_node.type)
 		{
 			case parse_tree_node_type::unary_operator_node:
+			{
 				std::size_t argument_offset = next_offset;
 				parse_tree_unary_operator_node & unary_operator_node = *operator_node.unary_operator_pointer;
 				unary_operator_node.argument = input.at(argument_offset);
 				input.erase(input.begin() + argument_offset);
 				break;
+			}
 		
 			case parse_tree_node_type::binary_operator_node:
+			{
 				parse_tree_binary_operator_node & binary_operator_node = *operator_node.binary_operator_pointer;
 
 				parse_tree_nodes
@@ -72,6 +75,7 @@ namespace fridh
 
 				output = operator_node;
 				break;
+			}
 
 			case parse_tree_node_type::call:
 				//this is questionable

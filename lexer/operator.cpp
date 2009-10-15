@@ -9,67 +9,67 @@ namespace fridh
 
 	operator_lexeme operators[] =
 	{
-		operator_lexeme(addition, "+"),
-		operator_lexeme(subtraction, "-"),
-		operator_lexeme(multiplication, "*"),
-		operator_lexeme(division, "/"),
-		operator_lexeme(modulo, "%"),
-		operator_lexeme(exponentiation, "**"),
+		operator_lexeme(lexeme_type::addition, "+"),
+		operator_lexeme(lexeme_type::subtraction, "-"),
+		operator_lexeme(lexeme_type::multiplication, "*"),
+		operator_lexeme(lexeme_type::division, "/"),
+		operator_lexeme(lexeme_type::modulo, "%"),
+		operator_lexeme(lexeme_type::exponentiation, "**"),
 
-		operator_lexeme(assignment, "="),
-		operator_lexeme(addition_assignment, "+="),
-		operator_lexeme(subtraction_assignment, "-="),
-		operator_lexeme(multiplication_assignment, "*="),
-		operator_lexeme(division_assignment, "/="),
-		operator_lexeme(modulo_assignment, "%="),
-		operator_lexeme(exponentiation_assignment, "**="),
+		operator_lexeme(lexeme_type::assignment, "="),
+		operator_lexeme(lexeme_type::addition_assignment, "+="),
+		operator_lexeme(lexeme_type::subtraction_assignment, "-="),
+		operator_lexeme(lexeme_type::multiplication_assignment, "*="),
+		operator_lexeme(lexeme_type::division_assignment, "/="),
+		operator_lexeme(lexeme_type::modulo_assignment, "%="),
+		operator_lexeme(lexeme_type::exponentiation_assignment, "**="),
 
-		operator_lexeme(increment, "++"),
-		operator_lexeme(decrement, "--"),
+		operator_lexeme(lexeme_type::increment, "++"),
+		operator_lexeme(lexeme_type::decrement, "--"),
 
-		operator_lexeme(less_than, "<"),
-		operator_lexeme(less_than_or_equal, "<="),
-		operator_lexeme(greater_than, ">"),
-		operator_lexeme(greater_than_or_equal, ">="),
-		operator_lexeme(not_equal, "!="),
-		operator_lexeme(equal, "=="),
+		operator_lexeme(lexeme_type::less_than, "<"),
+		operator_lexeme(lexeme_type::less_than_or_equal, "<="),
+		operator_lexeme(lexeme_type::greater_than, ">"),
+		operator_lexeme(lexeme_type::greater_than_or_equal, ">="),
+		operator_lexeme(lexeme_type::not_equal, "!="),
+		operator_lexeme(lexeme_type::equal, "=="),
 
-		operator_lexeme(logical_not, "!"),
+		operator_lexeme(lexeme_type::logical_not, "!"),
 
-		operator_lexeme(logical_and, "&"),
-		operator_lexeme(logical_or, "|"),
+		operator_lexeme(lexeme_type::logical_and, "&"),
+		operator_lexeme(lexeme_type::logical_or, "|"),
 
-		operator_lexeme(shift_left, "<<"),
-		operator_lexeme(shift_right, ">>"),
+		operator_lexeme(lexeme_type::shift_left, "<<"),
+		operator_lexeme(lexeme_type::shift_right, ">>"),
 
-		operator_lexeme(binary_and, "&&"),
-		operator_lexeme(binary_or, "||"),
-		operator_lexeme(binary_xor, "^"),
+		operator_lexeme(lexeme_type::binary_and, "&&"),
+		operator_lexeme(lexeme_type::binary_or, "||"),
+		operator_lexeme(lexeme_type::binary_xor, "^"),
 
-		operator_lexeme(binary_not, "~"),
+		operator_lexeme(lexeme_type::binary_not, "~"),
 
-		operator_lexeme(bracket_start, "["),
-		operator_lexeme(bracket_end, "]"),
+		operator_lexeme(lexeme_type::bracket_start, "["),
+		operator_lexeme(lexeme_type::bracket_end, "]"),
 
-		operator_lexeme(array_start, "{"),
-		operator_lexeme(array_end, "}"),
+		operator_lexeme(lexeme_type::array_start, "{"),
+		operator_lexeme(lexeme_type::array_end, "}"),
 
-		operator_lexeme(scope_start, "("),
-		operator_lexeme(scope_end, ")"),
+		operator_lexeme(lexeme_type::scope_start, "("),
+		operator_lexeme(lexeme_type::scope_end, ")"),
 
-		operator_lexeme(iteration, "\\"),
-		operator_lexeme(iterator, "#"),
+		operator_lexeme(lexeme_type::iteration, "\\"),
+		operator_lexeme(lexeme_type::iterator, "#"),
 
-		operator_lexeme(while_operator, "\\\\"),
+		operator_lexeme(lexeme_type::while_operator, "\\\\"),
 
-		operator_lexeme(function_declaration, "@"),
-		operator_lexeme(anonymous_function_declaration, "@@"),
-		operator_lexeme(class_operator, "$"),
-		operator_lexeme(selection_operator, "."),
-		operator_lexeme(scope_operator, ":"),
+		operator_lexeme(lexeme_type::function_declaration, "@"),
+		operator_lexeme(lexeme_type::anonymous_function_declaration, "@@"),
+		operator_lexeme(lexeme_type::class_operator, "$"),
+		operator_lexeme(lexeme_type::selection_operator, "."),
+		operator_lexeme(lexeme_type::scope_operator, ":"),
 
-		operator_lexeme(call_operator, ","),
-		operator_lexeme(spaced_call_operator, ", "),
+		operator_lexeme(lexeme_type::call_operator, ","),
+		operator_lexeme(lexeme_type::spaced_call_operator, ", "),
 	};
 
 	std::vector<operator_lexeme> operator_lexeme_data;
