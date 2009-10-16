@@ -73,7 +73,7 @@ namespace fridh
 			else
 			{
 				executable_unit new_unit;
-				process_line(&new_unit);
+				end = process_line(&new_unit);
 				output->push_back(new_unit);
 			}
 			if(end)
