@@ -1,5 +1,6 @@
 #include <map>
 #include <fridh/symbol.hpp>
+#include <ail/string.hpp>
 
 namespace fridh
 {
@@ -26,10 +27,7 @@ namespace fridh
 				break;
 
 			COPY_MEMBER(variable, variable, variable_pointer)
-
-			//What is this good for?!
 			COPY_MEMBER(symbol, parse_tree_symbol, symbol_pointer)
-
 			COPY_MEMBER(unary_operator_node, parse_tree_unary_operator_node, unary_operator_pointer)
 			COPY_MEMBER(binary_operator_node, parse_tree_binary_operator_node, binary_operator_pointer)
 			COPY_MEMBER(call, parse_tree_call, call_pointer)
@@ -110,6 +108,45 @@ namespace fridh
 			unary_type == unary_operator_type::increment ||
 			unary_type == unary_operator_type::decrement
 		;
+	}
+
+	std::string parse_tree_node::to_string() const
+	{
+		switch(type)
+		{
+			case parse_tree_node_type::uninitialised:
+				return "uninitialised";
+
+			case parse_tree_node_type::variable:
+				return "variable";
+
+			case parse_tree_node_type::symbol:
+				return "symbol: " + symbol_pointer->name;
+
+			case parse_tree_node_type::unary_operator_node:
+				return "unary operator";
+
+			case parse_tree_node_type::binary_operator_node:
+				return "binary operator";
+
+			case parse_tree_node_type::call:
+				return "call";
+
+			case parse_tree_node_type::array:
+				return "array";
+
+			case parse_tree_node_type::call_operator:
+				return "call operator";
+
+			case parse_tree_node_type::spaced_call_operator:
+				return "spaced call operator";
+
+			case parse_tree_node_type::iterator:
+				return "iterator";
+
+			default:
+				return "unknown (" + ail::number_to_string(static_cast<int>(type)) + ")";
+		}
 	}
 
 	parse_tree_symbol::parse_tree_symbol():

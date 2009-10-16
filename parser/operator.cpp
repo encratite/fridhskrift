@@ -5,16 +5,6 @@
 
 namespace fridh
 {
-	resolution_node::resolution_node()
-	{
-	}
-
-	resolution_node::resolution_node(parse_tree_node const & input):
-		parse_tree_node(input),
-		used(false)
-	{
-	}
-
 	void call_check(std::size_t extremum_offset)
 	{
 		if(extremum_offset != 1)
@@ -36,6 +26,8 @@ namespace fridh
 		{
 			parse_tree_node & current_node = input[i];
 			word precedence;
+
+			std::cout << (int)current_node.type << " ";
 
 			if
 			(
@@ -66,6 +58,8 @@ namespace fridh
 				error(exception.get_message());
 			}
 		}
+
+		std::cout << std::endl;
 
 		if(!got_an_operator)
 			error("Failed to perform operator resolution");

@@ -30,6 +30,14 @@ namespace fridh
 		output.push_back(new_node);
 	}
 
+	void visualise_nodes(parse_tree_nodes & nodes)
+	{
+		std::cout << "Parse tree nodes:" << std::endl;
+		uword counter = 1;
+		for(parse_tree_nodes::iterator i = nodes.begin(), end = nodes.end(); i != end; i++, counter++)
+			std::cout << counter << ". " << i->to_string() << std::endl;
+	}
+
 	void parser::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
 	{
 		bool got_last_group = false;
@@ -148,13 +156,15 @@ namespace fridh
 							prefix = symbol_prefix::none;
 						}
 					}
+					std::cout << "Pushing " << argument_node.to_string() << std::endl;
 					arguments.push_back(argument_node);
+					visualise_nodes(arguments);
 					break;
 				}
 
 				case lexeme_group::unary_operator:
 					if(got_last_group && last_group == lexeme_group::argument)
-						double_lexeme_error("Encountered an argument followed by an unary operator without a binary operator between them", i);
+						double_lexeme_error("Encountered an argument followed by a unary operator without a binary operator between them", i);
 					add_unary_node(current_lexeme, arguments);
 					break;
 

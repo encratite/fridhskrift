@@ -76,16 +76,6 @@ namespace fridh
 		std::size_t index;
 	};
 
-	struct resolution_node: public parse_tree_node
-	{
-		bool used;
-
-		resolution_node();
-		resolution_node(parse_tree_node const & input);
-	};
-
-	typedef std::vector<resolution_node> resolution_vector_type;
-
 	class parser
 	{
 	public:
