@@ -126,7 +126,11 @@ namespace fridh
 
 		bool translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output);
 
+		lexeme_container & get_lexemes();
+
 		void error(std::string const & message);
+		void single_lexeme_error(std::string const & message, std::size_t offset);
+		void double_lexeme_error(std::string const & message, std::size_t offset);
 	};
 
 	void lexeme_to_argument_node(lexeme & input, parse_tree_node & output);

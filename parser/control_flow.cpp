@@ -12,7 +12,7 @@ namespace fridh
 
 	bool parser::process_if(executable_unit & output)
 	{
-		lexeme_container & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = get_lexemes();
 		if(is_if_statement())
 			return false;
 
@@ -26,7 +26,7 @@ namespace fridh
 
 		if(line_offset < line_end)
 		{
-			lexeme_container & lexemes = lines[line_offset].lexemes;
+			lexeme_container & lexemes = get_lexemes();
 			if(is_if_statement() && lexemes.size() == 1)
 			{
 				is_if_else = true;
@@ -57,7 +57,7 @@ namespace fridh
 
 	bool parser::process_while(executable_unit & output)
 	{
-		lexeme_container & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = get_lexemes();
 		if(lexemes[0].type != lexeme_type::while_operator)
 			return false;
 
@@ -76,7 +76,7 @@ namespace fridh
 
 	bool parser::process_for(executable_unit & output)
 	{
-		lexeme_container & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = get_lexemes();
 		if(lexemes[0].type != lexeme_type::iteration)
 			return false;
 
@@ -119,7 +119,7 @@ namespace fridh
 
 	bool parser::process_return(executable_unit & output)
 	{
-		lexeme_container & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = get_lexemes();
 		if(lexemes[0].type != lexeme_type::selection_operator)
 			return false;
 

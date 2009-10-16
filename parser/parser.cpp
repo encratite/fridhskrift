@@ -90,7 +90,7 @@ namespace fridh
 
 	bool parser::process_class()
 	{
-		lexeme_container & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = get_lexemes();
 		if(!(lexemes.size() == 2 && lexemes[0].type == lexeme_type::class_operator && lexemes[1].type == lexeme_type::name))
 			return false;
 
@@ -104,7 +104,7 @@ namespace fridh
 
 	bool parser::process_function(function * output)
 	{
-		lexeme_container & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = get_lexemes();
 		if(!(lexemes.size() >= 2 && lexemes[0].type == lexeme_type::function_declaration))
 			return false;
 
@@ -129,7 +129,7 @@ namespace fridh
 
 	void parser::process_offset_atomic_statement(parse_tree_node & output, std::size_t offset)
 	{
-		lexeme_container & lexemes = lines[line_offset].lexemes;
+		lexeme_container & lexemes = get_lexemes();
 		parse_tree_nodes nodes;
 		process_atomic_statement(lexemes, offset, nodes);
 		output = nodes[0];
@@ -198,8 +198,25 @@ namespace fridh
 		}
 	}
 
+	lexeme_container & parser::get_lexemes()
+	{
+		return lines[line_offset].lexemes;
+	}
+
 	void parser::error(std::string const & message)
 	{
 		throw ail::exception("Line " + ail::number_to_string(lines[line_offset].line) + ": " + message);
+	}	
+
+	void parser::single_lexeme_error(std::string const & message, std::size_t offset)
+	{
+		lexeme_container & lexemes = get_lexemes();
+		error(message + " (\"" + lexemes[offset].to_string() + "\")");
+	}
+
+	void parser::double_lexeme_error(std::string const & message, std::size_t offset)
+	{
+		lexeme_container & lexemes = get_lexemes();
+		error(message + " (\"" + lexemes[offset - 1].to_string() + "\", \"" + lexemes[offset].to_string() + "\")");
 	}
 }

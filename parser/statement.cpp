@@ -49,7 +49,7 @@ namespace fridh
 				break;
 			}
 			else if(prefix != symbol_prefix::none && current_lexeme.type == lexeme_type::name)
-				error("Invalid use of a symbol prefix");
+				double_lexeme_error("Invalid use of a symbol prefix", i);
 
 			switch(current_lexeme.type)
 			{
@@ -114,14 +114,14 @@ namespace fridh
 
 			lexeme_group::type group;
 			if(!get_lexeme_group(current_lexeme.type, group))
-				error("Invalid lexeme type in statement (" + current_lexeme.to_string() + ")");
+				single_lexeme_error("Invalid lexeme type in statement", i);
 
 			switch(group)
 			{
 				case lexeme_group::argument:
 				{
 					if(!allow_multi_statements && got_last_group && last_group == lexeme_group::argument)
-						error("Encountered two arguments without an operator between them");
+						double_lexeme_error("Encountered two arguments without an operator between them", i);
 					
 					parse_tree_node argument_node;
 					lexeme_to_argument_node(current_lexeme, argument_node);
@@ -135,7 +135,7 @@ namespace fridh
 								argument_node.type == parse_tree_node_type::binary_operator_node &&
 								argument_node.binary_operator_pointer->type == binary_operator_type::selection
 							)
-								error("Encountered a symbol prefix after a selection operator");
+								double_lexeme_error("Encountered a symbol prefix after a selection operator", i);
 							prefix = symbol_prefix::none;
 						}
 					}
@@ -153,7 +153,7 @@ namespace fridh
 
 				case lexeme_group::unary_operator:
 					if(got_last_group && last_group == lexeme_group::argument)
-						error("Encountered an argument followed by an unary operator without a binary operator between them");
+						double_lexeme_error("Encountered an argument followed by an unary operator without a binary operator between them", i);
 					add_unary_node(current_lexeme, arguments);
 					break;
 
@@ -163,13 +163,13 @@ namespace fridh
 						switch(last_group)
 						{
 							case lexeme_group::unary_operator:
-								error("Encountered a unary operator followed by a binary operator");
+								double_lexeme_error("Encountered a unary operator followed by a binary operator", i);
 
 							case lexeme_group::binary_operator:
 								if(current_lexeme.type == lexeme_type::subtraction)
 									add_negation_lexeme(arguments);
 								else
-									error("Encountered two sequential binary operators");
+									double_lexeme_error("Encountered two sequential binary operators", i);
 								break;
 						}
 					}
@@ -178,7 +178,7 @@ namespace fridh
 						if(current_lexeme.type == lexeme_type::subtraction)
 							add_negation_lexeme(arguments);
 						else
-							error("Encountered a binary operator in the beginning of a statement");
+							single_lexeme_error("Encountered a binary operator in the beginning of a statement", i);
 						break;
 					}
 					parse_tree_node binary_operator_node;
