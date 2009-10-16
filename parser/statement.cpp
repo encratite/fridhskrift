@@ -120,8 +120,17 @@ namespace fridh
 			{
 				case lexeme_group::argument:
 				{
-					if(!allow_multi_statements && got_last_group && last_group == lexeme_group::argument)
-						double_lexeme_error("Encountered two arguments without an operator between them", i);
+					if(got_last_group && last_group == lexeme_group::argument)
+					{
+						if(allow_multi_statements)
+						{
+							process_node_group(arguments, output);
+							arguments.clear();
+							got_last_group = false;
+						}
+						else
+							double_lexeme_error("Encountered two arguments without an operator between them", i);
+					}
 					
 					parse_tree_node argument_node;
 					lexeme_to_argument_node(current_lexeme, argument_node);
@@ -140,14 +149,6 @@ namespace fridh
 						}
 					}
 					arguments.push_back(argument_node);
-
-					if(allow_multi_statements)
-					{
-						process_node_group(arguments, output);
-						arguments.clear();
-						got_last_group = false;
-						continue;
-					}
 					break;
 				}
 

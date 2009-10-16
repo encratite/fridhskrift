@@ -13,7 +13,7 @@ namespace fridh
 	bool parser::process_if(executable_unit & output)
 	{
 		lexeme_container & lexemes = get_lexemes();
-		if(is_if_statement())
+		if(!is_if_statement())
 			return false;
 
 		parse_tree_node conditional;
