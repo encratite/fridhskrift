@@ -48,7 +48,7 @@ namespace fridh
 				i++;
 				break;
 			}
-			else if(prefix != symbol_prefix::none && current_lexeme.type == lexeme_type::name)
+			else if(prefix != symbol_prefix::none && current_lexeme.type != lexeme_type::name)
 				double_lexeme_error("Invalid use of a symbol prefix", i);
 
 			switch(current_lexeme.type)
