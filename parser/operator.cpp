@@ -13,7 +13,7 @@ namespace fridh
 
 	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
-		if(input.size() != 1)
+		if(input.size() == 1)
 		{
 			output = input[0];
 			return;
@@ -27,19 +27,26 @@ namespace fridh
 		{
 			word precedence;
 			parse_tree_node & current_node = input[i];
-			if(get_parse_tree_node_precedence(current_node, precedence))
+			try
 			{
-				if
-				(
-					!got_an_operator ||
-					precedence > extremum ||
-					(is_right_to_left_operator(current_node) && precedence == extremum)
-				)
+				if(get_parse_tree_node_precedence(current_node, precedence))
 				{
-					got_an_operator = true;
-					extremum = precedence;
-					extremum_offset = i;
+					if
+					(
+						!got_an_operator ||
+						precedence > extremum ||
+						(is_right_to_left_operator(current_node) && precedence == extremum)
+					)
+					{
+						got_an_operator = true;
+						extremum = precedence;
+						extremum_offset = i;
+					}
 				}
+			}
+			catch(ail::exception & exception)
+			{
+				error(exception.get_message());
 			}
 		}
 
@@ -64,11 +71,8 @@ namespace fridh
 				parse_tree_binary_operator_node & binary_operator_node = *operator_node.binary_operator_pointer;
 
 				parse_tree_nodes
-					left_side,
-					right_side;
-
-				std::copy(input.begin(), input.begin() + extremum_offset, left_side.begin());
-				std::copy(input.begin() + next_offset, input.end(), right_side.begin());
+					left_side(input.begin(), input.begin() + extremum_offset),
+					right_side(input.begin() + next_offset, input.end());
 
 				operator_resolution(left_side, binary_operator_node.left_argument);
 				operator_resolution(right_side, binary_operator_node.right_argument);
@@ -99,7 +103,7 @@ namespace fridh
 				break;
 
 			default:
-				throw ail::exception("Invalid operator node type encountered during operator resolution");
+				error("Invalid operator node type encountered during operator resolution");
 		}
 	}
 }

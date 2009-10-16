@@ -54,6 +54,14 @@ namespace fridh
 
 		binary_operator_precedence_map[binary_operator_type::selection] = operator_precedence::selection;
 
+		binary_operator_precedence_map[binary_operator_type::assignment] = operator_precedence::assignment;
+		binary_operator_precedence_map[binary_operator_type::addition_assignment] = operator_precedence::addition_assignment;
+		binary_operator_precedence_map[binary_operator_type::subtraction_assignment] = operator_precedence::subtraction_assignment;
+		binary_operator_precedence_map[binary_operator_type::multiplication_assignment] = operator_precedence::multiplication_assignment;
+		binary_operator_precedence_map[binary_operator_type::division_assignment] = operator_precedence::division_assignment;
+		binary_operator_precedence_map[binary_operator_type::modulo_assignment] = operator_precedence::modulo_assignment;
+		binary_operator_precedence_map[binary_operator_type::exponentiation_assignment] = operator_precedence::exponentiation_assignment;
+
 		{
 			using namespace binary_operator_type;
 			for(int i = static_cast<int>(assignment); i <= static_cast<int>(exponentiation_assignment); i++)
