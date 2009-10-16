@@ -131,6 +131,9 @@ namespace fridh
 		void error(std::string const & message);
 		void single_lexeme_error(std::string const & message, std::size_t offset);
 		void double_lexeme_error(std::string const & message, std::size_t offset);
+
+		void process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output);
+		void operator_resolution(parse_tree_nodes & input, parse_tree_node & output);
 	};
 
 	void lexeme_to_argument_node(lexeme & input, parse_tree_node & output);
@@ -142,6 +145,4 @@ namespace fridh
 	bool get_parse_tree_node_precedence(parse_tree_node & input, word & output);
 
 	bool is_right_to_left_operator(parse_tree_node & input);
-	
-	void operator_resolution(parse_tree_nodes & input, parse_tree_node & output);
 }

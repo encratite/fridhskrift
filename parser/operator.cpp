@@ -11,7 +11,7 @@ namespace fridh
 			throw ail::exception("Invalid call offset encountered during operator resolution");
 	}
 
-	void operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
+	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
 		if(input.size() != 1)
 		{
@@ -44,7 +44,7 @@ namespace fridh
 		}
 
 		if(!got_an_operator)
-			throw ail::exception("Failed to perform operator resolution");
+			error("Failed to perform operator resolution");
 
 		parse_tree_node & operator_node = input[extremum_offset];
 		std::size_t next_offset = extremum_offset + 1;

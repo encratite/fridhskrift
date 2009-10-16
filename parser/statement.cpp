@@ -23,7 +23,7 @@ namespace fridh
 		add_unary_node(lexeme(lexeme_type::negation), arguments);
 	}
 
-	void process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output)
+	void parser::process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output)
 	{
 		parse_tree_node new_node;
 		operator_resolution(arguments, new_node);
