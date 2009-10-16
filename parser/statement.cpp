@@ -156,9 +156,9 @@ namespace fridh
 							prefix = symbol_prefix::none;
 						}
 					}
-					std::cout << "Pushing " << argument_node.to_string() << std::endl;
+					//std::cout << "Pushing " << argument_node.to_string() << std::endl;
 					arguments.push_back(argument_node);
-					visualise_nodes(arguments);
+					//visualise_nodes(arguments);
 					break;
 				}
 

@@ -15,12 +15,10 @@ namespace fridh
 			member = new member_type(*other.member); \
 			break;
 
+		type = other.type;
+
 		switch(other.type)
 		{
-			case executable_unit_type::uninitialised:
-				type = other.type;
-				break;
-
 			COPY_MEMBER(statement, parse_tree_node, statement_pointer)
 			COPY_MEMBER(return_statement, parse_tree_node, statement_pointer)
 			COPY_MEMBER(if_statement, if_statement, if_pointer)

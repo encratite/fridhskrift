@@ -1,3 +1,4 @@
+#include <iostream>
 #include <map>
 #include <fridh/symbol.hpp>
 #include <ail/string.hpp>
@@ -12,20 +13,17 @@ namespace fridh
 	parse_tree_node::parse_tree_node(parse_tree_node const & other)
 	{
 
+		//std::cout << "Copying " << other.to_string() << std::endl;
+
 #define COPY_MEMBER(type, member_type, member) \
 		case parse_tree_node_type::type: \
 			member = new member_type(*other.member); \
 			break;
 
+		type = other.type;
+
 		switch(other.type)
 		{
-			case parse_tree_node_type::uninitialised:
-			case parse_tree_node_type::call_operator:
-			case parse_tree_node_type::spaced_call_operator:
-			case parse_tree_node_type::iterator:
-				type = other.type;
-				break;
-
 			COPY_MEMBER(variable, variable, variable_pointer)
 			COPY_MEMBER(symbol, parse_tree_symbol, symbol_pointer)
 			COPY_MEMBER(unary_operator_node, parse_tree_unary_operator_node, unary_operator_pointer)
@@ -35,6 +33,8 @@ namespace fridh
 		}
 
 #undef COPY_MEMBER
+
+		//std::cout << "Result: " << to_string() << std::endl;
 
 	}
 
