@@ -193,7 +193,7 @@ namespace fridh
 		}
 		catch(ail::exception & exception)
 		{
-			error_message_output = exception.get_message();
+			error_message_output = module_name + ": " + exception.get_message();
 			return false;
 		}
 	}

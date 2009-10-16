@@ -114,7 +114,7 @@ namespace fridh
 
 			lexeme_group::type group;
 			if(!get_lexeme_group(current_lexeme.type, group))
-				error("Invalid lexeme type in statement");
+				error("Invalid lexeme type in statement (" + current_lexeme.to_string() + ")");
 
 			switch(group)
 			{

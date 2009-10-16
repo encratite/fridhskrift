@@ -25,6 +25,14 @@ namespace fridh
 			case modulo:
 			case exponentiation:
 
+			case assignment:
+			case addition_assignment:
+			case subtraction_assignment:
+			case multiplication_assignment:
+			case division_assignment:
+			case modulo_assignment:
+			case exponentiation_assignment:
+
 			case less_than:
 			case less_than_or_equal:
 			case greater_than:
