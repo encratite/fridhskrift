@@ -8,6 +8,59 @@ namespace fridh
 	{
 	}
 
+	parse_tree_node::parse_tree_node(parse_tree_node const & other)
+	{
+
+#define COPY_MEMBER(type, member_type, member) \
+		case parse_tree_node_type::type: \
+			member = new member_type(*other.member); \
+			break;
+
+		switch(other.type)
+		{
+			case parse_tree_node_type::uninitialised:
+			case parse_tree_node_type::call_operator:
+			case parse_tree_node_type::spaced_call_operator:
+			case parse_tree_node_type::iterator:
+				type = other.type;
+				break;
+
+			COPY_MEMBER(variable, variable, variable_pointer)
+
+			//What is this good for?!
+			COPY_MEMBER(symbol, parse_tree_symbol, symbol_pointer)
+
+			COPY_MEMBER(unary_operator_node, parse_tree_unary_operator_node, unary_operator_pointer)
+			COPY_MEMBER(binary_operator_node, parse_tree_binary_operator_node, binary_operator_pointer)
+			COPY_MEMBER(call, parse_tree_call, call_pointer)
+			COPY_MEMBER(array, parse_tree_array, array_pointer)
+		}
+
+#undef COPY_MEMBER
+
+	}
+
+	parse_tree_node::~parse_tree_node()
+	{
+
+#define DELETE_MEMBER(type, member) \
+			case parse_tree_node_type::type: \
+				delete member; \
+				break;
+
+		switch(type)
+		{
+			DELETE_MEMBER(variable, variable_pointer)
+			DELETE_MEMBER(symbol, symbol_pointer)
+			DELETE_MEMBER(unary_operator_node, unary_operator_pointer)
+			DELETE_MEMBER(binary_operator_node, binary_operator_pointer)
+			DELETE_MEMBER(call, call_pointer)
+			DELETE_MEMBER(array, array_pointer)
+		}
+
+#undef DELETE_MEMBER
+	}
+
 	parse_tree_node::parse_tree_node(parse_tree_node_type::type type):
 		type(type)
 	{

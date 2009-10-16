@@ -132,6 +132,9 @@ namespace fridh
 		};
 
 		parse_tree_node();
+		parse_tree_node(parse_tree_node const & other);
+		~parse_tree_node();
+
 		parse_tree_node(parse_tree_node_type::type type);
 		parse_tree_node(variable * variable_pointer);
 		parse_tree_node(unary_operator_type::type unary_operator);

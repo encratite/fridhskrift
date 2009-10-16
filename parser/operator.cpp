@@ -20,20 +20,7 @@ namespace fridh
 		if(extremum_offset != 1)
 			throw ail::exception("Invalid call offset encountered during operator resolution");
 	}
-
 	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
-	{
-		resolution_vector_type resolution_input;
-
-		for(parse_tree_nodes::iterator i = input.begin(), end = input.end(); i != end; i++)
-			resolution_input.push_back(*i);
-
-		resolution_node resolution_output;
-		perform_operator_resolution(resolution_input, resolution_output);
-		output = resolution_output;
-	}
-
-	void parser::perform_operator_resolution(resolution_vector_type & input, resolution_node & output)
 	{
 		if(input.size() == 1)
 		{
@@ -41,15 +28,22 @@ namespace fridh
 			return;
 		}
 
-
 		bool got_an_operator = false;
 		word extremum;
 		std::size_t extremum_offset;
 
 		for(std::size_t i = 0, end = input.size(); i < end; i++)
 		{
-			word precedence;
 			parse_tree_node & current_node = input[i];
+			word precedence;
+
+			if
+			(
+				current_node.type == parse_tree_node_type::unary_operator_node &&
+				current_node.unary_operator_pointer->argument.type != parse_tree_node_type::uninitialised
+			)
+				continue;
+
 			try
 			{
 				if(get_parse_tree_node_precedence(current_node, precedence))
@@ -102,11 +96,11 @@ namespace fridh
 					left_side(input.begin(), input.begin() + extremum_offset),
 					right_side(input.begin() + next_offset, input.end());
 
-				perform_operator_resolution(left_side, binary_operator_node.left_argument);
-				perform_operator_resolution(right_side, binary_operator_node.right_argument);
+				operator_resolution(left_side, binary_operator_node.left_argument);
+				operator_resolution(right_side, binary_operator_node.right_argument);
 
 				output = operator_node;
-				break;
+				return;
 			}
 
 			case parse_tree_node_type::call:
@@ -133,5 +127,7 @@ namespace fridh
 			default:
 				error("Invalid operator node type encountered during operator resolution");
 		}
+
+		operator_resolution(input, output);
 	}
 }
