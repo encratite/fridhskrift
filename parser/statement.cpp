@@ -159,6 +159,7 @@ namespace fridh
 					break;
 
 				case lexeme_group::binary_operator:
+				{
 					if(got_last_group)
 					{
 						switch(last_group)
@@ -182,10 +183,25 @@ namespace fridh
 							single_lexeme_error("Encountered a binary operator in the beginning of a statement", i);
 						break;
 					}
+
 					parse_tree_node binary_operator_node;
 					lexeme_to_binary_operator_node(current_lexeme, binary_operator_node);
 					arguments.push_back(binary_operator_node);
 					break;
+				}
+
+				case lexeme_group::post_fix_operator:
+					if(got_last_group)
+					{
+						if(last_group != lexeme_group::argument)
+							single_lexeme_error("Encountered a post fix operator after a non-argument", i);
+					}
+					else
+						single_lexeme_error("A post fix operator requires a previous argument", i);
+
+					add_unary_node(current_lexeme, arguments);
+					set_last_group(lexeme_group::argument, last_group, got_last_group);
+					continue;
 			}
 
 			set_last_group(group, last_group, got_last_group);

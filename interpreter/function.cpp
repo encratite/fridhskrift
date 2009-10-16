@@ -46,6 +46,18 @@ namespace fridh
 		call_pointer = new parse_tree_call;
 	}
 
+	bool parse_tree_node::is_post_fix() const
+	{
+		if(type != parse_tree_node_type::unary_operator_node)
+			throw ail::exception("Tried to retrieve post fix node properties of a non-post-fix node");
+
+		unary_operator_type::type unary_type = unary_operator_pointer->type;
+		return
+			unary_type == unary_operator_type::increment ||
+			unary_type == unary_operator_type::decrement
+		;
+	}
+
 	parse_tree_symbol::parse_tree_symbol():
 		type(symbol_prefix::none)
 	{

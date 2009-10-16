@@ -139,6 +139,8 @@ namespace fridh
 		parse_tree_node(parse_tree_nodes & elements);
 
 		void is_call();
+
+		bool is_post_fix() const;
 	};
 
 	struct parse_tree_symbol

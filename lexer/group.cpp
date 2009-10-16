@@ -57,10 +57,13 @@ namespace fridh
 
 			case binary_not:
 
+				output = lexeme_group::unary_operator;
+				return true;
+
 			case increment:
 			case decrement:
 
-				output = lexeme_group::unary_operator;
+				output = lexeme_group::post_fix_operator;
 				return true;
 
 			default:

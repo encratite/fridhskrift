@@ -76,6 +76,16 @@ namespace fridh
 		std::size_t index;
 	};
 
+	struct resolution_node: public parse_tree_node
+	{
+		bool used;
+
+		resolution_node();
+		resolution_node(parse_tree_node const & input);
+	};
+
+	typedef std::vector<resolution_node> resolution_vector_type;
+
 	class parser
 	{
 	public:
@@ -134,6 +144,7 @@ namespace fridh
 
 		void process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output);
 		void operator_resolution(parse_tree_nodes & input, parse_tree_node & output);
+		void perform_operator_resolution(resolution_vector_type & input, resolution_node & output);
 	};
 
 	void lexeme_to_argument_node(lexeme & input, parse_tree_node & output);
@@ -145,4 +156,6 @@ namespace fridh
 	bool get_parse_tree_node_precedence(parse_tree_node & input, word & output);
 
 	bool is_right_to_left_operator(parse_tree_node & input);
+
+	bool is_unary_post_fix_operator(lexeme_type::type input);
 }

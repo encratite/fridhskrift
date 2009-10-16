@@ -100,6 +100,8 @@ namespace fridh
 			binary_operator,
 
 			call_operator,
+
+			post_fix_operator,
 		};
 	}
 

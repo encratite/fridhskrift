@@ -5,6 +5,16 @@
 
 namespace fridh
 {
+	resolution_node::resolution_node()
+	{
+	}
+
+	resolution_node::resolution_node(parse_tree_node const & input):
+		parse_tree_node(input),
+		used(false)
+	{
+	}
+
 	void call_check(std::size_t extremum_offset)
 	{
 		if(extremum_offset != 1)
@@ -13,11 +23,24 @@ namespace fridh
 
 	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
+		resolution_vector_type resolution_input;
+
+		for(parse_tree_nodes::iterator i = input.begin(), end = input.end(); i != end; i++)
+			resolution_input.push_back(*i);
+
+		resolution_node resolution_output;
+		perform_operator_resolution(resolution_input, resolution_output);
+		output = resolution_output;
+	}
+
+	void parser::perform_operator_resolution(resolution_vector_type & input, resolution_node & output)
+	{
 		if(input.size() == 1)
 		{
 			output = input[0];
 			return;
 		}
+
 
 		bool got_an_operator = false;
 		word extremum;
@@ -59,7 +82,12 @@ namespace fridh
 		{
 			case parse_tree_node_type::unary_operator_node:
 			{
-				std::size_t argument_offset = next_offset;
+				std::size_t argument_offset;
+				if(operator_node.is_post_fix())
+					argument_offset = extremum_offset - 1;
+				else
+					argument_offset = next_offset;
+
 				parse_tree_unary_operator_node & unary_operator_node = *operator_node.unary_operator_pointer;
 				unary_operator_node.argument = input.at(argument_offset);
 				input.erase(input.begin() + argument_offset);
@@ -74,8 +102,8 @@ namespace fridh
 					left_side(input.begin(), input.begin() + extremum_offset),
 					right_side(input.begin() + next_offset, input.end());
 
-				operator_resolution(left_side, binary_operator_node.left_argument);
-				operator_resolution(right_side, binary_operator_node.right_argument);
+				perform_operator_resolution(left_side, binary_operator_node.left_argument);
+				perform_operator_resolution(right_side, binary_operator_node.right_argument);
 
 				output = operator_node;
 				break;
