@@ -59,6 +59,7 @@ namespace fridh
 		}
 
 #undef DELETE_MEMBER
+
 	}
 
 	parse_tree_node::parse_tree_node(parse_tree_node_type::type type):

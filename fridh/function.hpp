@@ -11,6 +11,8 @@ namespace fridh
 	{
 		enum type
 		{
+			uninitialised,
+
 			statement,
 			return_statement,
 			if_statement,
@@ -227,6 +229,10 @@ namespace fridh
 			for_statement * for_pointer;
 			while_statement * while_pointer;
 		};
+
+		executable_unit();
+		executable_unit(executable_unit const & other);
+		~executable_unit();
 	};
 
 	struct function
