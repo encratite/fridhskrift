@@ -10,8 +10,10 @@ namespace fridh
 		if(extremum_offset != 1)
 			throw ail::exception("Invalid call offset encountered during operator resolution");
 	}
+
 	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
+		std::cout << "operator_resolution on " << input.size() << std::endl;
 		if(input.size() == 1)
 		{
 			output = input[0];
@@ -26,8 +28,6 @@ namespace fridh
 		{
 			parse_tree_node & current_node = input[i];
 			word precedence;
-
-			std::cout << (int)current_node.type << " ";
 
 			if
 			(
@@ -59,8 +59,6 @@ namespace fridh
 			}
 		}
 
-		std::cout << std::endl;
-
 		if(!got_an_operator)
 			error("Failed to perform operator resolution");
 
@@ -90,10 +88,19 @@ namespace fridh
 					left_side(input.begin(), input.begin() + extremum_offset),
 					right_side(input.begin() + next_offset, input.end());
 
+				std::cout << "parse_tree_node_type::binary_operator_node:" << std::endl;
+
+				std::cout << operator_node.to_string() << std::endl;
+
 				operator_resolution(left_side, binary_operator_node.left_argument);
 				operator_resolution(right_side, binary_operator_node.right_argument);
 
+				std::cout << operator_node.to_string() << std::endl;
+
 				output = operator_node;
+
+				std::cout << "operator_resolution returns: " << output.to_string() << std::endl;
+
 				return;
 			}
 

@@ -23,19 +23,26 @@ namespace fridh
 		add_unary_node(lexeme(lexeme_type::negation), arguments);
 	}
 
-	void parser::process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output)
-	{
-		parse_tree_node new_node;
-		operator_resolution(arguments, new_node);
-		output.push_back(new_node);
-	}
-
 	void visualise_nodes(parse_tree_nodes & nodes)
 	{
 		std::cout << "Parse tree nodes:" << std::endl;
 		uword counter = 1;
 		for(parse_tree_nodes::iterator i = nodes.begin(), end = nodes.end(); i != end; i++, counter++)
 			std::cout << counter << ". " << i->to_string() << std::endl;
+	}
+
+	void parser::process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output)
+	{
+		std::cout << "process_node_group" << std::endl;
+		visualise_nodes(arguments);
+		parse_tree_node new_node;
+		std::cout << "new_node:" << std::endl;
+		std::cout << new_node.to_string() << std::endl;
+		operator_resolution(arguments, new_node);
+		std::cout << "operator_resolution returned:" << std::endl;
+		std::cout << new_node.to_string() << std::endl;
+		output.push_back(new_node);
+		std::cout << "/process_node_group" << std::endl;
 	}
 
 	void parser::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
@@ -222,6 +229,9 @@ namespace fridh
 
 		if(last_group != lexeme_group::argument)
 			error("An operator is missing an argument");
+
+		std::cout << "Bottom" << std::endl;
+		visualise_nodes(arguments);
 
 		process_node_group(arguments, output);
 	}

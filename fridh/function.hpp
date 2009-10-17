@@ -154,6 +154,8 @@ namespace fridh
 		symbol_prefix::type type;
 
 		parse_tree_symbol();
+		parse_tree_symbol(parse_tree_symbol const & other);
+		~parse_tree_symbol();
 	};
 
 	struct parse_tree_unary_operator_node

@@ -8,10 +8,14 @@ namespace fridh
 	parse_tree_node::parse_tree_node():
 		type(parse_tree_node_type::uninitialised)
 	{
+		std::cout << "parse_tree_node " << (void *)this << std::endl;
 	}
 
 	parse_tree_node::parse_tree_node(parse_tree_node const & other)
 	{
+		std::cout << "parse_tree_node " << (void *)this << " from " << (void *)&other << std::endl;
+
+		//std::cout << (int)other.type << std::endl;
 
 		//std::cout << "Copying " << other.to_string() << std::endl;
 
@@ -40,6 +44,8 @@ namespace fridh
 
 	parse_tree_node::~parse_tree_node()
 	{
+
+		std::cout << "~parse_tree_node " << (void *)this << std::endl;
 
 #define DELETE_MEMBER(type, member) \
 			case parse_tree_node_type::type: \
@@ -121,13 +127,13 @@ namespace fridh
 				return "variable";
 
 			case parse_tree_node_type::symbol:
-				return "symbol: " + symbol_pointer->name;
+				return "symbol: " + symbol_pointer->name + " (" + ail::hex_string_32((ulong)symbol_pointer) + ")";
 
 			case parse_tree_node_type::unary_operator_node:
-				return "unary operator";
+				return "unary operator (" + unary_operator_pointer->argument.to_string() + ")";
 
 			case parse_tree_node_type::binary_operator_node:
-				return "binary operator";
+				return "binary operator (" + binary_operator_pointer->left_argument.to_string() + ", " + binary_operator_pointer->right_argument.to_string() + ")";
 
 			case parse_tree_node_type::call:
 				return "call";
@@ -152,5 +158,18 @@ namespace fridh
 	parse_tree_symbol::parse_tree_symbol():
 		type(symbol_prefix::none)
 	{
+		std::cout << "parse_tree_symbol " << (void *)this << std::endl;
+	}
+
+	parse_tree_symbol::parse_tree_symbol(parse_tree_symbol const & other):
+		name(other.name),
+		type(other.type)
+	{
+		std::cout << "parse_tree_symbol " << (void *)this << " from " << (void *)&other << std::endl;
+	}
+
+	parse_tree_symbol::~parse_tree_symbol()
+	{
+		std::cout << "~parse_tree_symbol " << (void *)this << std::endl;
 	}
 }
