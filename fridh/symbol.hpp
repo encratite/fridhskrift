@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include <fridh/construction.hpp>
 
 namespace fridh
 {
@@ -9,7 +10,6 @@ namespace fridh
 	{
 		enum type
 		{
-			variable,
 			function,
 			class_symbol,
 			module
@@ -25,7 +25,7 @@ namespace fridh
 
 	typedef std::map<std::string, symbol_tree_node *> node_children;
 
-	struct symbol_tree_node
+	struct symbol_tree_node: construction_pattern
 	{
 		symbol::type type;
 		union
@@ -41,7 +41,9 @@ namespace fridh
 
 		symbol_tree_node();
 		symbol_tree_node(symbol::type type);
-		~symbol_tree_node();
+
+		void copy(construction_pattern const & other_pattern);
+		void destroy();
 
 		bool exists(std::string const & name);
 		bool find_entity(std::string const & name, symbol_tree_node * & output);

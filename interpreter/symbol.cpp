@@ -13,10 +13,6 @@ namespace fridh
 	{
 		switch(type)
 		{
-			case symbol::variable:
-				variable_pointer = new variable;
-				break;
-
 			case symbol::function:
 				function_pointer = new function;
 				break;
@@ -27,29 +23,55 @@ namespace fridh
 		}
 	}
 
-	symbol_tree_node::~symbol_tree_node()
+	void symbol_tree_node::copy(construction_pattern const & other_pattern)
+	{
+		symbol_tree_node const & other = dynamic_cast<symbol_tree_node const &>(other_pattern);
+
+		type = other.type;
+		parent = other.parent;
+
+		for(node_children::const_iterator i = other.children.begin(), end = other.children.end(); i != end; i++)
+		{
+			symbol_tree_node * & node_pointer = children[i->first];
+			node_pointer = new symbol_tree_node(*i->second);
+			node_pointer->parent = this;
+		}
+
+#define COPY_MEMBER(type, member_type, member) \
+		case symbol::type: \
+			member = new member_type(*other.member); \
+			break;
+
+		switch(type)
+		{
+			COPY_MEMBER(function, function, function_pointer);
+			COPY_MEMBER(class_symbol, class_type, class_pointer);
+			COPY_MEMBER(module, module, module_pointer);
+		}
+
+#undef COPY_MEMBER
+
+	}
+
+	void symbol_tree_node::destroy()
 	{
 		for(node_children::iterator i = children.begin(), end = children.end(); i != end; i++)
 			delete i->second;
 
+#define DELETE_MEMBER(type, member) \
+			case symbol::type: \
+				delete member; \
+				break;
+
 		switch(type)
 		{
-			case symbol::variable:
-				delete variable_pointer;
-				break;
-
-			case symbol::function:
-				delete function_pointer;
-				break;
-
-			case symbol::class_symbol:
-				delete class_pointer;
-				break;
-
-			case symbol::module:
-				delete module_pointer;
-				break;
+			DELETE_MEMBER(function, function_pointer);
+			DELETE_MEMBER(class_symbol, class_pointer);
+			DELETE_MEMBER(module, module_pointer);
 		}
+
+#undef DELETE_MEMBER
+
 	}
 
 	bool symbol_tree_node::exists(std::string const & name)
