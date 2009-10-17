@@ -7,8 +7,9 @@ namespace fridh
 	{
 	}
 
-	executable_unit::executable_unit(executable_unit const & other)
+	void executable_unit::copy(construction_pattern const & other_pattern)
 	{
+		executable_unit const & other = dynamic_cast<executable_unit const &>(other_pattern);
 
 #define COPY_MEMBER(type, member_type, member) \
 		case executable_unit_type::type: \
@@ -32,7 +33,7 @@ namespace fridh
 
 	}
 
-	executable_unit::~executable_unit()
+	void executable_unit::destroy()
 	{
 
 #define DELETE_MEMBER(type, member) \

@@ -11,18 +11,10 @@ namespace fridh
 		std::cout << "parse_tree_node " << (void *)this << std::endl;
 	}
 
-	parse_tree_node::parse_tree_node(parse_tree_node const & other)
+	void parse_tree_node::copy(construction_pattern const & other_pattern)
 	{
-		copy(other);
-	}
+		parse_tree_node const & other = dynamic_cast<parse_tree_node const &>(other_pattern);
 
-	parse_tree_node::~parse_tree_node()
-	{
-		destroy();
-	}
-
-	void parse_tree_node::copy(parse_tree_node const & other)
-	{
 		std::cout << "parse_tree_node copy " << (void *)this << " from " << (void *)&other << std::endl;
 
 		//std::cout << (int)other.type << std::endl;
@@ -74,13 +66,6 @@ namespace fridh
 
 #undef DELETE_MEMBER
 
-	}
-
-	parse_tree_node & parse_tree_node::operator=(parse_tree_node const & other)
-	{
-		destroy();
-		copy(other);
-		return *this;
 	}
 
 	parse_tree_node::parse_tree_node(parse_tree_node_type::type type):
