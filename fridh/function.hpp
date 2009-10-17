@@ -5,6 +5,8 @@
 
 #include <ail/types.hpp>
 
+#include <fridh/construction.hpp>
+
 namespace fridh
 {
 	namespace executable_unit_type
@@ -137,6 +139,11 @@ namespace fridh
 		parse_tree_node(parse_tree_node const & other);
 		~parse_tree_node();
 
+		void copy(parse_tree_node const & other);
+		void destroy();
+
+		parse_tree_node & operator=(parse_tree_node const & other);
+
 		parse_tree_node(parse_tree_node_type::type type);
 		parse_tree_node(variable * variable_pointer);
 		parse_tree_node(unary_operator_type::type unary_operator);
@@ -235,6 +242,9 @@ namespace fridh
 		executable_unit();
 		executable_unit(executable_unit const & other);
 		~executable_unit();
+
+	private:
+		executable_unit & operator=(executable_unit const & other);
 	};
 
 	struct function
