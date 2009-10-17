@@ -3,7 +3,8 @@
 
 namespace fridh
 {	
-	lexeme::lexeme()
+	lexeme::lexeme():
+		type(lexeme_type::uninitialised)
 	{
 	}
 

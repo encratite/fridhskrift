@@ -13,6 +13,8 @@ namespace fridh
 	{
 		enum type
 		{
+			uninitialised,
+
 			non_terminating_placeholder,
 
 			name,

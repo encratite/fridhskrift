@@ -32,7 +32,6 @@ namespace fridh
 		symbol::type type;
 		union
 		{
-			variable * variable_pointer;
 			function * function_pointer;
 			class_type * class_pointer;
 			module * module_pointer;
