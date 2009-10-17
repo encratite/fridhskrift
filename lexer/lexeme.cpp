@@ -206,4 +206,19 @@ namespace fridh
 				return "unknown";
 		}
 	}
+
+	void lexeme::copy(construction_pattern const & other_pattern)
+	{
+		lexeme const & other = dynamic_cast<lexeme const &>(other_pattern);
+
+		type = other.type;
+		if(type == lexeme_type::string)
+			string = new std::string(*other.string);
+	}
+
+	void lexeme::destroy()
+	{
+		if(type == lexeme_type::string)
+			delete string;
+	}
 }

@@ -4,6 +4,7 @@
 #include <vector>
 #include <ail/types.hpp>
 #include <fridh/symbol.hpp>
+#include <fridh/construction.hpp>
 #include <boost/thread/mutex.hpp>
 
 namespace fridh
@@ -111,7 +112,7 @@ namespace fridh
 	typedef std::vector<lexeme> lexeme_container;
 	typedef std::vector<line_of_code> lines_of_code;
 
-	struct lexeme
+	struct lexeme: public construction_pattern
 	{
 		lexeme_type::type type;
 		union
@@ -131,6 +132,9 @@ namespace fridh
 		explicit lexeme(types::floating_point_value floating_point_value);
 		explicit lexeme(std::string const & string);
 		std::string to_string() const;
+
+		void copy(construction_pattern const & other_pattern);
+		void destroy();
 	};
 
 	struct line_of_code
