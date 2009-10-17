@@ -3,6 +3,7 @@
 #include <map>
 #include <ail/types.hpp>
 #include <ail/exception.hpp>
+#include <fridh/construction.hpp>
 
 namespace fridh
 {
@@ -42,12 +43,10 @@ namespace fridh
 		typedef std::map<variable, variable> map;
 	}
 
-	class variable
+	class variable: public construction_pattern
 	{
 	public:
 		variable();
-		variable(variable const & other);
-		~variable();
 
 		variable_type get_type() const;
 
@@ -101,6 +100,9 @@ namespace fridh
 		bool operator==(variable const & other) const;
 		bool operator!=(variable const & other) const;
 		bool operator<(variable const & other) const;
+
+		void copy(construction_pattern const & other_pattern);
+		void destroy();
 
 	private:
 		union

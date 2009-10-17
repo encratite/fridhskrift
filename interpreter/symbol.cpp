@@ -3,6 +3,7 @@
 namespace fridh
 {
 	symbol_tree_node::symbol_tree_node():
+		type(symbol::uninitialised),
 		parent(0)
 	{
 	}
@@ -69,6 +70,8 @@ namespace fridh
 			DELETE_MEMBER(class_symbol, class_pointer);
 			DELETE_MEMBER(module, module_pointer);
 		}
+
+		type = symbol::uninitialised;
 
 #undef DELETE_MEMBER
 

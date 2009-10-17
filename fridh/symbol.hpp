@@ -10,6 +10,8 @@ namespace fridh
 	{
 		enum type
 		{
+			uninitialised,
+
 			function,
 			class_symbol,
 			module

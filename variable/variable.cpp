@@ -8,57 +8,58 @@ namespace fridh
 	{
 	}
 
-	variable::variable(variable const & other):
-		type(other.type)
+	void variable::copy(construction_pattern const & other_pattern)
 	{
+		variable const & other = dynamic_cast<variable const &>(other_pattern);
+
+		type = other.type;
+
+#define COPY_MEMBER(type) \
+			case variable_type_identifier::type: \
+				type = other.type; \
+				break;
+
+#define COPY_MEMBER_POINTER(type, member_type, member) \
+			case variable_type_identifier::type: \
+				member = new member_type(*other.member); \
+				break;
+
 		switch(type)
 		{
-		case variable_type_identifier::boolean:
-			boolean = other.boolean;
-			break;
+			COPY_MEMBER(boolean)
+			COPY_MEMBER(signed_integer)
+			COPY_MEMBER(unsigned_integer)
+			COPY_MEMBER(floating_point_value)
 
-		case variable_type_identifier::signed_integer:
-			signed_integer = other.signed_integer;
-			break;
-
-		case variable_type_identifier::unsigned_integer:
-			unsigned_integer = other.unsigned_integer;
-			break;
-
-		case variable_type_identifier::floating_point_value:
-			floating_point_value = other.floating_point_value;
-			break;
-
-		case variable_type_identifier::string:
-			string = new std::string(*other.string);
-			break;
-
-		case variable_type_identifier::array:
-			array = new types::vector(*other.array);
-			break;
-
-		case variable_type_identifier::map:
-			map = new types::map(*other.map);
-			break;
+			COPY_MEMBER_POINTER(string, std::string, string)
+			COPY_MEMBER_POINTER(array, types::vector, array)
+			COPY_MEMBER_POINTER(map, types::map, map)
 		}
+
+#undef COPY_MEMBER_POINTER
+#undef COPY_MEMBER
+
 	}
 
-	variable::~variable()
+	void variable::destroy()
 	{
+
+#define DELETE_MEMBER(type) \
+			case variable_type_identifier::type: \
+				delete type; \
+				break;
+
 		switch(type)
 		{
-		case variable_type_identifier::string:
-			delete string;
-			break;
-
-		case variable_type_identifier::array:
-			delete array;
-			break;
-
-		case variable_type_identifier::map:
-			delete map;
-			break;
+			DELETE_MEMBER(string)
+			DELETE_MEMBER(array)
+			DELETE_MEMBER(map)
 		}
+
+		type = variable_type_identifier::undefined;
+
+#undef DELETE_MEMBER
+
 	}
 
 	types::floating_point_value variable::get_floating_point_value() const
