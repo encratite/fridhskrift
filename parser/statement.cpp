@@ -33,7 +33,6 @@ namespace fridh
 
 	void parser::process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output)
 	{
-		visualise_nodes(arguments);
 		parse_tree_node new_node;
 		operator_resolution(arguments, new_node);
 		output.push_back(new_node);
@@ -53,10 +52,8 @@ namespace fridh
 			lexeme & current_lexeme = lexemes[i];
 
 			if(current_lexeme.type == terminator)
-			{
-				i++;
 				break;
-			}
+
 			else if(prefix != symbol_prefix::none && current_lexeme.type != lexeme_type::name)
 				double_lexeme_error("Invalid use of a symbol prefix", i);
 
@@ -72,6 +69,8 @@ namespace fridh
 
 				case lexeme_type::bracket_start:
 				{
+					offset++;
+
 					parse_tree_nodes content;
 					if(got_last_group && last_group == lexeme_group::argument)
 					{
@@ -95,6 +94,8 @@ namespace fridh
 
 				case lexeme_type::array_start:
 				{
+					offset++;
+
 					parse_tree_nodes elements;
 					process_atomic_statement(lexemes, offset, elements, true, lexeme_type::array_end);
 					arguments.push_back(parse_tree_node(elements));
@@ -221,9 +222,6 @@ namespace fridh
 
 		if(last_group != lexeme_group::argument)
 			error("An operator is missing an argument");
-
-		std::cout << "Bottom" << std::endl;
-		visualise_nodes(arguments);
 
 		process_node_group(arguments, output);
 	}

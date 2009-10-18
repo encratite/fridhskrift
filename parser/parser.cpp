@@ -55,10 +55,13 @@ namespace fridh
 		return new_node;
 	}
 
-	void parser::process_body(executable_units * output)
+	void parser::process_body(executable_units * output, bool increment)
 	{
-		line_offset++;
-		indentation_level++;
+		if(increment)
+		{
+			line_offset++;
+			indentation_level++;
+		}
 
 		bool is_class = (output == 0);
 
@@ -144,21 +147,18 @@ namespace fridh
 	bool parser::process_line(executable_unit * output)
 	{
 		line_of_code & current_line = lines[line_offset];
-		if(current_line.indentation_level > indentation_level)
-			error("Unexpected increase in the indentation level");
+		std::cout << "Line " << current_line.line << ": " << current_line.indentation_level << std::endl;
 
-		if(!process_class())
+		if(current_line.indentation_level > indentation_level)
+			error("Unexpected increase in the indentation level (" + ail::number_to_string(indentation_level) + " to " + ail::number_to_string(current_line.indentation_level) + ")");
+
+		if(!process_class() && !process_function())
 		{
 			if(output)
-			{
-				if(!process_function())
-					process_statement(*output);
-			}
+				process_statement(*output);
 			else
-				error("Regular statements and assignments need to be placed within functions");
+				error("Regular statements need to be placed within functions");
 		}
-
-		line_offset++;
 
 		if(line_offset == line_end)
 		{
@@ -186,8 +186,9 @@ namespace fridh
 			indentation_level = 0;
 			nested_class_level = 0;
 			line_offset = 0;
+			line_end = lines.size();
 
-			process_body(&target_module.entry_function.body);
+			process_body(&target_module.entry_function.body, false);
 
 			return true;
 		}

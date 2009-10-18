@@ -149,5 +149,7 @@ namespace fridh
 			node = new parse_tree_node;
 			process_offset_atomic_statement(*node);
 		}
+
+		line_offset++;
 	}
 }
