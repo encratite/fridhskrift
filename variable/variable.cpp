@@ -25,10 +25,8 @@ namespace fridh
 		return *this;
 	}
 
-	void variable::copy(variable const & other_pattern)
+	void variable::copy(variable const & other)
 	{
-		variable const & other = dynamic_cast<variable const &>(other_pattern);
-
 		type = other.type;
 
 #define COPY_MEMBER(type) \

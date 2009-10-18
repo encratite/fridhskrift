@@ -47,7 +47,7 @@ namespace fridh
 
 		symbol_tree_node & operator=(symbol_tree_node const & other);
 
-		void copy(symbol_tree_node const & other_pattern);
+		void copy(symbol_tree_node const & other);
 		void destroy();
 
 		bool exists(std::string const & name);

@@ -105,7 +105,7 @@ namespace fridh
 
 		variable & operator=(variable const & other);
 
-		void copy(variable const & other_pattern);
+		void copy(variable const & other);
 		void destroy();
 
 	private:

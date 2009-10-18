@@ -41,10 +41,8 @@ namespace fridh
 		return *this;
 	}
 
-	void symbol_tree_node::copy(symbol_tree_node const & other_pattern)
+	void symbol_tree_node::copy(symbol_tree_node const & other)
 	{
-		symbol_tree_node const & other = dynamic_cast<symbol_tree_node const &>(other_pattern);
-
 		type = other.type;
 		parent = other.parent;
 

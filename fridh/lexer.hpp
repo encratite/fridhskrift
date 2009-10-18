@@ -143,6 +143,8 @@ namespace fridh
 
 		void copy(lexeme const & other);
 		void destroy();
+
+		bool is_string() const;
 	};
 
 	struct line_of_code

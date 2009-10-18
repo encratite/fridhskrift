@@ -87,7 +87,13 @@ namespace fridh
 			current_lexeme.type = lexeme_type::name;
 		}
 
+		std::cout << "Pushing lexeme:" << std::endl;
+		std::cout << current_lexeme.to_string() << std::endl;
+
 		output.lexemes.push_back(current_lexeme);
+
+		std::cout << "Pushed lexeme:" << std::endl;
+		std::cout << output.lexemes.back().to_string() << std::endl;
 	}
 
 	bool lexer::string_match(std::string const & target)
