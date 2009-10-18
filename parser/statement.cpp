@@ -33,12 +33,15 @@ namespace fridh
 
 	void parser::process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output)
 	{
-		parse_tree_node new_node;
-		operator_resolution(arguments, new_node);
-		output.push_back(new_node);
+		if(!arguments.empty())
+		{
+			parse_tree_node new_node;
+			operator_resolution(arguments, new_node);
+			output.push_back(new_node);
+		}
 	}
 
-	void parser::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
+	void parser::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator, bool allow_empty_statements)
 	{
 		bool got_last_group = false;
 		lexeme_group::type last_group;
@@ -82,11 +85,11 @@ namespace fridh
 					}
 					else
 					{
-						process_atomic_statement(lexemes, offset, content, false, lexeme_type::bracket_end);
+						process_atomic_statement(lexemes, offset, content, false, lexeme_type::bracket_end, true);
 						arguments.push_back(content[0]);
 					}
 					set_last_group(lexeme_group::argument, last_group, got_last_group);
-					break;
+					continue;
 				}
 
 				case lexeme_type::bracket_end:
@@ -97,10 +100,10 @@ namespace fridh
 					offset++;
 
 					parse_tree_nodes elements;
-					process_atomic_statement(lexemes, offset, elements, true, lexeme_type::array_end);
+					process_atomic_statement(lexemes, offset, elements, true, lexeme_type::array_end, true);
 					arguments.push_back(parse_tree_node(elements));
 					set_last_group(lexeme_group::argument, last_group, got_last_group);
-					break;
+					continue;
 				}
 
 				case lexeme_type::array_end:
@@ -217,11 +220,14 @@ namespace fridh
 			set_last_group(group, last_group, got_last_group);
 		}
 
-		if(!got_last_group)
-			error("Empty statement");
+		if(!allow_empty_statements)
+		{
+			if(!got_last_group)
+				error("Empty statement");
 
-		if(last_group != lexeme_group::argument)
-			error("An operator is missing an argument");
+			if(last_group != lexeme_group::argument)
+				error("An operator is missing an argument");
+		}
 
 		process_node_group(arguments, output);
 	}
