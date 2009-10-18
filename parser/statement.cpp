@@ -33,16 +33,10 @@ namespace fridh
 
 	void parser::process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output)
 	{
-		std::cout << "process_node_group" << std::endl;
 		visualise_nodes(arguments);
 		parse_tree_node new_node;
-		std::cout << "new_node:" << std::endl;
-		std::cout << new_node.to_string() << std::endl;
 		operator_resolution(arguments, new_node);
-		std::cout << "operator_resolution returned:" << std::endl;
-		std::cout << new_node.to_string() << std::endl;
 		output.push_back(new_node);
-		std::cout << "/process_node_group" << std::endl;
 	}
 
 	void parser::process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements, lexeme_type::type terminator)
@@ -163,9 +157,7 @@ namespace fridh
 							prefix = symbol_prefix::none;
 						}
 					}
-					//std::cout << "Pushing " << argument_node.to_string() << std::endl;
 					arguments.push_back(argument_node);
-					//visualise_nodes(arguments);
 					break;
 				}
 

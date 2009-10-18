@@ -8,7 +8,6 @@ namespace fridh
 	parse_tree_node::parse_tree_node():
 		type(parse_tree_node_type::uninitialised)
 	{
-		std::cout << "parse_tree_node " << (void *)this << std::endl;
 	}
 
 	parse_tree_node::parse_tree_node(parse_tree_node const & other)
@@ -30,11 +29,6 @@ namespace fridh
 
 	void parse_tree_node::copy(parse_tree_node const & other)
 	{
-		std::cout << "parse_tree_node copy " << (void *)this << " from " << (void *)&other << std::endl;
-
-		//std::cout << (int)other.type << std::endl;
-
-		//std::cout << "Copying " << other.to_string() << std::endl;
 
 #define COPY_MEMBER(type, member_type, member) \
 		case parse_tree_node_type::type: \
@@ -55,12 +49,10 @@ namespace fridh
 
 #undef COPY_MEMBER
 
-		//std::cout << "Result: " << to_string() << std::endl;
 	}
 
 	void parse_tree_node::destroy()
 	{
-		std::cout << "parse_tree_node destroy " << (void *)this << std::endl;
 
 #define DELETE_MEMBER(type, member) \
 			case parse_tree_node_type::type: \

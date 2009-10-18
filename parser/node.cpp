@@ -73,11 +73,6 @@ namespace fridh
 			parse_tree_symbol * & symbol_pointer = output.symbol_pointer;
 			symbol_pointer = new parse_tree_symbol;
 			symbol_pointer->name = *input.string;
-
-			/*
-			std::cout << "lexeme_to_argument_node " << (int)output.type << std::endl;
-			std::cout << output.to_string() << std::endl;
-			*/
 		}
 		else
 		{

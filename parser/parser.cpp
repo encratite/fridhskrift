@@ -47,8 +47,6 @@ namespace fridh
 	symbol_tree_node & parser::add_name(symbol::type symbol_type)
 	{
 		std::string const & name = get_declaration_name();
-		std::cout << "Name" << std::endl;
-		std::cout << name << std::endl;
 		symbol_tree_node * & new_node_pointer = current_node->children[name];
 		new_node_pointer = new symbol_tree_node(symbol_type);
 		symbol_tree_node & new_node = *new_node_pointer;
