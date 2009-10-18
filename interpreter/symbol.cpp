@@ -8,6 +8,11 @@ namespace fridh
 	{
 	}
 
+	symbol_tree_node::symbol_tree_node(symbol_tree_node const & other)
+	{
+		copy(other);
+	}
+
 	symbol_tree_node::symbol_tree_node(symbol::type type):
 		type(type),
 		parent(0)
@@ -24,7 +29,19 @@ namespace fridh
 		}
 	}
 
-	void symbol_tree_node::copy(construction_pattern const & other_pattern)
+	symbol_tree_node::~symbol_tree_node()
+	{
+		destroy();
+	}
+
+	symbol_tree_node & symbol_tree_node::operator=(symbol_tree_node const & other)
+	{
+		destroy();
+		copy(other);
+		return *this;
+	}
+
+	void symbol_tree_node::copy(symbol_tree_node const & other_pattern)
 	{
 		symbol_tree_node const & other = dynamic_cast<symbol_tree_node const &>(other_pattern);
 

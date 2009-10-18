@@ -8,7 +8,24 @@ namespace fridh
 	{
 	}
 
-	void variable::copy(construction_pattern const & other_pattern)
+	variable::variable(variable const & other)
+	{
+		copy(other);
+	}
+
+	variable::~variable()
+	{
+		destroy();
+	}
+
+	variable & variable::operator=(variable const & other)
+	{
+		destroy();
+		copy(other);
+		return *this;
+	}
+
+	void variable::copy(variable const & other_pattern)
 	{
 		variable const & other = dynamic_cast<variable const &>(other_pattern);
 

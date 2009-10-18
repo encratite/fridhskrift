@@ -122,7 +122,7 @@ namespace fridh
 	struct parse_tree_call;
 	struct parse_tree_array;
 
-	struct parse_tree_node: construction_pattern
+	struct parse_tree_node
 	{
 		parse_tree_node_type::type type;
 		union
@@ -136,8 +136,12 @@ namespace fridh
 		};
 
 		parse_tree_node();
+		parse_tree_node(parse_tree_node const & other);
+		~parse_tree_node();
 
-		void copy(construction_pattern const & other_pattern);
+		parse_tree_node & operator=(parse_tree_node const & other);
+
+		void copy(parse_tree_node const & other);
 		void destroy();
 
 		parse_tree_node(parse_tree_node_type::type type);
@@ -221,7 +225,7 @@ namespace fridh
 		executable_units body;
 	};
 
-	struct executable_unit: construction_pattern
+	struct executable_unit
 	{
 		executable_unit_type::type type;
 
@@ -236,8 +240,12 @@ namespace fridh
 		};
 
 		executable_unit();
+		executable_unit(executable_unit const & other);
+		~executable_unit();
+
+		executable_unit & operator=(executable_unit const & other);
 		
-		void copy(construction_pattern const & other_pattern);
+		void copy(executable_unit const & other);
 		void destroy();
 	};
 

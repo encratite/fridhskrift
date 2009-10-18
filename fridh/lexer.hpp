@@ -114,7 +114,7 @@ namespace fridh
 	typedef std::vector<lexeme> lexeme_container;
 	typedef std::vector<line_of_code> lines_of_code;
 
-	struct lexeme: public construction_pattern
+	struct lexeme
 	{
 		lexeme_type::type type;
 		union
@@ -127,15 +127,21 @@ namespace fridh
 		};
 
 		lexeme();
+		lexeme(lexeme const & other);
 		lexeme(lexeme_type::type type);
 		explicit lexeme(types::boolean boolean);
 		explicit lexeme(types::signed_integer signed_integer);
 		explicit lexeme(types::unsigned_integer unsigned_integer);
 		explicit lexeme(types::floating_point_value floating_point_value);
 		explicit lexeme(std::string const & string);
+
+		~lexeme();
+
 		std::string to_string() const;
 
-		void copy(construction_pattern const & other_pattern);
+		lexeme & operator=(lexeme const & other);
+
+		void copy(lexeme const & other);
 		void destroy();
 	};
 

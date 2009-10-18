@@ -8,6 +8,11 @@ namespace fridh
 	{
 	}
 
+	lexeme::lexeme(lexeme const & other)
+	{
+		copy(other);
+	}
+
 	lexeme::lexeme(lexeme_type::type type):
 		type(type)
 	{
@@ -41,6 +46,11 @@ namespace fridh
 		type(lexeme_type::string),
 		string(new std::string(string))
 	{
+	}
+
+	lexeme::~lexeme()
+	{
+		destroy();
 	}
 
 	std::string lexeme::to_string() const
@@ -208,7 +218,14 @@ namespace fridh
 		}
 	}
 
-	void lexeme::copy(construction_pattern const & other_pattern)
+	lexeme & lexeme::operator=(lexeme const & other)
+	{
+		destroy();
+		copy(other);
+		return *this;
+	}
+
+	void lexeme::copy(lexeme const & other_pattern)
 	{
 		lexeme const & other = dynamic_cast<lexeme const &>(other_pattern);
 

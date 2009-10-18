@@ -27,7 +27,7 @@ namespace fridh
 
 	typedef std::map<std::string, symbol_tree_node *> node_children;
 
-	struct symbol_tree_node: construction_pattern
+	struct symbol_tree_node
 	{
 		symbol::type type;
 		union
@@ -41,9 +41,13 @@ namespace fridh
 		symbol_tree_node * parent;
 
 		symbol_tree_node();
+		symbol_tree_node(symbol_tree_node const & other);
 		symbol_tree_node(symbol::type type);
+		~symbol_tree_node();
 
-		void copy(construction_pattern const & other_pattern);
+		symbol_tree_node & operator=(symbol_tree_node const & other);
+
+		void copy(symbol_tree_node const & other_pattern);
 		void destroy();
 
 		bool exists(std::string const & name);

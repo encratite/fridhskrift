@@ -7,10 +7,25 @@ namespace fridh
 	{
 	}
 
-	void executable_unit::copy(construction_pattern const & other_pattern)
+	executable_unit::executable_unit(executable_unit const & other)
 	{
-		executable_unit const & other = dynamic_cast<executable_unit const &>(other_pattern);
+		copy(other);
+	}
 
+	executable_unit::~executable_unit()
+	{
+		destroy();
+	}
+
+	executable_unit & executable_unit::operator=(executable_unit const & other)
+	{
+		destroy();
+		copy(other);
+		return *this;
+	}
+
+	void executable_unit::copy(executable_unit const & other)
+	{
 #define COPY_MEMBER(type, member_type, member) \
 		case executable_unit_type::type: \
 			member = new member_type(*other.member); \
