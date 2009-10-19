@@ -134,6 +134,8 @@ namespace fridh
 
 		void process_node_group(parse_tree_nodes & arguments, parse_tree_nodes & output);
 		void operator_resolution(parse_tree_nodes & input, parse_tree_node & output);
+
+		void scope_up();
 	};
 
 	void lexeme_to_argument_node(lexeme & input, parse_tree_node & output);

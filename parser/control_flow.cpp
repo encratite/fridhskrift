@@ -148,8 +148,11 @@ namespace fridh
 			parse_tree_node * & node = output.statement_pointer;
 			node = new parse_tree_node;
 			process_offset_atomic_statement(*node);
-		}
 
-		line_offset++;
+			/*
+			line_offset++;
+			std::cout << "process_statement" << std::endl;
+			*/
+		}
 	}
 }

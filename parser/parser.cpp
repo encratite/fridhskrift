@@ -50,8 +50,10 @@ namespace fridh
 		symbol_tree_node * & new_node_pointer = current_node->children[name];
 		new_node_pointer = new symbol_tree_node(symbol_type);
 		symbol_tree_node & new_node = *new_node_pointer;
+		std::cout << "Its parent is " << (void *)current_node << std::endl;
 		new_node.parent = current_node;
 		current_node = new_node_pointer;
+		std::cout << "current_node = " << (void *)new_node_pointer << std::endl;
 		return new_node;
 	}
 
@@ -61,6 +63,8 @@ namespace fridh
 		{
 			line_offset++;
 			indentation_level++;
+
+			std::cout << "process_body" << std::endl;
 		}
 
 		bool is_class = (output == 0);
@@ -81,11 +85,14 @@ namespace fridh
 			}
 			if(end)
 			{
-				if(indentation_level > 0)
-					indentation_level--;
+				if(indentation_level == 0 && line_offset != line_end - 1)
+					error("Internal error: Invalid indentation level calculated");
+
+				indentation_level--;
+
 				if(is_class)
 					nested_class_level--;
-				current_node = current_node->parent;
+				
 				break;
 			}
 		}
@@ -102,6 +109,9 @@ namespace fridh
 		add_name(symbol::class_symbol);
 
 		process_body(0);
+
+		scope_up();
+
 		return true;
 	}
 
@@ -127,6 +137,9 @@ namespace fridh
 			current_function->arguments.push_back(*lexemes[i].string);
 
 		process_body(&current_function->body);
+
+		scope_up();
+
 		return true;
 	}
 
@@ -136,7 +149,9 @@ namespace fridh
 		parse_tree_nodes nodes;
 		process_atomic_statement(lexemes, offset, nodes);
 		output = nodes[0];
+
 		line_offset++;
+		std::cout << "process_offset_atomic_statement" << std::endl;
 	}
 
 	void parser::process_composite_term(parse_tree_node & output)
@@ -219,5 +234,11 @@ namespace fridh
 	{
 		lexeme_container & lexemes = get_lexemes();
 		error(message + " (\"" + lexemes[offset - 1].to_string() + "\", \"" + lexemes[offset].to_string() + "\")");
+	}
+
+	void parser::scope_up()
+	{
+		std::cout << "current_node: " << (void *)current_node << " -> " << current_node->parent << std::endl;
+		current_node = current_node->parent;
 	}
 }
