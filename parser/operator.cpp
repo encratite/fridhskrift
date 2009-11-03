@@ -73,8 +73,11 @@ namespace fridh
 				else
 					argument_offset = next_offset;
 
+				if(argument_offset >= arguments.size())
+					error("Missing operator for unary argument");
+
 				parse_tree_unary_operator_node & unary_operator_node = *operator_node.unary_operator_pointer;
-				unary_operator_node.argument = input.at(argument_offset);
+				unary_operator_node.argument = input[argument_offset];
 				input.erase(input.begin() + argument_offset);
 				break;
 			}
@@ -82,6 +85,11 @@ namespace fridh
 			case parse_tree_node_type::binary_operator_node:
 			{
 				parse_tree_binary_operator_node & binary_operator_node = *operator_node.binary_operator_pointer;
+
+				if(extremum_offset == 0)
+					error("Encountered a binary operator which lacks a left hand argument");
+				else if(next_offset >= arguments.size())
+					error("Encountered a binary operator which lacks a right hand argument");
 
 				parse_tree_nodes
 					left_side(input.begin(), input.begin() + extremum_offset),

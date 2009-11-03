@@ -4,13 +4,8 @@
 
 namespace fridh
 {
-	typedef std::map<unary_operator_type::type, operator_precedence::type> unary_operator_precedence_map_type;
-	typedef std::map<binary_operator_type::type, operator_precedence::type> binary_operator_precedence_map_type;
-
 	namespace
 	{
-		unary_operator_precedence_map_type unary_operator_precedence_map;
-		binary_operator_precedence_map_type binary_operator_precedence_map;
 		std::set<binary_operator_type::type> binary_right_to_left_operators;
 
 		bool initialised_data = false;
@@ -20,47 +15,6 @@ namespace fridh
 	{
 		if(initialised_data)
 			return;
-
-		unary_operator_precedence_map[unary_operator_type::negation] = operator_precedence::negation;
-		unary_operator_precedence_map[unary_operator_type::logical_not] = operator_precedence::logical_not;
-		unary_operator_precedence_map[unary_operator_type::binary_not] = operator_precedence::binary_not;
-
-		unary_operator_precedence_map[unary_operator_type::increment] = operator_precedence::increment;
-		unary_operator_precedence_map[unary_operator_type::decrement] = operator_precedence::decrement;
-
-		binary_operator_precedence_map[binary_operator_type::addition] = operator_precedence::addition;
-		binary_operator_precedence_map[binary_operator_type::subtraction] = operator_precedence::subtraction;
-		binary_operator_precedence_map[binary_operator_type::multiplication] = operator_precedence::multiplication;
-		binary_operator_precedence_map[binary_operator_type::division] = operator_precedence::division;
-		binary_operator_precedence_map[binary_operator_type::modulo] = operator_precedence::modulo;
-		binary_operator_precedence_map[binary_operator_type::exponentiation] = operator_precedence::exponentiation;
-
-		binary_operator_precedence_map[binary_operator_type::less_than] = operator_precedence::less_than;
-		binary_operator_precedence_map[binary_operator_type::less_than_or_equal] = operator_precedence::less_than_or_equal;
-		binary_operator_precedence_map[binary_operator_type::greater_than] = operator_precedence::greater_than;
-		binary_operator_precedence_map[binary_operator_type::greater_than_or_equal] = operator_precedence::greater_than_or_equal;
-		binary_operator_precedence_map[binary_operator_type::not_equal] = operator_precedence::not_equal;
-		binary_operator_precedence_map[binary_operator_type::equal] = operator_precedence::equal;
-
-		binary_operator_precedence_map[binary_operator_type::logical_and] = operator_precedence::logical_and;
-		binary_operator_precedence_map[binary_operator_type::logical_or] = operator_precedence::logical_or;
-
-		binary_operator_precedence_map[binary_operator_type::shift_left] = operator_precedence::shift_left;
-		binary_operator_precedence_map[binary_operator_type::shift_right] = operator_precedence::shift_right;
-
-		binary_operator_precedence_map[binary_operator_type::binary_and] = operator_precedence::binary_and;
-		binary_operator_precedence_map[binary_operator_type::binary_or] = operator_precedence::binary_or;
-		binary_operator_precedence_map[binary_operator_type::binary_xor] = operator_precedence::binary_xor;
-
-		binary_operator_precedence_map[binary_operator_type::selection] = operator_precedence::selection;
-
-		binary_operator_precedence_map[binary_operator_type::assignment] = operator_precedence::assignment;
-		binary_operator_precedence_map[binary_operator_type::addition_assignment] = operator_precedence::addition_assignment;
-		binary_operator_precedence_map[binary_operator_type::subtraction_assignment] = operator_precedence::subtraction_assignment;
-		binary_operator_precedence_map[binary_operator_type::multiplication_assignment] = operator_precedence::multiplication_assignment;
-		binary_operator_precedence_map[binary_operator_type::division_assignment] = operator_precedence::division_assignment;
-		binary_operator_precedence_map[binary_operator_type::modulo_assignment] = operator_precedence::modulo_assignment;
-		binary_operator_precedence_map[binary_operator_type::exponentiation_assignment] = operator_precedence::exponentiation_assignment;
 
 		{
 			using namespace binary_operator_type;
@@ -73,22 +27,85 @@ namespace fridh
 
 	word get_unary_operator_precedence(unary_operator_type::type input)
 	{
-		initialise_data();
+		using namespace unary_operator_type;
 
-		unary_operator_precedence_map_type::iterator iterator = unary_operator_precedence_map.find(input);
-		if(iterator == unary_operator_precedence_map.end())
-			throw ail::exception("Invalid unary operator value specified for operator precedence lookup");
-		return static_cast<word>(iterator->second);
+		switch(input)
+		{
+			case negation:
+			case logical_not:
+			case binary_not:
+				return 3;
+
+			case increment:
+			case decrement:
+				return 2;
+		}
+
+		throw ail::exception("Invalid unary operator type");
 	}
 
 	word get_binary_operator_precedence(binary_operator_type::type input)
 	{
-		initialise_data();
+		using namespace binary_operator_type;
 
-		binary_operator_precedence_map_type::iterator iterator = binary_operator_precedence_map.find(input);
-		if(iterator == binary_operator_precedence_map.end())
-			throw ail::exception("Invalid binary operator value specified for operator precedence lookup");
-		return static_cast<word>(iterator->second);
+		switch(input)
+		{
+			case addition:
+			case subtraction:
+				return 6;
+
+			case multiplication:
+			case division:
+			case modulo:
+				return 5;
+
+			case exponentiation:
+				//improvised, not from the C++ operators article as such
+				return 4;
+
+			case less_than:
+			case less_than_or_equal:
+			case greater_than:
+			case greater_than_or_equal:
+				return 8;
+
+			case not_equal:
+			case equal:
+				return 9;
+
+			case logical_and:
+				return 13;
+
+			case logical_or:
+				return 14;
+
+			case shift_left:
+			case shift_right:
+				return 7;
+
+			case binary_and:
+				return 10;
+
+			case binary_or:
+				return 12;
+
+			case binary_xor:
+				return 11;
+
+			case selection:
+				return 2;
+
+			case assignment:
+			case addition_assignment:
+			case subtraction_assignment:
+			case multiplication_assignment:
+			case division_assignment:
+			case modulo_assignment:
+			case exponentiation_assignment:
+				return 16;
+		}
+
+		throw ail::exception("Invalid binary operator type");
 	}
 
 	bool get_parse_tree_node_precedence(parse_tree_node & input, word & output)
@@ -97,7 +114,7 @@ namespace fridh
 		{
 			case parse_tree_node_type::call:
 			case parse_tree_node_type::call_operator:
-				output = static_cast<word>(operator_precedence::call);
+				output = 2;
 				break;
 
 			case parse_tree_node_type::unary_operator_node:
@@ -124,8 +141,12 @@ namespace fridh
 
 		if
 		(
-			input.type == parse_tree_node_type::binary_operator_node &&
-			binary_right_to_left_operators.find(input.binary_operator_pointer->type) != binary_right_to_left_operators.end()
+			(
+				input.type == parse_tree_node_type::binary_operator_node &&
+				binary_right_to_left_operators.find(input.binary_operator_pointer->type) != binary_right_to_left_operators.end()
+			)
+			||
+			input.is_call_node()
 		)
 				return true;
 

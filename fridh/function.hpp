@@ -153,6 +153,7 @@ namespace fridh
 		void is_call();
 		bool is_post_fix() const;
 		std::string to_string() const;
+		bool is_call_node() const;
 	};
 
 	struct parse_tree_symbol

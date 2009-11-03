@@ -8,7 +8,7 @@ namespace fridh
 		type(symbol::uninitialised),
 		parent(0)
 	{
-		std::cout << "new symbol_tree_node default " << (void *)this << std::endl;
+		//std::cout << "new symbol_tree_node default " << (void *)this << std::endl;
 	}
 
 	symbol_tree_node::symbol_tree_node(symbol_tree_node const & other)
@@ -20,7 +20,7 @@ namespace fridh
 		type(type),
 		parent(0)
 	{
-		std::cout << "new symbol_tree_node " << (void *)this << std::endl;
+		//std::cout << "new symbol_tree_node " << (void *)this << std::endl;
 
 		switch(type)
 		{
@@ -48,7 +48,7 @@ namespace fridh
 
 	void symbol_tree_node::copy(symbol_tree_node const & other)
 	{
-		std::cout << "symbol_tree_node " << (void *)this << " from " << (void *)&other << std::endl;
+		//std::cout << "symbol_tree_node " << (void *)this << " from " << (void *)&other << std::endl;
 
 		type = other.type;
 		parent = other.parent;
@@ -78,7 +78,7 @@ namespace fridh
 
 	void symbol_tree_node::destroy()
 	{
-		std::cout << "~symbol_tree_node " << (void *)this << std::endl;
+		//std::cout << "~symbol_tree_node " << (void *)this << std::endl;
 
 		for(node_children::iterator i = children.begin(), end = children.end(); i != end; i++)
 			delete i->second;
@@ -103,7 +103,8 @@ namespace fridh
 
 	bool symbol_tree_node::exists(std::string const & name)
 	{
-		std::cout << "exists " << (void *)this << std::endl;
+		//std::cout << "exists " << (void *)this << std::endl;
+
 		node_children::iterator iterator = children.find(name);
 		return iterator != children.end();
 	}

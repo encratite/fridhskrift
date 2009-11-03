@@ -163,4 +163,17 @@ namespace fridh
 				return "unknown (" + ail::number_to_string(static_cast<int>(type)) + ")";
 		}
 	}
+
+	bool parse_tree_node::is_call_node() const
+	{
+		switch(type)
+		{
+			case parse_tree_node_type::call:
+			case parse_tree_node_type::call_operator:
+			case parse_tree_node_type::spaced_call_operator:
+				return true;
+		}
+
+		return false;
+	}
 }

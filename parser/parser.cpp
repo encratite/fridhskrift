@@ -50,10 +50,8 @@ namespace fridh
 		symbol_tree_node * & new_node_pointer = current_node->children[name];
 		new_node_pointer = new symbol_tree_node(symbol_type);
 		symbol_tree_node & new_node = *new_node_pointer;
-		std::cout << "Its parent is " << (void *)current_node << std::endl;
 		new_node.parent = current_node;
 		current_node = new_node_pointer;
-		std::cout << "current_node = " << (void *)new_node_pointer << std::endl;
 		return new_node;
 	}
 
@@ -63,8 +61,6 @@ namespace fridh
 		{
 			line_offset++;
 			indentation_level++;
-
-			std::cout << "process_body" << std::endl;
 		}
 
 		bool is_class = (output == 0);
@@ -151,7 +147,6 @@ namespace fridh
 		output = nodes[0];
 
 		line_offset++;
-		std::cout << "process_offset_atomic_statement" << std::endl;
 	}
 
 	void parser::process_composite_term(parse_tree_node & output)
@@ -238,7 +233,6 @@ namespace fridh
 
 	void parser::scope_up()
 	{
-		std::cout << "current_node: " << (void *)current_node << " -> " << current_node->parent << std::endl;
 		current_node = current_node->parent;
 	}
 }

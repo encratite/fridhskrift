@@ -225,8 +225,10 @@ namespace fridh
 			if(!got_last_group)
 				error("Empty statement");
 
+			/*
 			if(last_group != lexeme_group::argument)
 				error("An operator is missing an argument");
+			*/
 		}
 
 		process_node_group(arguments, output);

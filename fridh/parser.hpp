@@ -8,59 +8,6 @@
 
 namespace fridh
 {
-	namespace operator_precedence
-	{
-		enum type
-		{
-			selection,
-
-			call,
-
-			increment,
-			decrement,
-
-			negation,
-			logical_not,
-			binary_not,
-
-			exponentiation,
-
-			multiplication,
-			division,
-			modulo,
-
-			addition,
-			subtraction,
-
-			shift_left,
-			shift_right,
-
-			less_than,
-			less_than_or_equal,
-
-			greater_than,
-			greater_than_or_equal,
-
-			equal,
-			not_equal,
-
-			binary_and,
-			binary_or,
-			binary_xor,
-
-			logical_and,
-			logical_or,
-
-			assignment,
-			addition_assignment,
-			subtraction_assignment,
-			multiplication_assignment,
-			division_assignment,
-			modulo_assignment,
-			exponentiation_assignment,
-		};
-	}
-
 	namespace statement_processing
 	{
 		enum type
