@@ -13,6 +13,7 @@ namespace fridh
 
 	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
+		std::cout << "Performing operator resolution on " << input.size() << " node(s)" << std::endl;
 		if(input.size() == 1)
 		{
 			output = input[0];
@@ -28,10 +29,19 @@ namespace fridh
 			parse_tree_node & current_node = input[i];
 			word precedence;
 
-			if
-			(
+			bool is_initialised_unary_node =
 				current_node.type == parse_tree_node_type::unary_operator_node &&
 				current_node.unary_operator_pointer->argument.type != parse_tree_node_type::uninitialised
+			;
+
+			bool is_initialised_call_node =
+				current_node.type == parse_tree_node_type::call &&
+				current_node.call_pointer->initialised;
+
+			if
+			(
+				is_initialised_unary_node ||
+				is_initialised_call_node
 			)
 				continue;
 
@@ -73,7 +83,7 @@ namespace fridh
 				else
 					argument_offset = next_offset;
 
-				if(argument_offset >= arguments.size())
+				if(argument_offset >= input.size())
 					error("Missing operator for unary argument");
 
 				parse_tree_unary_operator_node & unary_operator_node = *operator_node.unary_operator_pointer;
@@ -88,7 +98,7 @@ namespace fridh
 
 				if(extremum_offset == 0)
 					error("Encountered a binary operator which lacks a left hand argument");
-				else if(next_offset >= arguments.size())
+				else if(next_offset >= input.size())
 					error("Encountered a binary operator which lacks a right hand argument");
 
 				parse_tree_nodes
@@ -104,7 +114,6 @@ namespace fridh
 			}
 
 			case parse_tree_node_type::call:
-				//this is questionable
 				call_check(extremum_offset);
 				operator_node.call_pointer->function = input[0];
 				input.erase(input.begin());
@@ -118,7 +127,7 @@ namespace fridh
 				input.erase(input.begin());
 				if(operator_node.type != parse_tree_node_type::spaced_call_operator && next_offset != input.size())
 				{
-					//it's an unary call
+					//it's a unary call
 					operator_node.call_pointer->arguments.push_back(input[next_offset]);
 					input.erase(input.end() - 1);
 				}

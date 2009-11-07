@@ -182,6 +182,10 @@ namespace fridh
 	{
 		parse_tree_node function;
 		parse_tree_nodes arguments;
+
+		bool initialised;
+
+		parse_tree_call();
 	};
 
 	struct parse_tree_array
