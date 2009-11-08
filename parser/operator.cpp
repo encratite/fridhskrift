@@ -13,7 +13,9 @@ namespace fridh
 
 	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
-		std::cout << "Performing operator resolution on " << input.size() << " node(s)" << std::endl;
+		std::cout << "Performing operator resolution on " << input.size() << " node(s):" << std::endl;
+		for(std::size_t i = 0; i < input.size(); i++)
+			std::cout << (i + 1) << ". " << input[i].to_string() << std::endl;
 		if(input.size() == 1)
 		{
 			output = input[0];
@@ -124,12 +126,20 @@ namespace fridh
 				call_check(extremum_offset);
 				operator_node.is_call();
 				operator_node.call_pointer->function = input[0];
+				std::cout << "Operator node: " << operator_node.to_string() << std::endl;
 				input.erase(input.begin());
-				if(operator_node.type != parse_tree_node_type::spaced_call_operator && next_offset != input.size())
+				std::cout << "Operator node: " << operator_node.to_string() << std::endl;
+				next_offset--;
+				if(operator_node.type != parse_tree_node_type::spaced_call_operator && next_offset < input.size())
 				{
-					//it's a unary call
+					std::cout << "Unary call" << std::endl;
+					std::cout << input[next_offset].to_string() << std::endl;
 					operator_node.call_pointer->arguments.push_back(input[next_offset]);
-					input.erase(input.end() - 1);
+					input.erase(input.begin() + next_offset);
+				}
+				else
+				{
+					std::cout << "Nullary call (" << next_offset << " vs. " << input.size() << ")" << std::endl;
 				}
 				break;
 

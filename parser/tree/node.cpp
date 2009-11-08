@@ -145,7 +145,22 @@ namespace fridh
 				return "binary operator (" + binary_operator_pointer->left_argument.to_string() + ", " + binary_operator_pointer->right_argument.to_string() + ")";
 
 			case parse_tree_node_type::call:
-				return "call";
+			{
+				std::string output = "call: (" + call_pointer->function.to_string() + ") arguments: ";
+				parse_tree_nodes & arguments = call_pointer->arguments;
+				if(arguments.empty())
+					output += "no arguments.";
+				else
+				{
+					for(std::size_t i = 0; i < arguments.size(); i++)
+					{
+						if(i > 0)
+							output += ", ";
+						output += "(" + arguments[i].to_string() + ")";
+					}
+				}
+				return output;
+			}
 
 			case parse_tree_node_type::array:
 				return "array";
