@@ -36,7 +36,7 @@ namespace fridh
 
 			bool is_initialised_call_node =
 				current_node.type == parse_tree_node_type::call &&
-				current_node.call_pointer->initialised;
+				i == 0;
 
 			if
 			(

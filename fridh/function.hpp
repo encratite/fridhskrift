@@ -125,6 +125,7 @@ namespace fridh
 	struct parse_tree_node
 	{
 		parse_tree_node_type::type type;
+
 		union
 		{
 			variable * variable_pointer;
@@ -182,10 +183,6 @@ namespace fridh
 	{
 		parse_tree_node function;
 		parse_tree_nodes arguments;
-
-		bool initialised;
-
-		parse_tree_call();
 	};
 
 	struct parse_tree_array
