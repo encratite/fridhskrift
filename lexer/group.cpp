@@ -15,6 +15,8 @@ namespace fridh
 			case unsigned_integer:
 			case floating_point_value:
 			case string:
+
+			case nil:
 				output = lexeme_group::argument;
 				return true;
 
