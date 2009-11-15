@@ -141,12 +141,8 @@ namespace fridh
 
 		if
 		(
-			(
-				input.type == parse_tree_node_type::binary_operator_node &&
-				binary_right_to_left_operators.find(input.binary_operator_pointer->type) != binary_right_to_left_operators.end()
-			)
-			||
-			input.is_call_node()
+			input.type == parse_tree_node_type::binary_operator_node &&
+			binary_right_to_left_operators.find(input.binary_operator_pointer->type) != binary_right_to_left_operators.end()
 		)
 				return true;
 
