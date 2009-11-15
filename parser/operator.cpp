@@ -19,8 +19,6 @@ namespace fridh
 
 	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
-		std::cout << "Performing operator resolution on " << input.size() << " node(s):" << std::endl;
-		visualise_parse_tree_nodes(input);
 		if(input.size() == 1)
 		{
 			output = input[0];
@@ -132,24 +130,15 @@ namespace fridh
 				call_check(extremum_offset);
 				operator_node.is_call();
 				operator_node.call_pointer->function = input[0];
-				std::cout << "Operator node: " << operator_node.to_string() << std::endl;
 				input.erase(input.begin());
 
 				parse_tree_node & new_operator_node = input[0];
 
-				visualise_parse_tree_nodes(input);
-				std::cout << "New operator node: " << new_operator_node.to_string() << std::endl;
 				next_offset--;
 				if(new_operator_node.type != parse_tree_node_type::spaced_call_operator && next_offset < input.size())
 				{
-					std::cout << "Unary call" << std::endl;
-					std::cout << input[next_offset].to_string() << std::endl;
 					new_operator_node.call_pointer->arguments.push_back(input[next_offset]);
 					input.erase(input.begin() + next_offset);
-				}
-				else
-				{
-					std::cout << "Nullary call (" << next_offset << " vs. " << input.size() << ")" << std::endl;
 				}
 				break;
 			}
