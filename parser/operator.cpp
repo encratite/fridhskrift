@@ -11,11 +11,16 @@ namespace fridh
 			throw ail::exception("Invalid call offset encountered during operator resolution");
 	}
 
+	void visualise_parse_tree_nodes(parse_tree_nodes & input)
+	{
+		for(std::size_t i = 0; i < input.size(); i++)
+			std::cout << (i + 1) << ". " << input[i].to_string() << std::endl;
+	}
+
 	void parser::operator_resolution(parse_tree_nodes & input, parse_tree_node & output)
 	{
 		std::cout << "Performing operator resolution on " << input.size() << " node(s):" << std::endl;
-		for(std::size_t i = 0; i < input.size(); i++)
-			std::cout << (i + 1) << ". " << input[i].to_string() << std::endl;
+		visualise_parse_tree_nodes(input);
 		if(input.size() == 1)
 		{
 			output = input[0];
@@ -123,18 +128,23 @@ namespace fridh
 
 			case parse_tree_node_type::call_operator:
 			case parse_tree_node_type::spaced_call_operator:
+			{
 				call_check(extremum_offset);
 				operator_node.is_call();
 				operator_node.call_pointer->function = input[0];
 				std::cout << "Operator node: " << operator_node.to_string() << std::endl;
 				input.erase(input.begin());
-				std::cout << "Operator node: " << operator_node.to_string() << std::endl;
+
+				parse_tree_node & new_operator_node = input[0];
+
+				visualise_parse_tree_nodes(input);
+				std::cout << "New operator node: " << new_operator_node.to_string() << std::endl;
 				next_offset--;
-				if(operator_node.type != parse_tree_node_type::spaced_call_operator && next_offset < input.size())
+				if(new_operator_node.type != parse_tree_node_type::spaced_call_operator && next_offset < input.size())
 				{
 					std::cout << "Unary call" << std::endl;
 					std::cout << input[next_offset].to_string() << std::endl;
-					operator_node.call_pointer->arguments.push_back(input[next_offset]);
+					new_operator_node.call_pointer->arguments.push_back(input[next_offset]);
 					input.erase(input.begin() + next_offset);
 				}
 				else
@@ -142,6 +152,7 @@ namespace fridh
 					std::cout << "Nullary call (" << next_offset << " vs. " << input.size() << ")" << std::endl;
 				}
 				break;
+			}
 
 			default:
 				error("Invalid operator node type encountered during operator resolution");
