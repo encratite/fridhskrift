@@ -52,7 +52,7 @@ namespace fridh
 		binary_lexeme_map[binary_or] = binary_operator_type::binary_or;
 		binary_lexeme_map[binary_xor] = binary_operator_type::binary_xor;
 
-		binary_lexeme_map[selection_operator] = binary_operator_type::selection;
+		binary_lexeme_map[dot] = binary_operator_type::selection;
 
 		binary_lexeme_map[assignment] = binary_operator_type::assignment;
 		binary_lexeme_map[addition_assignment] = binary_operator_type::addition_assignment;

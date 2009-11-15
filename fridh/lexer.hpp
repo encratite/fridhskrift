@@ -87,7 +87,7 @@ namespace fridh
 			scope_operator,
 			class_operator,
 
-			selection_operator,
+			dot,
 
 			call_operator,
 			spaced_call_operator,

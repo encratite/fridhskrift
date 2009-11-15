@@ -65,7 +65,7 @@ namespace fridh
 		operator_lexeme(lexeme_type::function_declaration, "@"),
 		operator_lexeme(lexeme_type::anonymous_function_declaration, "@@"),
 		operator_lexeme(lexeme_type::class_operator, "$"),
-		operator_lexeme(lexeme_type::selection_operator, "."),
+		operator_lexeme(lexeme_type::dot, "."),
 		operator_lexeme(lexeme_type::scope_operator, ":"),
 
 		operator_lexeme(lexeme_type::call_operator, ","),

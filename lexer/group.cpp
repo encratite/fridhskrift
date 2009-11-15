@@ -17,6 +17,7 @@ namespace fridh
 			case string:
 
 			case nil:
+
 				output = lexeme_group::argument;
 				return true;
 
@@ -26,6 +27,8 @@ namespace fridh
 			case division:
 			case modulo:
 			case exponentiation:
+
+			case dot:
 
 			case assignment:
 			case addition_assignment:

@@ -120,7 +120,7 @@ namespace fridh
 	bool parser::process_return(executable_unit & output)
 	{
 		lexeme_container & lexemes = get_lexemes();
-		if(lexemes[0].type != lexeme_type::selection_operator)
+		if(lexemes[0].type != lexeme_type::dot)
 			return false;
 
 		output.type = executable_unit_type::return_statement;

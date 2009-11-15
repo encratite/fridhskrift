@@ -204,7 +204,7 @@ namespace fridh
 			case lexeme_type::class_operator:
 				return "class operator";
 
-			case lexeme_type::selection_operator:
+			case lexeme_type::dot:
 				return ".";
 
 			case lexeme_type::call_operator:
