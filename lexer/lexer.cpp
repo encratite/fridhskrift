@@ -98,7 +98,7 @@ namespace fridh
 		return input.substr(i, target.size()) == target;
 	}
 
-	void lexer::process_newline()
+	void lexer::process_newline(bool next_line)
 	{
 		if(!current_line.lexemes.empty())
 		{
@@ -107,9 +107,24 @@ namespace fridh
 		}
 		std::string line_string = input.substr(line_offset, i - line_offset);
 		current_line = line_of_code();
-		line++;
+
 		i++;
 		line_offset = i;
+
+		if(next_line)
+			line++;
+		else
+		{
+			//skip initial spaces after ` and (
+			for(; i < end && input[i] == ' '; i++);
+		}
+	}
+
+	void lexer::process_one_liner(word summand)
+	{
+		uword indentation_level = current_line.indentation_level;
+		process_newline(false);
+		current_line.indentation_level = indentation_level + summand;
 	}
 
 	void lexer::parse_lexemes()
@@ -158,6 +173,18 @@ namespace fridh
 
 				case ';':
 					parse_comment();
+					continue;
+
+				case '`':
+					process_newline(false);
+					continue;
+
+				case '(':
+					process_one_liner(1);
+					continue;
+
+				case ')':
+					process_one_liner(-1);
 					continue;
 			}
 

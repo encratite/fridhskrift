@@ -54,8 +54,10 @@ namespace fridh
 		operator_lexeme(lexeme_type::array_start, "{"),
 		operator_lexeme(lexeme_type::array_end, "}"),
 
+		/*
 		operator_lexeme(lexeme_type::scope_start, "("),
 		operator_lexeme(lexeme_type::scope_end, ")"),
+		*/
 
 		operator_lexeme(lexeme_type::iteration, "\\"),
 		operator_lexeme(lexeme_type::iterator, "#"),

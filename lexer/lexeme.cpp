@@ -180,11 +180,13 @@ namespace fridh
 			case lexeme_type::array_end:
 				return "array: end";
 
+			/*
 			case lexeme_type::scope_start:
 				return "scope: start";
 
 			case lexeme_type::scope_end:
 				return "scope: end";
+			*/
 
 			case lexeme_type::iteration:
 				return "iteration";

@@ -73,8 +73,10 @@ namespace fridh
 			array_start,
 			array_end,
 
+			/*
 			scope_start,
 			scope_end,
+			*/
 
 			iteration,
 			iterator,
@@ -193,9 +195,11 @@ namespace fridh
 
 		bool is_name_char(char input);
 		bool string_match(std::string const & target);
-		void process_newline();
+		void process_newline(bool next_line = true);
 
 		void parse_lexemes();
+
+		void process_one_liner(word summand);
 	};
 
 	std::string visualise_lexemes(lines_of_code & lines);
