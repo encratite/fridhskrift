@@ -55,7 +55,7 @@ namespace fridh
 		return new_node;
 	}
 
-	void parser::process_body(executable_units * output, bool increment)
+	void parser::process_body(executable_units * output, bool increment, bool is_anonymous_function)
 	{
 		if(increment)
 		{
@@ -66,7 +66,11 @@ namespace fridh
 		bool is_class = (output == 0);
 
 		if(is_class)
+		{
+			if(is_anonymous_function)
+				error("Invalid combination of anonymous function/output arguments while processing a body");
 			nested_class_level++;
+		}
 
 		while(line_offset < line_end)
 		{
@@ -76,7 +80,7 @@ namespace fridh
 			else
 			{
 				executable_unit new_unit;
-				end = process_line(&new_unit);
+				end = process_line(&new_unit, is_anonymous_function);
 				output->push_back(new_unit);
 			}
 			if(end)
@@ -101,11 +105,8 @@ namespace fridh
 			return false;
 
 		name_collision_check();
-
 		add_name(symbol::class_symbol);
-
 		process_body(0);
-
 		scope_up();
 
 		return true;
@@ -154,7 +155,7 @@ namespace fridh
 		process_offset_atomic_statement(output, 1);
 	}
 
-	bool parser::process_line(executable_unit * output)
+	bool parser::process_line(executable_unit * output, bool is_anonymous_function)
 	{
 		line_of_code & current_line = lines[line_offset];
 		std::cout << "Line " << current_line.line << ": " << current_line.indentation_level << std::endl;
@@ -162,7 +163,14 @@ namespace fridh
 		if(current_line.indentation_level > indentation_level)
 			error("Unexpected increase in the indentation level (" + ail::number_to_string(indentation_level) + " to " + ail::number_to_string(current_line.indentation_level) + ")");
 
-		if(!process_class() && !process_function())
+		bool class_or_function = process_class() || process_function();
+
+		if(class_or_function)
+		{
+			if(is_anonymous_function)
+				error("You may not declare new classes/functions within an anonymous function (sorry, maybe in future)");
+		}
+		else
 		{
 			if(output)
 				process_statement(*output);

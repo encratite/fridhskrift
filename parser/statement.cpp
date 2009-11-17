@@ -123,6 +123,10 @@ namespace fridh
 					arguments.push_back(parse_tree_node(parse_tree_node_type::iterator));
 					set_last_group(lexeme_group::argument, last_group, got_last_group);
 					continue;
+
+				case lexeme_type::anonymous_function_declaration:
+					throw ail::exception("LAMBDA");
+					continue;
 			}
 
 			lexeme_group::type group;

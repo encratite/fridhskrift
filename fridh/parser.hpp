@@ -53,7 +53,7 @@ namespace fridh
 		void name_collision_check();
 		symbol_tree_node & add_name(symbol::type symbol_type);
 
-		void process_body(executable_units * output = 0, bool increment = true);
+		void process_body(executable_units * output = 0, bool increment = true, bool is_anonymous_function = false);
 
 		void process_atomic_statement(lexeme_container & lexemes, std::size_t & offset, parse_tree_nodes & output, bool allow_multi_statements = false, lexeme_type::type terminator = lexeme_type::non_terminating_placeholder, bool allow_empty_statements = false);
 		void process_offset_atomic_statement(parse_tree_node & output, std::size_t offset = 0);
@@ -69,7 +69,7 @@ namespace fridh
 		bool process_class();
 		bool process_function(function * output = 0);
 		void process_statement(executable_unit & output);
-		bool process_line(executable_unit * output = 0);
+		bool process_line(executable_unit * output = 0, bool is_anonymous_function = false);
 
 		bool translate_data(module & target_module, std::string const & data, std::string const & module_name, std::string & error_message_output);
 
