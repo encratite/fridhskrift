@@ -1,6 +1,6 @@
 #include <ail/exception.hpp>
 #include <fridh/symbol.hpp>
-#include <fnv.hpp>
+#include <fnv/fnv.hpp>
 
 namespace fridh
 {
